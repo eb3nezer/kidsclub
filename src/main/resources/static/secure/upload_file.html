@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Create a new project</title>
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/toastr/build/toastr.min.css"/>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/webjars/toastr/build/toastr.min.js"></script>
+    <script>
+        function getData() {
+        }
+
+        function sendData() {
+            var form = $('form')[0]; // You need to use standard javascript object here
+            var formData = new FormData(form);
+            $.ajax({
+                url: "/rest/data/upload",
+                method: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+            }).done(function(data) {
+                toastr.success('Project was created.', 'Success');
+                var output = `File uploaded. Content type is ${data.contentType} and descriptor is ${data.descriptor}`;
+                $("#upload_result").html(output);
+            }).fail(function(xhr, textStatus, error) {
+                if (xhr && xhr.responseJSON) {
+                    var errorObject = xhr.responseJSON;
+                    var message = `Failed to create project. ${errorObject.error}`;
+                    toastr.error(message, 'Failed');
+                 } else {
+                    toastr.error('Failed to upload file.', 'Failed');
+                 }
+            });
+        }
+
+        function submitForm() {
+            sendData();
+        }
+    </script>
+</head>
+<body>
+<h1>Upload a file</h1>
+<form enctype="multipart/form-data">
+    <table>
+        <tr><td>File to upload</td><td><input type="file" name="file" id="file_field"></td></tr>
+        <tr><td><button type="submit" class="btn btn-primary" onclick="submitForm(); return false;">Upload</button></td></tr>
+    </table>
+</form>
+<div id="upload_result"></div>
+<p><a href="../logout">Log out</a></p>
+<script>
+    getData();
+</script>
+</body>
+</html>

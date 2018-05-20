@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Kids Club Administration</title>
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/toastr/build/toastr.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/secure/css/kidsclub.css"/>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/webjars/toastr/build/toastr.min.js"></script>
+    <script type="text/javascript" src="/secure/js/load_project.js"></script>
+    <script type="text/javascript" src="/secure/js/load_user.js"></script>
+    <script type="text/javascript" src="/secure/js/text_utils.js"></script>
+    <script>
+        function renderProjects(projects) {
+            var output = "";
+            if (projects) {
+                output = output + "<ul>";
+                $.each(projects, function(index, project) {
+                    var name = escapeHtml(project.name);
+                    output = output + `<li><a href="project_admin.html#project=${project.id}">${name}</li>`;
+                });
+                output = output + "</ul>";
+                console.log("Output = " + output);
+                $("div.projects_list").html(output);
+            }
+        }
+
+        function projectLoadFailed() {
+            toastr.error('Failed to get project data', 'Failed');
+        }
+
+        function renderPermissions(permissions) {
+            var audit = userHasSitePermission(permissions, 'VIEW_AUDIT');
+            var sysadmin = userHasSitePermission(permissions, 'SYSTEM_ADMIN');
+            var create = userHasSitePermission(permissions, 'CREATE_PROJECT');
+            if (audit || sysadmin || create) {
+                $("#admin").css("display", "");
+            }
+            if (audit || sysadmin) {
+                $("#view_audit").css("display", "");
+            }
+            if (create || sysadmin) {
+                $("#create_project").css("display", "");
+            }
+        }
+
+        function renderPermissionsFailed() {
+            // Don't care
+        }
+
+        function getData() {
+            loadAllProjects(renderProjects, projectLoadFailed);
+            loadMyPermissions(undefined, renderPermissions, renderPermissionsFailed);
+        }
+</script>
+</head>
+<body class="admin">
+<h1>Kids Club Administration</h1>
+<h2>Administer Projects</h2>
+<div class="projects_list"></div>
+<h2>Profile</h2>
+<ul>
+    <li><a href="../edit_profile.html">Edit your user profile</a></li>
+</ul>
+<div id="admin" style="display: none">
+<h2>Admin</h2>
+<ul>
+    <li id="create_project" style="display: none"><a href="create_project.html">Create a new project</a></li>
+    <li id="view_audit" style="display: none"><a href="view_audit.html">View the audit log</a></li>
+</ul>
+</div>
+<p><a href="/logout">Log out</a></p>
+<script>
+    getData();
+</script>
+</body>
+</html>

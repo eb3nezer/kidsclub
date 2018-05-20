@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Kids Club Home</title>
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/toastr/build/toastr.min.css"/>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/webjars/toastr/build/toastr.min.js"></script>
+    <script type="text/javascript" src="/secure/js/load_project.js"></script>
+    <script type="text/javascript" src="/secure/js/text_utils.js"></script>
+    <script>
+        function renderProjects(projects) {
+            var output = "";
+            if (projects) {
+                output = output + "<ul>";
+                $.each(projects, function(index, project) {
+                    var name = escapeHtml(project.name);
+                    output = output + `<li><a href="leader_home.html#project=${project.id}">${name}</li>`;
+                });
+                output = output + "</ul>";
+                $("div.projects_list").html(output);
+            }
+        }
+
+        function projectLoadFailed() {
+            toastr.error('Failed to get project data', 'Failed');
+        }
+
+        function getData() {
+            loadAllProjects(renderProjects, projectLoadFailed);
+        }
+</script>
+</head>
+<body>
+<h1>Kids Club Home</h1>
+<h2>Your Projects</h2>
+<div class="projects_list"></div>
+<h2>Profile</h2>
+<ul>
+    <li><a href="edit_profile.html">Edit your user profile</a></li>
+</ul>
+<h2>Admin</h2>
+<ul>
+    <li><a href="admin/index.html">Administration</a></li>
+</ul>
+<p><a href="/logout">Log out</a></p>
+<script>
+    getData();
+</script>
+</body>
+</html>

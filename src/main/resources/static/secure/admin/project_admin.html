@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Project Admin</title>
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/toastr/build/toastr.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/secure/css/kidsclub.css"/>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/webjars/toastr/build/toastr.min.js"></script>
+    <script type="text/javascript" src="/secure/js/load_project.js"></script>
+    <script type="text/javascript" src="/secure/js/load_teams.js"></script>
+    <script type="text/javascript" src="/secure/js/load_user.js"></script>
+    <script type="text/javascript" src="/secure/js/text_utils.js"></script>
+    <script>
+        var projectId;
+
+        function renderProject(project) {
+            projectData = project;
+            document.title = `${project.name} Project Administration`;
+            $("#page_heading").text(`${projectData.name} Project Administration`);
+            $("#team_link").attr('href', `team_admin.html#project=${project.id}`);
+            $("#students_link").attr('href', `student_admin.html#project=${project.id}`);
+            $("#albums_link").attr('href', `album_admin.html#project=${project.id}`);
+            $("#documents_link").attr('href', `edit_documents.html#project=${project.id}`);
+            $("#project_home_link").attr('href', `../project_home.html#project=${project.id}`);
+            $("#project_size").text(projectData.users.length);
+        }
+
+        function getProjectFailed() {
+            toastr.error('Failed to get project data', 'Failed');
+        }
+
+        function renderTeams(teams) {
+            var html = '<table><tr><th>Team</th><td></td><th>Score</th><th>Students</th></tr>';
+            $.each(teams, function(index, team) {
+                var teamName = escapeHtml(team.name);
+                html = html + '<tr>';
+                html = html + `<td><a href="edit_student_team.html#project=${projectId}&team=${team.id}">${teamName}</a></td>`;
+                html = html + '<td>';
+                if (team.avatarUrl) {
+                    html = html + `<img src='${team.avatarUrl}' width='50'/>`;
+                } else if (team.mediaDescriptor) {
+                    html = html + `<img src='/rest/data/download/${team.mediaDescriptor}' width='50'/>`;
+                }
+                html = html + '</td>';
+                html = html + `<td>${team.score}</td><td>${team.students.length}</td></tr>`;
+            });
+            html = html + '</table>';
+            $("#student_teams").html(html);
+        }
+
+        function getTeamsFailed() {
+            toastr.error('Failed to load teams', 'Failed');
+        }
+
+        function renderPermissions(permissions) {
+            var users = userHasProjectPermission(permissions, 'LIST_USERS');
+            var album = userHasProjectPermission(permissions, 'EDIT_ALBUMS');
+            var docs = userHasProjectPermission(permissions, 'EDIT_DOCUMENTS');
+            var sysadmin = userHasSitePermission(permissions, 'SYSTEM_ADMIN') || userHasProjectPermission(permissions, 'PROJECT_ADMIN');
+            var team = userHasProjectPermission(permissions, 'CREATE_TEAM') || userHasProjectPermission(permissions, 'EDIT_STUDENTS')
+            if (users || sysadmin) {
+                $("#admin_members").css("display", "");
+            }
+            if (album || sysadmin) {
+                $("#admin_photos").css("display", "");
+            }
+            if (team || sysadmin) {
+                $("#admin_students").css("display", "");
+            }
+            if (docs || sysadmin) {
+                $("#admin_documents").css("display", "");
+            }
+        }
+
+        function renderPermissionsFailed() {
+            // Don't care
+        }
+
+        function getData() {
+            var results = new RegExp('#project=([^&#]*)').exec(window.location.href);
+	        var project = results[1] || 0;
+	        if (!project) {
+	            window.location.href="index.html";
+	        }
+	        projectId = project;
+
+	        loadProject(projectId, renderProject, getProjectFailed);
+	        loadTeams(projectId, renderTeams, getTeamsFailed);
+            loadMyPermissions(projectId, renderPermissions, renderPermissionsFailed);
+        }
+</script>
+</head>
+<body class="admin">
+<h1 id="page_heading"></h1>
+<p>Number of project members: <div id="project_size"></div></p>
+<div id="student_teams"></div>
+<ul>
+    <li id="admin_members" style="display:none"><a id="team_link">Administer Project Members</a></li>
+    <li id="admin_students" style="display: none"><a id="students_link">Administer Students and Teams</a></li>
+    <li id="admin_photos" style="display: none"><a id="albums_link">Administer Photo Albums</a></li>
+    <li id="admin_documents" style="display: none"><a id="documents_link">Administer Documents</a></li>
+</ul>
+<ul>
+    <li><a id="project_home_link">Back to view project</a></li>
+    <li><a href="index.html">Back to global admin</a></li>
+</ul>
+<ul>
+    <li><a href="/logout">Log out</a></li>
+</ul>
+<script>
+    getData();
+</script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Documents</title>
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/toastr/build/toastr.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/secure/css/kidsclub.css"/>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/webjars/toastr/build/toastr.min.js"></script>
+    <script type="text/javascript" src="/secure/js/load_project.js"></script>
+    <script type="text/javascript" src="/secure/js/load_documents.js"></script>
+    <script type="text/javascript" src="/secure/js/text_utils.js"></script>
+    <script>
+        var projectId;
+
+        function renderProject(project) {
+            $("#project_home_link").attr('href', `project_admin.html#project=${project.id}`);
+            $("#upload_document_link").attr('href', `upload_document.html#project=${project.id}`);
+            $("#project_home_link").text(`${project.name} Administration`);
+            $("#page_heading").text(`Documents for ${project.name}`);
+            document.title=`Documents for ${project.name}`;
+        }
+
+        function loadProjectFailed() {
+            toastr.error('Failed to get project data', 'Failed');
+        }
+
+        function deleteDocument(documentId) {
+            var result = confirm(`Are you sure you want to delete this document from the project?`);
+            if (result) {
+                $.ajax({
+                    url: `/rest/documents/`,
+                    method: "DELETE",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        id: documentId,
+                        project: {
+                            id: projectId,
+                        },
+                    }),
+                }).done(function(data) {
+                    toastr.success('Document deleted.', 'Success');
+                    $(`#document_${documentId}`).remove();
+                }).fail(function() {
+                    toastr.error('Failed to delete document.', 'Failed');
+                });
+            }
+        }
+
+        function renderDocuments(documents) {
+            var html = "<table>";
+            html += "<tr><th>Type</th><th>Updated</th><th>File</th><th>Description</th></tr>";
+            $.each(documents, function(index, thisDocument) {
+                var filename = escapeHtml(thisDocument.name);
+                var description = escapeHtml(thisDocument.description);
+                html += `<tr id='document_${thisDocument.id}'>`;
+                if (thisDocument.icon) {
+                    html += `<td><img src='/secure/icons/${thisDocument.icon}' width="64"/></td>`;
+                } else {
+                    html += '<td></td>';
+                }
+                html += `<td>${thisDocument.updated}</td>`;
+                html += `<td><div class="user_selector_container">`
+                html += `<div class="user_selector_user"><a href="/rest/data/download/${thisDocument.mediaDescriptor}">${filename}</a></div><div class="user_selector_delete" onclick="deleteDocument(${thisDocument.id})">x</div></div></td>`;
+                html += `<td>${description}</td>`;
+                html += "</tr>";
+            });
+            html += "</table>";
+            $("#document_result").html(html);
+        }
+
+        function loadDocumentsFailed() {
+            toastr.error('Failed to load documents', 'Failed');
+        }
+
+        function getData() {
+            var results = new RegExp('#project=([^&#]*)').exec(window.location.href);
+	        projectId = results[1] || 0;
+	        if (!projectId) {
+	            window.location="index.html";
+	        }
+
+            loadProject(projectId, renderProject, loadProjectFailed);
+            loadDocuments(projectId, renderDocuments, loadDocumentsFailed);
+        }
+    </script>
+</head>
+<body class="admin">
+<h1 id="page_heading">Documents</h1>
+<div id="document_result"></div>
+<ul>
+    <li><a href="upload_document.html" id="upload_document_link">Upload a new document</a></li>
+    <li><a href="project_home.html" id="project_home_link">Administration</a></li>
+</ul>
+<p><a href="../logout">Log out</a></p>
+<script>
+    getData();
+</script>
+</body>
+</html>

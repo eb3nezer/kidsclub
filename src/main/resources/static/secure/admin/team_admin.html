@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>View Team</title>
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/toastr/build/toastr.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/secure/css/kidsclub.css"/>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/webjars/toastr/build/toastr.min.js"></script>
+    <script type="text/javascript" src="/secure/js/load_project.js"></script>
+    <script type="text/javascript" src="/secure/js/text_utils.js"></script>
+    <script>
+        var projectData;
+
+        function renderProject(project) {
+            projectData = project;
+            document.title = `${project.name} Project Members`;
+            $("#page_heading").text(`${project.name} Project Members`);
+            $("#invite_link").attr('href', `invite_users.html#project=${project.id}`);
+            $("#project_home_link").attr('href', `project_admin.html#project=${project.id}`);
+            $("#project_home_link").text(`${project.name} Administration`);
+            var html = "<table><tr><th>Name</th><th>E-Mail</th><th>Photo</th><th>Notes</th></tr>";
+            $.each(projectData.users, function(index, user) {
+                var userName = escapeHtml(user.name);
+                html = html + `<tr id="user_${user.id}"><td><div class="user_selector_container"><div class="user_selector_user"><a href="edit_user_permissions.html#project=${project.id}&user=${user.id}">${userName}</a></div><div class="user_selector_delete" onclick="uninviteUser('${userName}', ${user.id})">x</div></div></td>`;
+                html = html + `<td><a href='mailto:${user.email}'>${user.email}</a></td>`;
+                html = html + '<td>';
+                if (user.mediaDescriptor) {
+                    html = html + `<img src='/rest/data/download/${user.mediaDescriptor}' width='50'/>`;
+                } else if (user.avatarUrl) {
+                    html = html + `<img src='${user.avatarUrl}' width='50'/>`;
+                }
+                html = html + '</td><td>';
+                if (!user.loggedIn) {
+                    html = html + '(never logged in)';
+                }
+                html = html + '</td></tr>';
+            });
+            html = html + "</table>";
+            $("#user_list").html(html);
+        }
+
+        function uninviteUser(name, id) {
+            var result = confirm(`Are you sure you want to remove ${name} from the team.`);
+            if (result) {
+                $.ajax({
+                    url: `/rest/invite/${id}`,
+                    method: "DELETE",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        projectId: projectData.id,
+                    }),
+                }).done(function(data) {
+                    toastr.success('User was removed from the project.', 'Success');
+                    getData();
+                }).fail(function() {
+                    toastr.error('Failed to remove user.', 'Failed');
+                });
+            }
+        }
+
+        function getData() {
+            var results = new RegExp('#project=([^&#]*)').exec(window.location.href);
+	        var project = results[1] || 0;
+	        if (!project) {
+	            window.location.href="./index.html";
+	        }
+
+	        loadProject(project, renderProject, function() {
+                 toastr.error('Failed to get project data', 'Failed');
+	        });
+        }
+</script>
+</head>
+<body class="admin">
+<h1 id="page_heading"></h1>
+<p>On this page you can invite people to the project, and set their permissions.</p>
+<ul>
+    <li><a href="invite_users.html" id="invite_link">Invite new team members</a></li>
+</ul>
+<div id="user_list"></div>
+<ul>
+    <li><a href="project_admin.html" id="project_home_link">Back</a></li>
+</ul>
+<ul>
+    <li><a href="../logout">Log out</a></li>
+</ul>
+<script>
+    getData();
+</script>
+</body>
+</html>

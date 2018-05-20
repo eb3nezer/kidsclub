@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>View Students</title>
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/toastr/build/toastr.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/secure/css/kidsclub.css"/>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/webjars/toastr/build/toastr.min.js"></script>
+    <script type="text/javascript" src="/secure/js/load_project.js"></script>
+    <script type="text/javascript" src="/secure/js/load_students.js"></script>
+    <script type="text/javascript" src="/secure/js/text_utils.js"></script>
+
+    <script>
+        var projectId;
+        var studentId;
+
+        function renderProject(project) {
+            $("#project_home_link").attr('href', `project_home.html#project=${projectId}`);
+            $("#project_home_link").text(`${project.name} Home`);
+            $("#students_link").attr('href', `view_students.html#project=${projectId}`);
+            $("#students_link").text(`${project.name} Students`);
+        }
+
+        function loadProjectFailed() {
+            toastr.error('Failed to get project data', 'Failed');
+        }
+
+        function renderTeams(teams) {
+        }
+
+        function loadTeamsFailed() {
+            toastr.error('Failed to get load teams', 'Failed');
+        }
+
+        function renderStudent(student) {
+            $("#page_heading").text(student.name);
+            var name = escapeHtml(student.name);
+            var givenName = escapeHtml(student.givenName);
+            var familyName = escapeHtml(student.familyName);
+            var email = escapeHtml(student.email);
+            var school = escapeHtml(student.school);
+            var age = escapeHtml(student.age);
+            var schoolYear = escapeHtml(student.schoolYear);
+            var phone = escapeHtml(student.phone);
+            var teamName = "(<i>No team assigned</i>)";
+            var teamLink = teamName;
+            if (student.studentTeam && student.studentTeam.name) {
+                teamName = escapeHtml(student.studentTeam.name);
+                teamLink = `<a href="view_student_team.html#project=${projectId}&team=${student.studentTeam.id}">${teamName}</a>`;
+            }
+            var image;
+            if (student.mediaDescriptor) {
+                image = `<img src="/rest/data/download/${student.mediaDescriptor}" width="100"/>`;
+            } else if (student.avatarUrl) {
+                image = `<img src="${student.avatarUrl}" width="100"/>`;
+            } else {
+                image = "(<i>No photo</i>)";
+            }
+            var html = `<p>${image}</p><table>
+            <tr><th>Name</th><td>${name}</td></tr>
+            <tr><th>Given Name</th><td>${givenName}</td></tr>
+            <tr><th>Family Name</th><td>${familyName}</td></tr>
+            <tr><th>Team</th><td>${teamLink}</td></tr>
+            <tr><th>Age</th><td>${age}</td></tr>
+            <tr><th>E-Mail</th><td><a href="mailto:${email}">${email}</a></td></tr>
+            <tr><th>Phone</th><td><a href="tel:${phone}">${phone}</a></td></tr>
+            <tr><th>School</th><td>${school}</td></tr>
+            <tr><th>School Year</th><td>${schoolYear}</td></tr>
+            </table>`;
+            $("#student_details").html(html);
+        }
+
+        function loadStudentFailed() {
+            toastr.error('Failed to get student', 'Failed');
+        }
+
+        function getData() {
+            var results = new RegExp('[#&]project=([^&#]*)').exec(window.location.href);
+	        projectId = results[1] || 0;
+	        if (!projectId) {
+	            window.location.href="./index.html";
+	        }
+
+            results = new RegExp('[#&]student=([^&#]*)').exec(window.location.href);
+	        studentId = results[1] || 0;
+	        if (!studentId) {
+	            window.location.href="./index.html";
+	        }
+
+	        loadProject(projectId, renderProject, loadProjectFailed);
+	        loadStudent(studentId, renderStudent, loadStudentFailed);
+        }
+</script>
+</head>
+<body>
+<h1 id="page_heading"></h1>
+<div id="student_details"></div>
+<ul>
+    <li><a id="students_link">Students</a></li>
+    <li><a id="project_home_link">Back</a></li>
+</ul>
+<ul>
+    <li><a href="../logout">Log out</a></li>
+</ul>
+<script>
+    getData();
+</script>
+</body>
+</html>

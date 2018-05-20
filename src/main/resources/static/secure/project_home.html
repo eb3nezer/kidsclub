@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Project Home</title>
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/toastr/build/toastr.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/secure/css/kidsclub.css"/>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/webjars/toastr/build/toastr.min.js"></script>
+    <script type="text/javascript" src="js/load_project.js"></script>
+    <script type="text/javascript" src="js/load_teams.js"></script>
+    <script type="text/javascript" src="js/text_utils.js"></script>
+    <script>
+        var projectId;
+
+        function renderProject(project) {
+            projectData = project;
+            document.title = `${project.name} Home`;
+            $("#page_heading").text(projectData.name);
+            $("#scoreboard_link").attr('href', `project_wallboard.html#project=${project.id}`);
+            $("#view_link").attr('href', `view_team.html#project=${project.id}`);
+            $("#students_link").attr('href', `view_students.html#project=${project.id}`);
+            $("#albums_link").attr('href', `list_albums.html#project=${project.id}`);
+            $("#documents_link").attr('href', `view_documents.html#project=${project.id}`);
+            $("#admin_link").attr('href', `admin/project_admin.html#project=${project.id}`);
+            $("#leader_link").attr('href', `leader_home.html#project=${project.id}`);
+        }
+
+        function getProjectFailed() {
+            toastr.error('Failed to get project data', 'Failed');
+        }
+
+        function renderTeams(teams) {
+            var html = '<table><tr><th>Team</th><td></td><th>Score</th><th>Students</th></tr>';
+            $.each(teams, function(index, team) {
+                var teamName = escapeHtml(team.name);
+                html = html + '<tr>';
+                html = html + `<td><a href="view_student_team.html#project=${projectId}&team=${team.id}">${teamName}</a></td>`;
+                html = html + '<td>';
+                if (team.avatarUrl) {
+                    html = html + `<img src='${team.avatarUrl}' width='50'/>`;
+                } else if (team.mediaDescriptor) {
+                    html = html + `<img src='../../rest/data/download/${team.mediaDescriptor}' width='50'/>`;
+                }
+                html = html + '</td>';
+                html = html + `<td>${team.score}</td><td>${team.students.length}</td></tr>`;
+            });
+            html = html + '</table>';
+            $("#student_teams").html(html);
+        }
+
+        function getTeamsFailed() {
+            toastr.error('Failed to load teams', 'Failed');
+        }
+
+        function getData() {
+            var results = new RegExp('#project=([^&#]*)').exec(window.location.href);
+	        var project = results[1] || 0;
+	        if (!project) {
+	            window.location.href="index.html";
+	        }
+	        projectId = project;
+
+	        loadProject(projectId, renderProject, getProjectFailed);
+	        loadTeams(projectId, renderTeams, getTeamsFailed);
+        }
+</script>
+</head>
+<body>
+<h1 id="page_heading"></h1>
+<div id="student_teams"></div>
+<ul>
+    <li><a id="scoreboard_link">View big scoreboard</a></li>
+</ul>
+<ul>
+    <li><a id="view_link">View team members</a></li>
+    <li><a id="students_link">View students</a></li>
+    <li><a id="albums_link">View photos</a></li>
+    <li><a id="documents_link">View documents</a></li>
+</ul>
+<ul>
+    <li><a id="leader_link">Leader Home</a></li>
+</ul>
+<ul>
+    <li><a id="admin_link">Project administration</a></li>
+</ul>
+<ul>
+    <li><a href="../logout">Log out</a></li>
+</ul>
+<script>
+    getData();
+</script>
+</body>
+</html>

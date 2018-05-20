@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Edit a team</title>
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/toastr/build/toastr.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/secure/css/kidsclub.css"/>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/webjars/toastr/build/toastr.min.js"></script>
+    <script type="text/javascript" src="/secure/js/load_project.js"></script>
+    <script type="text/javascript" src="/secure/js/load_user.js"></script>
+    <script type="text/javascript" src="/secure/js/load_teams.js"></script>
+    <script type="text/javascript" src="/secure/js/load_students.js"></script>
+    <script type="text/javascript" src="/secure/js/text_utils.js"></script>
+    <script type="text/javascript" src="/secure/js/autocomplete.js"></script>
+    <script>
+        var projectId;
+        var teamId;
+        var leaderList = [];
+        var studentList = [];
+
+        function renderProject(project) {
+            document.title = `Edit student team for ${project.name}`;
+            $("#project_home_link").attr("href", `project_admin.html#project=${project.id}`);
+            $("#project_home_link").text(`${project.name} Project Administration`);
+            $("#team_admin_link").attr("href", `student_admin.html#project=${project.id}`);
+            $("#page_heading").text(`Edit a student team for ${project.name}`);
+            $("#project_id_field").val(project.id);
+        }
+
+        function createLeaderDiv(leader) {
+            var name = escapeHtml(leader.name);
+            return `<div class="user_selector_container" id="leader_${leader.id}"><div class="user_selector_user">${name}</div><div class="user_selector_delete" onclick="removeLeader(${leader.id})">X</div></div>`;
+        }
+
+        function createStudentDiv(student) {
+            var name = escapeHtml(student.name);
+            return `<div class="user_selector_container" id="student_${student.id}"><div class="user_selector_user">${name}</div><div class="user_selector_delete" onclick="removeStudent(${student.id})">X</div></div>`;
+        }
+
+        function renderTeamLeaders(leaders) {
+            var leaderNameText = "";
+            var leaderIDs = "";
+            first = true;
+            $.each(leaders, function(index, leader) {
+                if (first) {
+                    first = false;
+                } else {
+                    leaderIDs += ",";
+                }
+                leaderNameText += createLeaderDiv(leader);;
+                leaderIDs += leader.id;
+                leaderList.push(leader.id.toString());
+            });
+            $("#leaders_list").html(leaderNameText);
+            $("#leader_list_field").val(leaderIDs);
+        }
+
+        function renderTeamStudents(students) {
+            var studentNameText = "";
+            var studentIDs = "";
+            first = true;
+            $.each(students, function(index, student) {
+                if (first) {
+                    first = false;
+                } else {
+                    studentIDs += ",";
+                }
+                studentNameText += createStudentDiv(student);;
+                studentIDs += student.id;
+                studentList.push(student.id.toString());
+            });
+            $("#students_list").html(studentNameText);
+            $("#student_list_field").val(studentIDs);
+        }
+
+        function renderTeam(team) {
+            $("#name_field").val(team.name);
+            $("#team_id_field").val(team.id);
+            $("#media_descriptor_field").val(team.mediaDescriptor);
+            if (team.mediaDescriptor) {
+                $("#image_preview").html(`<img src='/rest/data/download/${team.mediaDescriptor}' width='200'/>`);
+            } else if (team.avatarUrl) {
+                $("#image_preview").html(`<img src='${team.avatarUrl}' width='200'/>`);
+            }
+
+            renderTeamLeaders(team.leaders);
+            renderTeamStudents(team.students);
+        }
+
+        function loadProjectFailed() {
+            toastr.error('Failed to get project data', 'Failed');
+        }
+
+        function loadTeamFailed() {
+            toastr.error('Failed to get team data', 'Failed');
+        }
+
+        function removeLeader(id) {
+            if ($.inArray(id.toString(), leaderList) >= 0) {
+                $(`#leader_${id}`).remove();
+                leaderList.splice($.inArray(id.toString(), leaderList),1);
+                var first = true;
+                var leaderListField = "";
+                $.each(leaderList, function(index, value) {
+                    if (first) {
+                        first = false;
+                    } else {
+                        leaderListField += ",";
+                    }
+                    leaderListField += value;
+                });
+
+                $("#leader_list_field").val(leaderListField);
+            }
+        }
+
+        function removeStudent(id) {
+            if ($.inArray(id.toString(), studentList) >= 0) {
+                $(`#student_${id}`).remove();
+                studentList.splice($.inArray(id.toString(), studentList),1);
+                var first = true;
+                var studentListField = "";
+                $.each(studentList, function(index, value) {
+                    if (first) {
+                        first = false;
+                    } else {
+                        studentListField += ",";
+                    }
+                    studentListField += value;
+                });
+
+                $("#student_list_field").val(studentListField);
+            }
+        }
+
+
+        function userAutoCompleteCallback(value) {
+            if ($.inArray(value.id.toString(), leaderList) < 0) {
+                var currentLeaderList =  $("#leader_list_field").val();
+                if (currentLeaderList) {
+                    currentLeaderList += ",";
+                    currentLeaderList += value.id;
+                    $("#leaders_list").append(createLeaderDiv(value));
+                } else {
+                    currentLeaderList = value.id;
+                    $("#leaders_list").html(createLeaderDiv(value));
+                }
+                $("#leader_list_field").val(currentLeaderList);
+                leaderList.push(value.id);
+            }
+            $("#add_leader_field").val("");
+        }
+
+        function studentAutoCompleteCallback(value) {
+            if ($.inArray(value.id.toString(), studentList) < 0) {
+                var currentStudentList =  $("#student_list_field").val();
+                if (currentStudentList) {
+                    currentStudentList += ",";
+                    currentStudentList += value.id;
+                    $("#students_list").append(createStudentDiv(value));
+                } else {
+                    currentStudentList = value.id;
+                    $("#students_list").html(createStudentDiv(value));
+                }
+                $("#student_list_field").val(currentStudentList);
+                studentList.push(value.id);
+            }
+            $("#add_student_field").val("");
+        }
+
+        function getData() {
+            var results = new RegExp('[#&]project=([^&#]*)').exec(window.location.href);
+	        projectId = results[1] || 0;
+	        if (!projectId) {
+	            window.location.href="index.html";
+	        }
+
+            results = new RegExp('[#&]team=([^&#]*)').exec(window.location.href);
+	        teamId = results[1] || 0;
+	        if (!teamId) {
+	            window.location.href="index.html";
+	        }
+
+	        loadProject(projectId, renderProject, loadProjectFailed);
+	        loadTeam(teamId, renderTeam, loadTeamFailed);
+
+	        userAutoComplete($("#add_leader_field")[0], projectId, userAutoCompleteCallback);
+	        studentAutoComplete($("#add_student_field")[0], projectId, studentAutoCompleteCallback);
+        }
+
+        function sendData() {
+            var teamId = $("#team_id_field").val();
+            var form = $('form')[0]; // You need to use standard javascript object here
+            var formData = new FormData(form);
+            $.ajax({
+                url: `/rest/students/teams/${teamId}`,
+                method: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+            }).done(function(data) {
+                toastr.success('Team was updated.', 'Success');
+	                loadTeam(teamId, renderTeam, loadTeamFailed);
+            }).fail(function(xhr, textStatus, error) {
+                if (xhr && xhr.responseJSON) {
+                    var errorObject = xhr.responseJSON;
+                    var message = `Failed to update team. ${errorObject.error}`;
+                    toastr.error(message, 'Failed');
+                 } else {
+                    toastr.error('Failed to update team.', 'Failed');
+                 }
+            });
+        }
+
+        function submitForm() {
+            sendData();
+        }
+
+        function cancelForm() {
+            window.location=`project_admin.html#project=${projectId}`;
+        }
+    </script>
+</head>
+<body class="admin">
+<h1 id="page_heading">Create student team</h1>
+<form enctype="multipart/form-data">
+    <table>
+        <tr>
+            <td>Team Name</td>
+            <td><input type="text" name="name" id="name_field"></td>
+        </tr>
+        <tr>
+            <td>Upload a new team image</td>
+            <td><input type="file" name="file" id="file_field"></td><td id="image_preview"></td>
+        </tr>
+        <tr>
+            <td>Leaders</td>
+            <td><div id="leaders_list"></div></td>
+        </tr>
+        <tr>
+            <td>Add a leader (type to search)</td>
+            <td><div class="autocomplete"><input name="addleader" type="text" id="add_leader_field"></div></td>
+        </tr>
+        <tr>
+            <td>Students</td>
+            <td><div id="students_list"></div></td>
+        </tr>
+        <tr>
+            <td>Add a student (type to search)</td>
+            <td><div class="autocomplete"><input name="addstudent" type="text" id="add_student_field"></div></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <button type="submit" class="btn btn-primary" onclick="submitForm(); return false;">Save</button>
+                <button type="submit" class="btn" onclick="cancelForm(); return false;">Cancel</button>
+                <input type="hidden" name="projectId" id="project_id_field">
+                <input type="hidden" name="teamId" id="team_id_field">
+                <input type="hidden" name="leaderList" id="leader_list_field">
+                <input type="hidden" name="studentList" id="student_list_field">
+                <input type="hidden" name="mediaDescriptor" id="media_descriptor_field">
+            </td>
+        </tr>
+    </table>
+</form>
+<ul>
+    <li><a href="project_home.html" id="team_admin_link">Administer Students and Teams</a></li>
+    <li><a href="project_admin.html" id="project_home_link">Project Administration</a></li>
+</ul>
+<ul>
+    <li><a href="../logout">Log out</a></li>
+</ul>
+
+<p><a href="../logout">Log out</a></p>
+<script>
+    getData();
+
+</script>
+</body>
+</html>

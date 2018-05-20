@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Leader Home</title>
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/toastr/build/toastr.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/secure/css/kidsclub.css"/>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/webjars/toastr/build/toastr.min.js"></script>
+    <script type="text/javascript" src="js/load_project.js"></script>
+    <script type="text/javascript" src="js/load_teams.js"></script>
+    <script type="text/javascript" src="js/load_user.js"></script>
+    <script type="text/javascript" src="js/text_utils.js"></script>
+    <script>
+        var projectId;
+
+        function renderProject(project) {
+            projectData = project;
+            document.title = `${project.name} Leader's Home`;
+            $("#page_heading").text(`${projectData.name} Leader's Home`);
+            $("#project_home_link").attr('href', `project_home.html#project=${project.id}`);
+            $("#project_home_link").text(`${project.name} Overview`);
+        }
+
+        function getProjectFailed() {
+            toastr.error('Failed to get project data', 'Failed');
+        }
+
+        function renderTeam(team) {
+            var name = escapeHtml(team.name);
+            var result = `<h2><a href="view_student_team.html#project=${projectId}&team=${team.id}">${name}</a></h2>`;
+            if (team.mediaDescriptor) {
+            }
+            if (team.leaders && team.leaders.length > 0) {
+                result += `<h3>${name} Leaders</h3>`;
+                result += generateUserTable(team.leaders);
+            }
+            if (team.students && team.students.length > 0) {
+                result += `<h3>${name} Students</h3><ul>`;
+                $.each(team.students, function(index, student) {
+                    var studentName = escapeHtml(student.name);
+                    result += `<li><a href="view_student.html#project=${projectId}&student=${student.id}">${studentName}</a></li>`;
+                });
+                result += "</ul>";
+            }
+
+            return result;
+        }
+
+        function renderTeams(teams) {
+            if (teams.length > 0) {
+                var html = "";
+                $.each(teams, function(index, team) {
+                    html += renderTeam(team);
+                });
+
+                $("#student_teams").html(html);
+            } else {
+                // Redirect to project home
+                window.location=`project_home.html#project=${projectId}`;
+            }
+        }
+
+        function getTeamsFailed() {
+            toastr.error('Failed to load teams', 'Failed');
+        }
+
+        function getData() {
+            var results = new RegExp('#project=([^&#]*)').exec(window.location.href);
+	        var project = results[1] || 0;
+	        if (!project) {
+	            window.location.href="index.html";
+	        }
+	        projectId = project;
+
+	        loadProject(projectId, renderProject, getProjectFailed);
+	        loadMyTeams(projectId, renderTeams, getTeamsFailed);
+        }
+</script>
+</head>
+<body>
+<h1 id="page_heading"></h1>
+<div id="student_teams"></div>
+<ul>
+    <li><a id="project_home_link">Overview</a></li>
+</ul>
+<ul>
+    <li><a href="edit_profile.html">Edit your user profile</a></li>
+</ul>
+<ul>
+    <li><a href="/logout">Log out</a></li>
+</ul>
+<script>
+    getData();
+</script>
+</body>
+</html>

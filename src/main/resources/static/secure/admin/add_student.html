@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Add new student</title>
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/toastr/build/toastr.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/secure/css/kidsclub.css"/>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/webjars/toastr/build/toastr.min.js"></script>
+    <script type="text/javascript" src="/secure/js/load_project.js"></script>
+    <script>
+        var projectId;
+
+        function getData() {
+            var results = new RegExp('#project=([^&#]*)').exec(window.location.href);
+	        var project = results[1] || 0;
+	        if (!project) {
+	            window.location.href="./index.html";
+	        }
+	        projectId = project;
+
+	        loadProject(projectId, function(data) {
+	            projectData = data;
+                window.title = `Add student to ${projectData.name}`;
+                $("#page_heading").text(`Add student to ${projectData.name}`);
+                $("#view_students_link").attr('href', `student_admin.html#project=${projectId}`);
+                $("#project_home_link").attr('href', `project_admin.html#project=${projectId}`);
+                $("#project_home_link").text(`${projectData.name} Administration`);
+	        }, function() {
+                toastr.error('Failed to get project data', 'Failed');
+	        });
+        }
+
+        function sendData() {
+            $.ajax({
+                url: "../../rest/students",
+                method: "PUT",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    name: $("#name_field").val(),
+                    givenName: $("#givenName_field").val(),
+                    familyName: $("#familyName_field").val(),
+                    email: $("#email_field").val(),
+                    avatarUrl: $("#avatarUrl_field").val(),
+                    phone: $("#phone_field").val(),
+                    school: $("#school_field").val(),
+                    age: $("#age_field").val(),
+                    schoolYear: $("#schoolYear_field").val(),
+                    projectId: projectId,
+                }),
+            }).done(function(data) {
+                toastr.success('Student has been created.', 'Success');
+            }).fail(function(xhr, textStatus, error) {
+                if (xhr && xhr.responseJSON) {
+                    var errorObject = xhr.responseJSON;
+                    var message = `Failed to create student. ${errorObject.error}`;
+                    toastr.error(message, 'Failed');
+                 } else {
+                    toastr.error('Failed to create student.', 'Failed');
+                 }
+            });
+        }
+
+        function submitForm() {
+            sendData();
+        }
+
+</script>
+</head>
+<body class="admin">
+<h1 id="page_heading"></h1>
+<form onsubmit="submitForm(); return false;">
+    <table>
+        <tr><td>Name</td><td><input type="text" name="name" id="name_field"/></td></tr>
+        <tr><td>Given Name</td><td><input type="text" name="name" id="givenName_field"/></td></tr>
+        <tr><td>Family Name</td><td><input type="text" name="name" id="familyName_field"/></td></tr>
+        <tr><td>E-Mail Address</td><td><input type="text" name="email" id="email_field"/></td></tr>
+        <tr><td>Phone</td><td><input type="text" name="phone" id="phone_field"/></td></tr>
+        <tr><td>School</td><td><input type="text" name="school" id="school_field"/></td></tr>
+        <tr><td>Age</td><td><input type="text" name="age" id="age_field"/></td></tr>
+        <tr><td>School Year</td><td><input type="text" name="schoolYear" id="schoolYear_field"/></td></tr>
+        <tr><td><button type="submit" class="btn btn-primary" onclick="submitForm(); return false;">Add Student</button></td></tr>
+    </table>
+    <input type="hidden" name="id" id="id_field">
+</form>
+<p><div id="error_message"></div></p>
+<script>
+    getData();
+</script>
+
+<div id="user_list"></div>
+<ul>
+    <li><a href="student_admin.html" id="view_students_link">Administer Students and Teams</a></li>
+    <li><a href="project_admin.html" id="project_home_link">Back</a></li>
+</ul>
+
+<p><a href="/logout">Log out</a></p>
+</body>
+</html>

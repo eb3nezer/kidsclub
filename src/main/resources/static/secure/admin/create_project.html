@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Create a new project</title>
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/toastr/build/toastr.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/secure/css/kidsclub.css"/>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/webjars/toastr/build/toastr.min.js"></script>
+    <script type="text/javascript" src="/js/load_project.js"></script>
+    <script type="text/javascript" src="/js/text_utils.js"></script>
+    <script>
+        function renderProjects(projects) {
+            var output = "";
+            if (projects) {
+                output = output + "<ul>";
+                $.each(projects, function(index, project) {
+                    var name = escapeHtml(project.name);
+                    output = output + `<li><a href="project_admin.html#project=${project.id}">${name}</li>`;
+                });
+                output = output + "</ul>";
+                console.log("Output = " + output);
+                $("#projects_list").html(output);
+            }
+        }
+
+        function loadFailed() {
+            toastr.error('Failed to get project data', 'Failed');
+        }
+
+        function getData() {
+            loadAllProjects(renderProjects, loadFailed);
+        }
+
+        function sendData() {
+            $.ajax({
+                url: "/rest/projects",
+                method: "PUT",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    name: $("#name_field").val(),
+                }),
+            }).done(function(data) {
+                toastr.success('Project was created.', 'Success');
+                getData();
+            }).fail(function(xhr, textStatus, error) {
+                if (xhr && xhr.responseJSON) {
+                    var errorObject = xhr.responseJSON;
+                    var message = escapeHtml(`Failed to create project. ${errorObject.error}`);
+                    toastr.error(message, 'Failed');
+                 } else {
+                    toastr.error('Failed to create project.', 'Failed');
+                 }
+            });
+        }
+
+        function submitForm() {
+            sendData();
+        }
+    </script>
+</head>
+<body class="admin">
+<h1>Create a new project</h1>
+<form onsubmit="submitForm(); return false;">
+    <table>
+        <tr><td>Project name</td><td><input type="text" name="name" id="name_field"></td></tr>
+        <tr><td><button type="submit" class="btn btn-primary" onclick="submitForm(); return false;">Create</button></td></tr>
+    </table>
+</form>
+<h2 id="invite_subheading">Existing projects</h2>
+<div id="projects_list"></div>
+<p><a href="../logout">Log out</a></p>
+<script>
+    getData();
+</script>
+</body>
+</html>

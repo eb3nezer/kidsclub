@@ -15,8 +15,7 @@ import ebenezer.service.MediaService;
 import ebenezer.service.StatsService;
 import ebenezer.service.StudentService;
 import ebenezer.service.UserService;
-import jdk.nashorn.internal.objects.annotations.Getter;
-import org.codehaus.jackson.map.BeanProperty;
+import org.apache.commons.csv.CSVPrinter;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
 import org.springframework.stereotype.Component;
@@ -59,6 +58,16 @@ public class StudentResource {
     }
 
     @GET
+    @Produces("text/csv")
+    @Path("/export/csv")
+    public Response exportStudentsCSV(@QueryParam("projectId") Long projectId) throws IOException {
+        String csv = studentService.exportStudents(projectId);
+
+        logStats("rest.students.export", projectId.toString());
+        return Response.status(Response.Status.OK).entity(csv).build();
+    }
+
+    @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
@@ -78,7 +87,6 @@ public class StudentResource {
         return Response.status(Response.Status.FORBIDDEN).build();
     }
 
-
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -88,6 +96,46 @@ public class StudentResource {
         logStats("rest.student.create", studentDto.getProjectId().toString());
 
         return Response.status(Response.Status.OK).entity(studentMapper.toDto(created)).build();
+    }
+
+    @DELETE
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{id}")
+    public Response deleteStudent(@PathParam("id") Long studentId, StudentDto studentDto) {
+        studentService.deleteStudent(studentId, studentDto.getProjectId());
+        logStats("rest.student.delete", studentDto.getProjectId().toString());
+
+        return Response.status(Response.Status.OK).build();
+    }
+
+    @POST
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response bulkCreateStudents(
+            @Context HttpServletRequest request,
+            @FormDataParam("projectId") Long projectId,
+            @FormDataParam("file") InputStream payload,
+            @FormDataParam("file") FormDataContentDisposition payloadDetail
+    ) throws IOException {
+
+        // Check for file upload
+        if (payload != null && payloadDetail != null && !payloadDetail.getFileName().isEmpty()) {
+            int fileSize = request.getContentLength();
+            if (fileSize > Application.MAX_UPLOAD_SIZE) {
+                throw new ValidationException("File size must be smaller than " + Application.MAX_UPLOAD_SIZE_DESCRIPTION);
+            }
+
+            String filename = payloadDetail.getFileName().toLowerCase();
+            String contentType = mediaService.getMIMETypeForFileName(filename);
+            if (!contentType.equals("text/csv")) {
+                throw new ValidationException("Only CSV Files are accepted");
+            }
+        }
+
+        List<Student> students = studentService.bulkCreateStudents(projectId, payload);
+
+        logStats("rest.student.create.bulk", projectId.toString());
+        return Response.status(Response.Status.OK).entity(studentMapper.toDto(students)).build();
     }
 
     @POST
@@ -106,6 +154,7 @@ public class StudentResource {
             @FormDataParam("email") String email,
             @FormDataParam("age") String age,
             @FormDataParam("school") String school,
+            @FormDataParam("gender") String gender,
             @FormDataParam("schoolYear") String schoolYear,
             @FormDataParam("mediaDescriptor") String mediaDescriptor,
             @FormDataParam("team") String team
@@ -132,10 +181,6 @@ public class StudentResource {
         if (age != null && !age.isEmpty()) {
             ageInt = Integer.valueOf(age);
         }
-        Integer schoolYearInt = null;
-        if (schoolYear != null && !schoolYear.isEmpty()) {
-            schoolYearInt = Integer.valueOf(schoolYear);
-        }
         StudentDto studentDto = new StudentDto(
                 Long.valueOf(studentId),
                 name,
@@ -147,7 +192,8 @@ public class StudentResource {
                 phone,
                 school,
                 ageInt,
-                schoolYearInt,
+                gender,
+                schoolYear,
                 null,
                 null,
                 null,

@@ -42,7 +42,10 @@ public class Student extends ModelObject {
     private Integer age;
 
     @Column(name = "school_year")
-    private Integer schoolYear;
+    private String schoolYear;
+
+    @Column(name = "gender", length = 1)
+    private String gender;
 
     @NotNull
     @ManyToOne
@@ -75,7 +78,8 @@ public class Student extends ModelObject {
             String phone,
             String school,
             Integer age,
-            Integer schoolYear,
+            String schoolYear,
+            Gender gender,
             Project project,
             StudentTeam studentTeam) {
         this();
@@ -90,6 +94,9 @@ public class Student extends ModelObject {
         this.school = school;
         this.age = age;
         this.schoolYear = schoolYear;
+        if (gender != null) {
+            this.gender = gender.getCode();
+        }
         this.project = project;
         this.studentTeam = studentTeam;
     }
@@ -130,7 +137,7 @@ public class Student extends ModelObject {
         return age;
     }
 
-    public Integer getSchoolYear() {
+    public String getSchoolYear() {
         return schoolYear;
     }
 
@@ -174,7 +181,7 @@ public class Student extends ModelObject {
         this.age = age;
     }
 
-    public void setSchoolYear(Integer schoolYear) {
+    public void setSchoolYear(String schoolYear) {
         this.schoolYear = schoolYear;
     }
 
@@ -206,6 +213,14 @@ public class Student extends ModelObject {
         this.studentTeam = studentTeam;
     }
 
+    public Gender getGender() {
+        return Gender.fromCode(gender);
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender.getCode();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -217,6 +232,24 @@ public class Student extends ModelObject {
     @Override
     public int hashCode() {
         return Objects.hash(getId());
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", givenName='" + givenName + '\'' +
+                ", familyName='" + familyName + '\'' +
+                ", avatarUrl='" + avatarUrl + '\'' +
+                ", mediaDescriptor='" + mediaDescriptor + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", school='" + school + '\'' +
+                ", age=" + age +
+                ", schoolYear='" + schoolYear + '\'' +
+                ", gender='" + gender + '\'' +
+                '}';
     }
 
     public static class StudentComparator implements Comparator<Student> {

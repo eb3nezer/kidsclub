@@ -26,6 +26,7 @@ public class AuditRecordDao extends BaseDaoImpl<AuditRecord> {
     public List<AuditRecord> findByDateRange(Date startDate, Date endDate, int start, int records) {
         TypedQuery<AuditRecord> query = getEntityManager().createQuery(
                 "select record from AuditRecord record " +
+                        "left join record.user user " +
                         "where record.changeTime >= :startDate " +
                         "and record.changeTime <= :endDate " +
                         "order by record.changeTime desc", AuditRecord.class);

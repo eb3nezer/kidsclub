@@ -40,4 +40,17 @@ public class StudentDao extends BaseDaoImpl<Student> {
         result.sort(new Student.StudentComparator());
         return result;
     }
+
+    public Optional<Student> findForProjectAndExactName(long projectId, String name) {
+        TypedQuery<Student> query = getEntityManager().createQuery(
+                "select student from Student student where student.project.id = :projectId and student.name = :name", Student.class);
+        query.setParameter("name", name);
+        query.setParameter("projectId", projectId);
+        List<Student> result = query.getResultList();
+        if (result.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(result.get(0));
+        }
+    }
 }

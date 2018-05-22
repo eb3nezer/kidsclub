@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Add new student</title>
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/toastr/build/toastr.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/secure/css/kidsclub.css"/>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/webjars/toastr/build/toastr.min.js"></script>
+    <script type="text/javascript" src="/secure/js/load_project.js"></script>
+    <script type="text/javascript" src="/secure/js/text_utils.js"></script>
+    <script>
+        var projectId;
+
+        function renderProject(projectData) {
+            window.title = `Add student to ${projectData.name}`;
+            $("#page_heading").text(`Bulk add students to ${projectData.name}`);
+            $("#student_admin_link").attr('href', `student_admin.html#project=${projectId}`);
+            $("#project_home_link").attr('href', `project_admin.html#project=${projectId}`);
+            $("#project_home_link").text(`${projectData.name} Administration`);
+            $("#project_id_field").val(projectId);
+        }
+
+        function getData() {
+            var results = new RegExp('#project=([^&#]*)').exec(window.location.href);
+            projectId = results[1] || 0;
+	        if (!projectId) {
+	            window.location="./index.html";
+	        }
+
+	        loadProject(projectId, renderProject, function() {
+                toastr.error('Failed to get project data', 'Failed');
+	        });
+        }
+
+        function renderStudents(students) {
+            var html = "<ul>";
+            $.each(students, function(index, student) {
+                var name = escapeHtml(student.name);
+                html = html + `<li><a href="edit_student.html#project=${projectId}&student=${student.id}">${name}</a></li>`;
+                html = html + '</li>';
+            });
+            html = html + "</ul>";
+            $("#import_result").html(html);
+        }
+
+        function sendData() {
+            var form = $('form')[0]; // You need to use standard javascript object here
+            var formData = new FormData(form);
+            $.ajax({
+                url: "/rest/students/",
+                method: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+            }).done(function(data) {
+                toastr.success('Student has been created.', 'Success');
+                renderStudents(data);
+            }).fail(function(xhr, textStatus, error) {
+                if (xhr && xhr.responseJSON) {
+                    var errorObject = xhr.responseJSON;
+                    var message = `Failed to import students. ${errorObject.error}`;
+                    toastr.error(message, 'Failed');
+                 } else {
+                    toastr.error('Failed to create student.', 'Failed');
+                 }
+            });
+        }
+
+        function submitForm() {
+            sendData();
+        }
+
+</script>
+</head>
+<body class="admin">
+<h1 id="page_heading"></h1>
+<p>Use this page to upload a CSV file containing student information. The following columns are imported:</p>
+<ul>
+    <li>name - The student's name</li>
+    <li>given name - The student's first given name</li>
+    <li>family name - The student's family name</li>
+    <li>phone - A contact phone number</li>
+    <li>email - A contact email address</li>
+    <li>school - The name of the student's school</li>
+    <li>age - The student's age in years</li>
+    <li>school year - The year the student is in at school</li>
+</ul>
+<p>The only required field is either "name" or both "given name" and "family name".</p>
+<form onsubmit="submitForm(); return false;">
+    <table>
+        <tr><td>CSV Data</td><td><input type="file" name="file" id="file_field"></td></tr>
+        <tr>
+            <td><button type="submit" class="btn btn-primary" onclick="submitForm(); return false;">Import</button></td>
+            <td><input type="hidden" name="projectId" id="project_id_field"></td>
+        </tr>
+    </table>
+</form>
+<div id="import_result"></div>
+<script>
+    getData();
+</script>
+
+<div id="user_list"></div>
+<ul>
+    <li><a href="student_admin.html" id="student_admin_link">Administer Students and Teams</a></li>
+    <li><a href="project_admin.html" id="project_home_link">Back</a></li>
+</ul>
+
+<p><a href="/logout">Log out</a></p>
+</body>
+</html>

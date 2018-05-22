@@ -28,6 +28,26 @@
             toastr.error('Failed to get project data', 'Failed');
         }
 
+        function deleteStudent(studentId) {
+            var result = confirm(`Are you sure you want to delete this student from the project? This cannot be undone.`);
+            if (result) {
+                $.ajax({
+                    url: `/rest/students/${studentId}`,
+                    method: "DELETE",
+                    contentType: "application/json",
+                    data: JSON.stringify({
+                        id: studentId,
+                        projectId: projectId,
+                    }),
+                }).done(function(data) {
+                    toastr.success('Student deleted.', 'Success');
+                    $(`#student_${studentId}`).remove();
+                }).fail(function() {
+                    toastr.error('Failed to delete student.', 'Failed');
+                });
+            }
+        }
+
         function renderStudents(studentData) {
             var html = "<ul>";
             $.each(studentData, function(index, student) {
@@ -35,9 +55,9 @@
                 var teamLink = "(<i>No team assigned</i>)";
                 if (student.studentTeam && student.studentTeam.name) {
                     var teamName = escapeHtml(student.studentTeam.name);
-                    teamLink = `<a href="../view_student_team.html#project=${projectId}&team=${student.studentTeam.id}">(${teamName})</a>`;
+                    teamLink = `<a href="edit_student_team.html#project=${projectId}&team=${student.studentTeam.id}">(${teamName})</a>`;
                 }
-                html = html + `<li><a href="edit_student.html#project=${projectId}&student=${student.id}">${name}</a> ${teamLink}</li>`;
+                html = html + `<li id="student_${student.id}"><div class="user_selector_container"><div class="user_selector_user"><a href="edit_student.html#project=${projectId}&student=${student.id}">${name}</a></div><div class="user_selector_delete" onclick="deleteStudent(${student.id})">x</div> ${teamLink}</div></li>`;
                 html = html + '</li>';
             });
             html = html + "</ul>";
@@ -57,6 +77,8 @@
 	        }
 	        projectId = project;
             $("#add_link").attr('href', `add_student.html#project=${projectId}`);
+            $("#bulk_import_link").attr('href', `bulk_add_students.html#project=${projectId}`);
+            $("#bulk_export_link").attr('href', `/rest/students/export/csv/?projectId=${projectId}`);
             $("#create_team_link").attr('href', `create_student_team.html#project=${projectId}`);
             loadProject(projectId, renderProject, projectLoadFailed);
 
@@ -68,7 +90,9 @@
 <h1 id="page_heading"></h1>
 <div id="student_list"></div>
 <ul>
-    <li><a href="add_student.html" id="add_link">Add a student</a></li>
+    <li><a href="add_student.html" id="add_link">Add a single student</a></li>
+    <li><a href="bulk_add_students.html" id="bulk_import_link">Bulk import students</a></li>
+    <li><a href="bulk_add_students.html" id="bulk_export_link">Bulk export students (CSV)</a></li>
     <li><a href="create_student_team.html" id="create_team_link">Create a team</a></li>
     <li><a href="project_home.html" id="project_home_link">Back</a></li>
 </ul>

@@ -1,27 +1,27 @@
 package ebenezer.dto.mapper;
 
-import ebenezer.dto.ProjectDto;
 import ebenezer.dto.StudentDto;
-import ebenezer.dto.StudentTeamDto;
-import ebenezer.dto.UserDto;
-import ebenezer.model.*;
-import ebenezer.permissions.SitePermission;
+import ebenezer.model.Gender;
+import ebenezer.model.Student;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.stream.Collectors;
 
 @Component
 public class StudentMapper extends BaseMapper<Student, StudentDto> implements Mapper<Student, StudentDto> {
-    @Inject
-    private ProjectMapper projectMapper;
     @Inject
     private StudentTeamMapper studentTeamMapper;
 
     @Override
     public Student toModel(StudentDto dto) {
+        Gender gender = null;
+        if (dto.getGender() != null) {
+            gender = Gender.fromName(dto.getGender());
+            if (gender == null) {
+                gender = Gender.fromCode(dto.getGender());
+            }
+        }
+
         return new Student(
                 dto.getId(),
                 dto.getName(),
@@ -34,6 +34,7 @@ public class StudentMapper extends BaseMapper<Student, StudentDto> implements Ma
                 dto.getSchool(),
                 dto.getAge(),
                 dto.getSchoolYear(),
+                gender,
                 null,
                 null
         );
@@ -41,6 +42,10 @@ public class StudentMapper extends BaseMapper<Student, StudentDto> implements Ma
 
     @Override
     public StudentDto toDto(Student model) {
+        String gender = null;
+        if (model.getGender() != null) {
+            gender = model.getGender().getDescription();
+        }
         return new StudentDto(
                 model.getId(),
                 model.getName(),
@@ -52,6 +57,7 @@ public class StudentMapper extends BaseMapper<Student, StudentDto> implements Ma
                 model.getPhone(),
                 model.getSchool(),
                 model.getAge(),
+                gender,
                 model.getSchoolYear(),
                 model.getProject().getId(),
                 studentTeamMapper.toDtoShallow(model.getStudentTeam()),

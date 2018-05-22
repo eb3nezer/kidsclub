@@ -79,9 +79,10 @@ public class AuditService {
 
         @Override
         public void run() {
+            EntityManager entityManager = entityManagerFactory.createEntityManager();
+
             try {
                 AuditRecord auditRecord = new AuditRecord(change, changeTime, user.orElse(null), auditLevel);
-                EntityManager entityManager = entityManagerFactory.createEntityManager();
                 EntityTransaction transaction = entityManager.getTransaction();
                 transaction.begin();
                 entityManager.persist(auditRecord);
@@ -101,10 +102,10 @@ public class AuditService {
                 } else {
                     transaction.rollback();
                 }
-
-                entityManager.close();
             } catch (Exception e) {
                 LOG.error("Failed to log audit record", e);
+            } finally {
+                entityManager.close();
             }
         }
     }

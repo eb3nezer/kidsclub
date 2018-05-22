@@ -12,7 +12,7 @@ public class AuditRecord extends ModelObject {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "change")
+    @Column(name = "change", length = 1024)
     private String change;
 
     @Column(name = "change_time")

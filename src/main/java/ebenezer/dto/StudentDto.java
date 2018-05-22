@@ -20,7 +20,8 @@ public class StudentDto extends DtoObject {
     private String phone;
     private String school;
     private Integer age;
-    private Integer schoolYear;
+    private String schoolYear;
+    private String gender;
     private Long projectId;
     private StudentTeamDto studentTeam;
     private Long created;
@@ -45,7 +46,8 @@ public class StudentDto extends DtoObject {
             String phone,
             String school,
             Integer age,
-            Integer schoolYear,
+            String gender,
+            String schoolYear,
             Long projectId,
             StudentTeamDto studentTeam,
             Long created,
@@ -61,6 +63,7 @@ public class StudentDto extends DtoObject {
         this.school = school;
         this.age = age;
         this.schoolYear = schoolYear;
+        this.gender = gender;
         this.projectId = projectId;
         this.studentTeam = studentTeam;
         this.created = created;
@@ -103,7 +106,7 @@ public class StudentDto extends DtoObject {
         return age;
     }
 
-    public Integer getSchoolYear() {
+    public String getSchoolYear() {
         return schoolYear;
     }
 
@@ -133,5 +136,9 @@ public class StudentDto extends DtoObject {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getGender() {
+        return gender;
     }
 }

@@ -29,6 +29,7 @@
                 window.title = `Add student to ${projectData.name}`;
                 $("#page_heading").text(`Add student to ${projectData.name}`);
                 $("#view_students_link").attr('href', `student_admin.html#project=${projectId}`);
+                $("#bulk_link").attr('href', `bulk_add_students.html#project=${projectId}`);
                 $("#project_home_link").attr('href', `project_admin.html#project=${projectId}`);
                 $("#project_home_link").text(`${projectData.name} Administration`);
 	        }, function() {
@@ -38,13 +39,14 @@
 
         function sendData() {
             $.ajax({
-                url: "../../rest/students",
+                url: "/rest/students",
                 method: "PUT",
                 contentType: "application/json",
                 data: JSON.stringify({
                     name: $("#name_field").val(),
                     givenName: $("#givenName_field").val(),
                     familyName: $("#familyName_field").val(),
+                    gender: $("#gender_field").val(),
                     email: $("#email_field").val(),
                     avatarUrl: $("#avatarUrl_field").val(),
                     phone: $("#phone_field").val(),
@@ -74,11 +76,13 @@
 </head>
 <body class="admin">
 <h1 id="page_heading"></h1>
+<p>See also: <a href="bulk_add_students.html" id="bulk_link">bulk import students from CSV</a>.</p>
 <form onsubmit="submitForm(); return false;">
     <table>
         <tr><td>Name</td><td><input type="text" name="name" id="name_field"/></td></tr>
         <tr><td>Given Name</td><td><input type="text" name="name" id="givenName_field"/></td></tr>
         <tr><td>Family Name</td><td><input type="text" name="name" id="familyName_field"/></td></tr>
+        <tr><td>Gender</td><td><input type="text" name="gender" id="gender_field"/></td></tr>
         <tr><td>E-Mail Address</td><td><input type="text" name="email" id="email_field"/></td></tr>
         <tr><td>Phone</td><td><input type="text" name="phone" id="phone_field"/></td></tr>
         <tr><td>School</td><td><input type="text" name="school" id="school_field"/></td></tr>

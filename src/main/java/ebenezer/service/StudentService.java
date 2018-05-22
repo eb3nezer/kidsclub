@@ -2,10 +2,7 @@ package ebenezer.service;
 
 import ebenezer.dao.StudentDao;
 import ebenezer.dao.StudentTeamDao;
-import ebenezer.model.Project;
-import ebenezer.model.Student;
-import ebenezer.model.StudentTeam;
-import ebenezer.model.User;
+import ebenezer.model.*;
 import ebenezer.permissions.ProjectPermission;
 import ebenezer.permissions.SitePermission;
 import ebenezer.rest.NoPermissionException;
@@ -14,12 +11,12 @@ import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -42,6 +39,8 @@ public class StudentService {
     private MediaService mediaService;
     @Inject
     private ProjectPermissionService projectPermissionService;
+    @Inject
+    private StudentCSVImporterExporter studentCSVImporterExporter;
 
     public StudentService() {
     }
@@ -81,6 +80,66 @@ public class StudentService {
             LOG.error("Failed to create student", e);
             throw e;
         }
+    }
+
+    public void deleteStudent(Long studentId, Long projectId) {
+        Optional<User> currentUser = userService.getCurrentUser();
+        if (!currentUser.isPresent()) {
+            throw new NoPermissionException("Anonymous cannot delete students");
+        }
+        Optional<Project> project = projectService.getProjectById(currentUser.get(), projectId);
+        if (!project.isPresent()) {
+            throw new ValidationException("Invalid project");
+        }
+        if (!projectPermissionService.userHasPermission(currentUser.get(), project.get(), ProjectPermission.EDIT_STUDENTS)) {
+            throw new NoPermissionException("You do not have permission to create/edit students");
+        }
+
+        Optional<Student> student = studentDao.findById(studentId);
+        if (!student.isPresent()) {
+            throw new ValidationException("Invalid student");
+        }
+
+        if (student.get().getStudentTeam() != null) {
+            student.get().getStudentTeam().getStudents().remove(student.get());
+        }
+        studentDao.delete(student.get());
+
+        auditService.audit("Deleted student, id=" + student.get().getId(), new Date());
+    }
+
+    public List<Student> bulkCreateStudents(Long projectId, InputStream inputStream) throws IOException {
+        Optional<User> currentUser = userService.getCurrentUser();
+        if (!currentUser.isPresent()) {
+            throw new NoPermissionException("Anonymous cannot create students");
+        }
+        Optional<Project> project = projectService.getProjectById(currentUser.get(), projectId);
+        if (!project.isPresent()) {
+            throw new ValidationException("Invalid project");
+        }
+        if (!projectPermissionService.userHasPermission(currentUser.get(), project.get(), ProjectPermission.EDIT_STUDENTS)) {
+            throw new NoPermissionException("You do not have permission to create/edit students");
+        }
+
+        return studentCSVImporterExporter.bulkCreateStudents(project.get(), inputStream);
+    }
+
+    public String exportStudents(Long projectId) throws IOException {
+        Optional<User> currentUser = userService.getCurrentUser();
+        if (!currentUser.isPresent()) {
+            throw new NoPermissionException("Anonymous cannot export students");
+        }
+        Optional<Project> project = projectService.getProjectById(currentUser.get(), projectId);
+        if (!project.isPresent()) {
+            throw new ValidationException("Invalid project");
+        }
+        if (!projectPermissionService.userHasPermission(currentUser.get(), project.get(), ProjectPermission.VIEW_STUDENTS)) {
+            throw new NoPermissionException("You do not have permission to view students");
+        }
+
+        List<Student> students = studentDao.studentsForProject(projectId);
+
+        return studentCSVImporterExporter.bulkExportStudents(students);
     }
 
     public List<Student> getStudentsForProject(long projectId, Optional<String> nameMatch) {
@@ -362,6 +421,13 @@ public class StudentService {
             existingStudent.get().setFamilyName(valuesToUpdate.getFamilyName());
             existingStudent.get().setUpdated(now);
             auditService.audit("Set family name to \"" + valuesToUpdate.getFamilyName() + "\" for student id=" + studentId,
+                    now);
+        }
+
+        if (valueUpdated(existingStudent.get().getGender(), valuesToUpdate.getGender())) {
+            existingStudent.get().setGender(valuesToUpdate.getGender());
+            existingStudent.get().setUpdated(now);
+            auditService.audit("Set gender to \"" + valuesToUpdate.getGender().getDescription() + "\" for student id=" + studentId,
                     now);
         }
 

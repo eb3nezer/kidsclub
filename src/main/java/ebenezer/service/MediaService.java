@@ -41,6 +41,8 @@ public class MediaService {
         suffixToContenteType.put(".ppt", "application/vnd.ms-powerpoint");
         suffixToContenteType.put(".pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation");
         suffixToContenteType.put(".key", "application/vnd.apple.keynote");
+        suffixToContenteType.put(".csv", "text/csv");
+        suffixToContenteType.put(".html", "text/html");
     }
 
     public MediaService() {
@@ -56,13 +58,21 @@ public class MediaService {
         }
         byte[] actualData = new byte[bytesRead];
         System.arraycopy(data, 0, actualData, 0, bytesRead);
-        String suffix = filename.substring(filename.lastIndexOf('.'), filename.length());
-        String contentType = suffixToContenteType.get(suffix);
+        String contentType = getMIMETypeForFileName(filename);
         if (contentType == null) {
             throw new ValidationException("Unrecognised file type");
         }
 
         return storeData(actualData, contentType, shared, description);
+    }
+
+    public String getMIMETypeForSuffix(String suffix) {
+        return suffixToContenteType.get(suffix);
+    }
+
+    public String getMIMETypeForFileName(String filename) {
+        String suffix = filename.substring(filename.lastIndexOf('.'), filename.length());
+        return suffixToContenteType.get(suffix);
     }
 
     public Optional<Media> storeData(byte[] data, String contentType, boolean shared, String description) {

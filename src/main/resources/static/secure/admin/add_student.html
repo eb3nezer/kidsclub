@@ -47,12 +47,13 @@
                     givenName: $("#givenName_field").val(),
                     familyName: $("#familyName_field").val(),
                     gender: $("#gender_field").val(),
+                    contactName: $("#contact_name_field").val(),
                     email: $("#email_field").val(),
-                    avatarUrl: $("#avatarUrl_field").val(),
                     phone: $("#phone_field").val(),
                     school: $("#school_field").val(),
                     age: $("#age_field").val(),
                     schoolYear: $("#schoolYear_field").val(),
+                    specialInstructions: $("#special_instructions_field").val(),
                     projectId: projectId,
                 }),
             }).done(function(data) {
@@ -83,11 +84,13 @@
         <tr><td>Given Name</td><td><input type="text" name="name" id="givenName_field"/></td></tr>
         <tr><td>Family Name</td><td><input type="text" name="name" id="familyName_field"/></td></tr>
         <tr><td>Gender</td><td><input type="text" name="gender" id="gender_field"/></td></tr>
+        <tr><td>Emergency Contact</td><td><input type="text" name="contactName" id="contact_name_field"/></td></tr>
         <tr><td>E-Mail Address</td><td><input type="text" name="email" id="email_field"/></td></tr>
         <tr><td>Phone</td><td><input type="text" name="phone" id="phone_field"/></td></tr>
         <tr><td>School</td><td><input type="text" name="school" id="school_field"/></td></tr>
         <tr><td>Age</td><td><input type="text" name="age" id="age_field"/></td></tr>
         <tr><td>School Year</td><td><input type="text" name="schoolYear" id="schoolYear_field"/></td></tr>
+        <tr><td>Special Instructions (allergies etc)</td><td><textarea name="specialInstructions" id="special_instructions_field"/></td></tr>
         <tr><td><button type="submit" class="btn btn-primary" onclick="submitForm(); return false;">Add Student</button></td></tr>
     </table>
     <input type="hidden" name="id" id="id_field">

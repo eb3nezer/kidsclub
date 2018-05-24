@@ -23,11 +23,11 @@ public class Student extends ModelObject {
     @Column(name = "family_name")
     private String familyName;
 
-    @Column(name = "avatar_url")
-    private String avatarUrl;
-
     @Column(name = "media_descriptor")
     private String mediaDescriptor;
+
+    @Column(name = "contact_name")
+    private String contactName;
 
     @Column(name = "email")
     private String email;
@@ -46,6 +46,9 @@ public class Student extends ModelObject {
 
     @Column(name = "gender", length = 1)
     private String gender;
+
+    @Column(name = "special_instructions", length = 1024)
+    private String specialInstructions;
 
     @NotNull
     @ManyToOne
@@ -72,14 +75,15 @@ public class Student extends ModelObject {
             String name,
             String givenName,
             String familyName,
-            String avatarUrl,
             String mediaDescriptor,
+            String contactName,
             String email,
             String phone,
             String school,
             Integer age,
             String schoolYear,
             Gender gender,
+            String specialInstructions,
             Project project,
             StudentTeam studentTeam) {
         this();
@@ -87,8 +91,8 @@ public class Student extends ModelObject {
         this.name = name;
         this.givenName = givenName;
         this.familyName = familyName;
-        this.avatarUrl = avatarUrl;
         this.mediaDescriptor = mediaDescriptor;
+        this.contactName = contactName;
         this.email = email;
         this.phone = phone;
         this.school = school;
@@ -97,6 +101,7 @@ public class Student extends ModelObject {
         if (gender != null) {
             this.gender = gender.getCode();
         }
+        this.specialInstructions = specialInstructions;
         this.project = project;
         this.studentTeam = studentTeam;
     }
@@ -115,10 +120,6 @@ public class Student extends ModelObject {
 
     public String getFamilyName() {
         return familyName;
-    }
-
-    public String getAvatarUrl() {
-        return avatarUrl;
     }
 
     public String getEmail() {
@@ -159,10 +160,6 @@ public class Student extends ModelObject {
 
     public void setFamilyName(String familyName) {
         this.familyName = familyName;
-    }
-
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
     }
 
     public void setEmail(String email) {
@@ -221,6 +218,22 @@ public class Student extends ModelObject {
         this.gender = gender.getCode();
     }
 
+    public String getContactName() {
+        return contactName;
+    }
+
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
+    }
+
+    public String getSpecialInstructions() {
+        return specialInstructions;
+    }
+
+    public void setSpecialInstructions(String specialInstructions) {
+        this.specialInstructions = specialInstructions;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -241,14 +254,15 @@ public class Student extends ModelObject {
                 ", name='" + name + '\'' +
                 ", givenName='" + givenName + '\'' +
                 ", familyName='" + familyName + '\'' +
-                ", avatarUrl='" + avatarUrl + '\'' +
                 ", mediaDescriptor='" + mediaDescriptor + '\'' +
+                ", contactName='" + contactName + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
                 ", school='" + school + '\'' +
                 ", age=" + age +
                 ", schoolYear='" + schoolYear + '\'' +
                 ", gender='" + gender + '\'' +
+                ", specialInstructions='" + specialInstructions + '\'' +
                 '}';
     }
 

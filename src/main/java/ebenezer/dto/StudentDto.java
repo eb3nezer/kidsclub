@@ -1,7 +1,5 @@
 package ebenezer.dto;
 
-import ebenezer.model.Project;
-import ebenezer.model.StudentTeam;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
@@ -14,14 +12,15 @@ public class StudentDto extends DtoObject {
     private String name;
     private String givenName;
     private String familyName;
-    private String avatarUrl;
     private String mediaDescriptor;
+    private String contactName;
     private String email;
     private String phone;
     private String school;
     private Integer age;
     private String schoolYear;
     private String gender;
+    private String specialInstructions;
     private Long projectId;
     private StudentTeamDto studentTeam;
     private Long created;
@@ -40,13 +39,14 @@ public class StudentDto extends DtoObject {
             String name,
             String givenName,
             String familyName,
-            String avatarUrl,
             String mediaDescriptor,
+            String contactName,
             String email,
             String phone,
             String school,
             Integer age,
             String gender,
+            String specialInstructions,
             String schoolYear,
             Long projectId,
             StudentTeamDto studentTeam,
@@ -56,14 +56,15 @@ public class StudentDto extends DtoObject {
         this.name = name;
         this.givenName = givenName;
         this.familyName = familyName;
-        this.avatarUrl = avatarUrl;
         this.mediaDescriptor = mediaDescriptor;
+        this.contactName = contactName;
         this.email = email;
         this.phone = phone;
         this.school = school;
         this.age = age;
         this.schoolYear = schoolYear;
         this.gender = gender;
+        this.specialInstructions = specialInstructions;
         this.projectId = projectId;
         this.studentTeam = studentTeam;
         this.created = created;
@@ -84,10 +85,6 @@ public class StudentDto extends DtoObject {
 
     public String getFamilyName() {
         return familyName;
-    }
-
-    public String getAvatarUrl() {
-        return avatarUrl;
     }
 
     public String getEmail() {
@@ -140,5 +137,13 @@ public class StudentDto extends DtoObject {
 
     public String getGender() {
         return gender;
+    }
+
+    public String getContactName() {
+        return contactName;
+    }
+
+    public String getSpecialInstructions() {
+        return specialInstructions;
     }
 }

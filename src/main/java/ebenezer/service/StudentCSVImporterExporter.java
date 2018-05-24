@@ -4,7 +4,6 @@ import ebenezer.dao.StudentDao;
 import ebenezer.model.Gender;
 import ebenezer.model.Project;
 import ebenezer.model.Student;
-import ebenezer.model.User;
 import ebenezer.rest.ValidationException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -27,6 +26,11 @@ public class StudentCSVImporterExporter {
     private static final String AGE_COLUMN = "age";
     private static final String SCHOOL_YEAR_COLUMN = "school year";
     private static final String GENDER_COLUMN = "gender";
+    private static final String GENDER_COLUMN_ALT = "sex";
+    private static final String EMERGENCY_CONTACT = "emergency contact";
+    private static final String EMERGENCY_CONTACT_ALT = "contact name";
+    private static final String EMERGENCY_CONTACT_ALT2 = "parent";
+    private static final String SPECIAL_INSTRUCTIONS = "special instructions";
 
     @Inject
     private StudentDao studentDao;
@@ -34,7 +38,7 @@ public class StudentCSVImporterExporter {
     @Inject
     private AuditService auditService;
 
-    private void findColumn(CSVRecord record, Map<String, Integer> headerMapping, Set<Integer> unusedColumns, String columnName) {
+    private boolean findColumn(CSVRecord record, Map<String, Integer> headerMapping, Set<Integer> unusedColumns, String columnName) {
         int index = 0;
         boolean found = false;
         while(index < record.size() && !found) {
@@ -45,6 +49,7 @@ public class StudentCSVImporterExporter {
             }
             index++;
         }
+        return found;
     }
 
     private Map<String, Integer> getHeaderMapping(CSVRecord record) {
@@ -63,7 +68,21 @@ public class StudentCSVImporterExporter {
         findColumn(record, result, unusedColumns, SCHOOL_COLUMN);
         findColumn(record, result, unusedColumns, AGE_COLUMN);
         findColumn(record, result, unusedColumns, SCHOOL_YEAR_COLUMN);
-        findColumn(record, result, unusedColumns, GENDER_COLUMN);
+        findColumn(record, result, unusedColumns, SPECIAL_INSTRUCTIONS);
+        if (!findColumn(record, result, unusedColumns, GENDER_COLUMN)) {
+            if (findColumn(record, result, unusedColumns, GENDER_COLUMN_ALT)) {
+                result.put(GENDER_COLUMN, result.get(GENDER_COLUMN_ALT));
+            }
+        }
+        if (!findColumn(record, result, unusedColumns, EMERGENCY_CONTACT)) {
+            if (findColumn(record, result, unusedColumns, EMERGENCY_CONTACT_ALT)) {
+                result.put(EMERGENCY_CONTACT, result.get(EMERGENCY_CONTACT_ALT));
+            } else {
+                if (findColumn(record, result, unusedColumns, EMERGENCY_CONTACT_ALT2)) {
+                    result.put(EMERGENCY_CONTACT, result.get(EMERGENCY_CONTACT_ALT2));
+                }
+            }
+        }
 
         return result;
     }
@@ -81,14 +100,16 @@ public class StudentCSVImporterExporter {
 
         List<Student> newStudents = new ArrayList<>();
         recordIterator.forEachRemaining(record -> {
-            String name = null;
-            String givenName = null;
-            String familyName = null;
-            String phone = null;
-            String email = null;
-            String school = null;
+            String name = "";
+            String givenName = "";
+            String familyName = "";
+            String contactName = "";
+            String phone = "";
+            String email = "";
+            String school = "";
+            String specialInstructions = "";
             Integer age = null;
-            String schoolYear = null;
+            String schoolYear = "";
             Gender gender = null;
 
             if (headerMapping.containsKey(NAME_COLUMN)) {
@@ -110,6 +131,9 @@ public class StudentCSVImporterExporter {
                 }
             }
 
+            if (headerMapping.containsKey(EMERGENCY_CONTACT)) {
+                contactName = record.get(headerMapping.get(EMERGENCY_CONTACT));
+            }
             if (headerMapping.containsKey(PHONE_NUMBER_COLUMN)) {
                 phone = record.get(headerMapping.get(PHONE_NUMBER_COLUMN));
             }
@@ -128,6 +152,9 @@ public class StudentCSVImporterExporter {
             if (headerMapping.containsKey(SCHOOL_YEAR_COLUMN)) {
                 schoolYear = record.get(headerMapping.get(SCHOOL_YEAR_COLUMN));
             }
+            if (headerMapping.containsKey(SPECIAL_INSTRUCTIONS)) {
+                specialInstructions = record.get(headerMapping.get(SPECIAL_INSTRUCTIONS));
+            }
             if (headerMapping.containsKey(GENDER_COLUMN)) {
                 String genderText = record.get(headerMapping.get(GENDER_COLUMN));
                 if (Gender.fromCode(genderText) != null) {
@@ -142,36 +169,39 @@ public class StudentCSVImporterExporter {
                 }
             }
 
-            Student student = new Student(
-                    null,
-                    name,
-                    givenName,
-                    familyName,
-                    null,
-                    null,
-                    email,
-                    phone,
-                    school,
-                    age,
-                    schoolYear,
-                    gender,
-                    project,
-                    null
-            );
             Optional<Student> existing = studentDao.findForProjectAndExactName(project.getId(), name);
             if (existing.isPresent()) {
                 existing.get().setName(name);
                 existing.get().setGivenName(givenName);
                 existing.get().setFamilyName(familyName);
+                existing.get().setContactName(contactName);
                 existing.get().setEmail(email);
                 existing.get().setPhone(phone);
                 existing.get().setSchool(school);
                 existing.get().setAge(age);
                 existing.get().setSchoolYear(schoolYear);
                 existing.get().setGender(gender);
+                existing.get().setSpecialInstructions(specialInstructions);
                 auditService.audit("Updating existing student " + existing.get() + " from CSV", new Date());
                 newStudents.add(existing.get());
             } else {
+                Student student = new Student(
+                        null,
+                        name,
+                        givenName,
+                        familyName,
+                        null,
+                        contactName,
+                        email,
+                        phone,
+                        school,
+                        age,
+                        schoolYear,
+                        gender,
+                        specialInstructions,
+                        project,
+                        null
+                );
                 student = studentDao.create(student);
                 auditService.audit("Bulk added new student " + student + " from CSV", new Date());
                 newStudents.add(student);
@@ -184,19 +214,17 @@ public class StudentCSVImporterExporter {
     public String bulkExportStudents(List<Student> students) throws IOException {
         StringWriter stringWriter = new StringWriter();
         CSVPrinter csvPrinter = new CSVPrinter(stringWriter, CSVFormat.DEFAULT);
-        String[] header = {
-                GIVEN_NAME_COLUMN,
+        csvPrinter.printRecord(GIVEN_NAME_COLUMN,
                 FAMILY_NAME_COLUMN,
                 NAME_COLUMN,
                 GENDER_COLUMN,
                 AGE_COLUMN,
+                EMERGENCY_CONTACT,
                 PHONE_NUMBER_COLUMN,
                 EMAIL_COLUMN,
                 SCHOOL_COLUMN,
-                SCHOOL_YEAR_COLUMN
-        };
-
-        csvPrinter.printRecord(header);
+                SCHOOL_YEAR_COLUMN,
+                SPECIAL_INSTRUCTIONS);
         for (Student student : students) {
             String age = null;
             if (student.getAge() != null) {
@@ -206,18 +234,17 @@ public class StudentCSVImporterExporter {
             if (student.getGender() != null) {
                 gender = student.getGender().getDescription();
             }
-            String[] record = {
-                    student.getGivenName(),
+            csvPrinter.printRecord(student.getGivenName(),
                     student.getFamilyName(),
                     student.getName(),
                     gender,
                     age,
+                    student.getContactName(),
                     student.getPhone(),
                     student.getEmail(),
                     student.getSchool(),
-                    student.getSchoolYear()
-            };
-            csvPrinter.printRecord(record);
+                    student.getSchoolYear(),
+                    student.getSpecialInstructions());
         }
 
         csvPrinter.close();

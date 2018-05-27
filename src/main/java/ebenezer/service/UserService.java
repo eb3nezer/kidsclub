@@ -1,10 +1,7 @@
 package ebenezer.service;
 
 import ebenezer.dao.UserDao;
-import ebenezer.dto.PermissionRecordDto;
-import ebenezer.dto.UserDetailsDto;
-import ebenezer.dto.UserInvitationDto;
-import ebenezer.dto.UserPermissionsDto;
+import ebenezer.dto.*;
 import ebenezer.dto.mapper.UserDetailsMapper;
 import ebenezer.model.Project;
 import ebenezer.model.User;
@@ -14,6 +11,8 @@ import ebenezer.rest.NoPermissionException;
 import ebenezer.rest.ValidationException;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.codehaus.jackson.map.introspect.NopAnnotationIntrospector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,6 +25,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +33,8 @@ import java.util.Optional;
 @Service
 @Transactional
 public class UserService implements UserDetailsService {
+    private static final Logger LOG = LoggerFactory.getLogger(UserService.class);
+
     @Inject
     private UserDao userDao;
     @Inject
@@ -218,37 +220,43 @@ public class UserService implements UserDetailsService {
         return existingUser;
     }
 
-    public Optional<User> inviteNewUser(User invitingUser, UserInvitationDto userInvitationDto) {
-        Optional<Project> project = projectService.getProjectById(invitingUser, userInvitationDto.getProjectId());
+    private void inviteUserPermissionChecks(Optional<User> currentUser, Optional<Project> project) {
+        if (!currentUser.isPresent()) {
+            throw new NoPermissionException("Anonymous may not invite users");
+        }
         if (!project.isPresent()) {
-            return Optional.empty();
+            throw new ValidationException("Invalid project");
         }
 
-        if (!(SitePermissionService.userHasPermission(invitingUser, SitePermission.INVITE_USERS) ||
-                SitePermissionService.userHasPermission(invitingUser, SitePermission.SYSTEM_ADMIN))) {
+        if (!(SitePermissionService.userHasPermission(currentUser.get(), SitePermission.INVITE_USERS) ||
+                SitePermissionService.userHasPermission(currentUser.get(), SitePermission.SYSTEM_ADMIN))) {
             throw new NoPermissionException("You do not have permission to invite users");
         }
+    }
 
+    private Optional<User> inviteOneUser(Project project, User currentUser, String email, String name) {
         // Check if this user is already a project member
-        for (User existingUser : project.get().getUsers()) {
-            if (existingUser.getEmail().equalsIgnoreCase(userInvitationDto.getEmail())) {
+        for (User existingUser : project.getUsers()) {
+            if (existingUser.getEmail().equalsIgnoreCase(email)) {
                 return Optional.of(existingUser);
             }
         }
 
-        Optional<User> userToInvite = getUserByEmail(userInvitationDto.getEmail());
+        Optional<User> userToInvite = getUserByEmail(email);
         if (!userToInvite.isPresent()) {
             EmailValidator emailValidator = EmailValidator.getInstance();
-            if (!emailValidator.isValid(userInvitationDto.getEmail())) {
+            if (!emailValidator.isValid(email)) {
                 throw new ValidationException("The email address is not valid");
             }
 
-            String name = userInvitationDto.getName() != null ? userInvitationDto.getName() : userInvitationDto.getEmail();
+            if (name == null) {
+                name = email;
+            }
             User newUser = new User(null,
                     name,
                     null,
                     null,
-                    userInvitationDto.getEmail(),
+                    email,
                     null,
                     null,
                     false,
@@ -260,20 +268,59 @@ public class UserService implements UserDetailsService {
             userToInvite = Optional.of(userDao.create(newUser));
             userDao.flush();
             auditService.audit("Created new user for invite. New user id=" + userToInvite.get().getId() +
-                            " email=\"" + userInvitationDto.getEmail() + "\"", new Date());
+                    " email=\"" + email + "\"", new Date());
         }
 
-        project.get().getUsers().add(userToInvite.get());
+        project.getUsers().add(userToInvite.get());
         auditService.audit("Added user id=" + userToInvite.get().getId() +
-                " to project id=" + project.get().getId(), new Date());
+                " to project id=" + project.getId(), new Date());
         permissionsService.updateProjectPermission(
-                invitingUser, userToInvite.get().getId(), project.get().getId(), ProjectPermission.LIST_USERS,true);
+                currentUser, userToInvite.get().getId(), project.getId(), ProjectPermission.LIST_USERS,true);
         permissionsService.updateProjectPermission(
-                invitingUser, userToInvite.get().getId(), project.get().getId(), ProjectPermission.VIEW_STUDENTS,true);
+                currentUser, userToInvite.get().getId(), project.getId(), ProjectPermission.VIEW_STUDENTS,true);
         permissionsService.updateProjectPermission(
-                invitingUser, userToInvite.get().getId(), project.get().getId(), ProjectPermission.EDIT_ALBUMS, true);
+                currentUser, userToInvite.get().getId(), project.getId(), ProjectPermission.EDIT_ALBUMS, true);
 
         return userToInvite;
+    }
+
+    public List<User> bulkInviteNewUsers(BulkUserInvitationDto bulkUserInvitationDto) {
+        Optional<User> currentUser = getCurrentUser();
+        Optional<Project> project = Optional.empty();
+        if (currentUser.isPresent()) {
+            project = projectService.getProjectById(currentUser.get(), bulkUserInvitationDto.getProjectId());
+        }
+        inviteUserPermissionChecks(currentUser, project);
+
+        List<User> invited = new ArrayList<>();
+        String[] emailAddresses = bulkUserInvitationDto.getEmails().split("\n");
+        for (String emailAddress : emailAddresses) {
+            emailAddress = emailAddress.trim();
+            Optional<User> added = Optional.empty();
+            if (!emailAddress.isEmpty()) {
+                try {
+                    added = inviteOneUser(project.get(), currentUser.get(), emailAddress, null);
+                } catch (ValidationException e) {
+                    LOG.warn("Validation failed when bulk inviting email address=\"" + emailAddress + "\"", e.getMessage());
+                } catch (NoPermissionException e) {
+                    LOG.warn("Permission error when bulk inviting email address=\"" + emailAddress + "\"", e.getMessage());
+                }
+            }
+            if (added.isPresent()) {
+                invited.add(added.get());
+            }
+        }
+
+        return invited;
+    }
+
+    public Optional<User> inviteNewUser(UserInvitationDto userInvitationDto) {
+        Optional<User> currentUser = getCurrentUser();
+        Optional<Project> project = projectService.getProjectById(currentUser.get(), userInvitationDto.getProjectId());
+        inviteUserPermissionChecks(currentUser, project);
+
+        Optional<User> result = inviteOneUser(project.get(), currentUser.get(), userInvitationDto.getEmail(), userInvitationDto.getName());
+        return result;
     }
 
     public boolean unInviteUser(Long userId, UserInvitationDto userInvitationDto) {

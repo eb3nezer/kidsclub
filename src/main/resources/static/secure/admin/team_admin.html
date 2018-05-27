@@ -22,6 +22,7 @@
             document.title = `${project.name} Project Members`;
             $("#page_heading").text(`${project.name} Project Members`);
             $("#invite_link").attr('href', `invite_users.html#project=${project.id}`);
+            $("#bulk_invite_link").attr('href', `bulk_invite_users.html#project=${project.id}`);
             $("#project_home_link").attr('href', `project_admin.html#project=${project.id}`);
             $("#project_home_link").text(`${project.name} Administration`);
             var html = "<table><tr><th>Name</th><th>E-Mail</th><th>Photo</th><th>Notes</th></tr>";
@@ -82,6 +83,7 @@
 <p>On this page you can invite people to the project, and set their permissions.</p>
 <ul>
     <li><a href="invite_users.html" id="invite_link">Invite new team members</a></li>
+    <li><a href="bulk_invite_users.html" id="bulk_invite_link">Bulk invite new team members by email address</a></li>
 </ul>
 <div id="user_list"></div>
 <ul>

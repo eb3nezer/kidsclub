@@ -1,5 +1,6 @@
 package ebenezer.rest;
 
+import ebenezer.dto.BulkUserInvitationDto;
 import ebenezer.dto.UserInvitationDto;
 import ebenezer.dto.mapper.UserMapper;
 import ebenezer.model.User;
@@ -12,6 +13,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -29,16 +31,23 @@ public class UserInviteResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response inviteNewUser(UserInvitationDto userInvitation) {
-        Optional<User> currentUser = userService.getCurrentUser();
-        if (currentUser.isPresent()) {
-            Optional<User> invited = userService.inviteNewUser(currentUser.get(), userInvitation);
-            if (invited.isPresent()) {
-                logStats("rest.user.invite", userInvitation.getProjectId());
-                return Response.status(Response.Status.OK).entity(userMapper.toDto(invited.get())).build();
-            }
+        Optional<User> invited = userService.inviteNewUser(userInvitation);
+        if (invited.isPresent()) {
+            logStats("rest.user.invite", userInvitation.getProjectId());
+            return Response.status(Response.Status.OK).entity(userMapper.toDto(invited.get())).build();
         }
 
         return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/bulk")
+    public Response bulkInviteNewUsers(BulkUserInvitationDto bulkUserInvitationDto) {
+        List<User> invited = userService.bulkInviteNewUsers(bulkUserInvitationDto);
+        logStats("rest.user.invite.bulk", bulkUserInvitationDto.getProjectId());
+        return Response.status(Response.Status.OK).entity(userMapper.toDto(invited)).build();
     }
 
     @Path("/{id}")

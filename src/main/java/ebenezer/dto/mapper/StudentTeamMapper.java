@@ -55,6 +55,16 @@ public class StudentTeamMapper extends BaseMapper<StudentTeam, StudentTeamDto> i
                 model.getUpdated().getTime());
     }
 
+    @Override
+    protected StudentTeam constructModel() {
+        return new StudentTeam();
+    }
+
+    @Override
+    protected StudentTeamDto constructDto() {
+        return new StudentTeamDto();
+    }
+
     public StudentTeamDto toDtoShallow(StudentTeam model) {
         if (model == null) {
             return null;

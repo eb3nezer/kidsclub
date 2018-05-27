@@ -62,4 +62,14 @@ public class ProjectDocumentMapper extends BaseMapper<ProjectDocument, ProjectDo
                 dateFormat.format(model.getUpdated())
         );
     }
+
+    @Override
+    protected ProjectDocument constructModel() {
+        return new ProjectDocument();
+    }
+
+    @Override
+    protected ProjectDocumentDto constructDto() {
+        return new ProjectDocumentDto();
+    }
 }

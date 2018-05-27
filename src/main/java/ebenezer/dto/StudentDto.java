@@ -14,6 +14,7 @@ public class StudentDto extends DtoObject {
     private String familyName;
     private String mediaDescriptor;
     private String contactName;
+    private String contactRelationship;
     private String email;
     private String phone;
     private String school;
@@ -41,6 +42,7 @@ public class StudentDto extends DtoObject {
             String familyName,
             String mediaDescriptor,
             String contactName,
+            String contactRelationship,
             String email,
             String phone,
             String school,
@@ -58,6 +60,7 @@ public class StudentDto extends DtoObject {
         this.familyName = familyName;
         this.mediaDescriptor = mediaDescriptor;
         this.contactName = contactName;
+        this.contactRelationship = contactRelationship;
         this.email = email;
         this.phone = phone;
         this.school = school;
@@ -145,5 +148,73 @@ public class StudentDto extends DtoObject {
 
     public String getSpecialInstructions() {
         return specialInstructions;
+    }
+
+    public String getContactRelationship() {
+        return contactRelationship;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public void setStudentTeam(StudentTeamDto studentTeam) {
+        this.studentTeam = studentTeam;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
+    }
+
+    public void setGivenName(String givenName) {
+        this.givenName = givenName;
+    }
+
+    public void setFamilyName(String familyName) {
+        this.familyName = familyName;
+    }
+
+    public void setMediaDescriptor(String mediaDescriptor) {
+        this.mediaDescriptor = mediaDescriptor;
+    }
+
+    public void setContactName(String contactName) {
+        this.contactName = contactName;
+    }
+
+    public void setContactRelationship(String contactRelationship) {
+        this.contactRelationship = contactRelationship;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public void setSchool(String school) {
+        this.school = school;
+    }
+
+    public void setAge(Integer age) {
+        this.age = age;
+    }
+
+    public void setSchoolYear(String schoolYear) {
+        this.schoolYear = schoolYear;
+    }
+
+    public void setSpecialInstructions(String specialInstructions) {
+        this.specialInstructions = specialInstructions;
+    }
+
+    public void setCreated(Long created) {
+        this.created = created;
+    }
+
+    public void setUpdated(Long updated) {
+        this.updated = updated;
     }
 }

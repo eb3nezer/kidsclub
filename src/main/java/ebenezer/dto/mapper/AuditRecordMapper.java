@@ -41,4 +41,14 @@ public class AuditRecordMapper extends BaseMapper<AuditRecord, AuditRecordDto> i
                 model.getUpdated().getTime());
         return dto;
     }
+
+    @Override
+    protected AuditRecord constructModel() {
+        return new AuditRecord();
+    }
+
+    @Override
+    protected AuditRecordDto constructDto() {
+        return new AuditRecordDto();
+    }
 }

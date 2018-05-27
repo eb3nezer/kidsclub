@@ -50,4 +50,14 @@ public class AlbumMapper extends BaseMapper<Album, AlbumDto> implements Mapper<A
                 model.getUpdated().getTime()
         );
     }
+
+    @Override
+    protected Album constructModel() {
+        return new Album();
+    }
+
+    @Override
+    protected AlbumDto constructDto() {
+        return new AlbumDto();
+    }
 }

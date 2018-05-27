@@ -31,6 +31,8 @@ public class StudentCSVImporterExporter {
     private static final String EMERGENCY_CONTACT_ALT = "contact name";
     private static final String EMERGENCY_CONTACT_ALT2 = "parent";
     private static final String SPECIAL_INSTRUCTIONS = "special instructions";
+    private static final String CONTACT_RELATIONSHIP = "contact relationship";
+    private static final String CONTACT_RELATIONSHIP_ALT = "relationship";
 
     @Inject
     private StudentDao studentDao;
@@ -83,6 +85,11 @@ public class StudentCSVImporterExporter {
                 }
             }
         }
+        if (!findColumn(record, result, unusedColumns, CONTACT_RELATIONSHIP)) {
+            if (findColumn(record, result, unusedColumns, CONTACT_RELATIONSHIP_ALT)) {
+                result.put(CONTACT_RELATIONSHIP, result.get(CONTACT_RELATIONSHIP_ALT));
+            }
+        }
 
         return result;
     }
@@ -104,6 +111,7 @@ public class StudentCSVImporterExporter {
             String givenName = "";
             String familyName = "";
             String contactName = "";
+            String contactRelationship = "";
             String phone = "";
             String email = "";
             String school = "";
@@ -133,6 +141,9 @@ public class StudentCSVImporterExporter {
 
             if (headerMapping.containsKey(EMERGENCY_CONTACT)) {
                 contactName = record.get(headerMapping.get(EMERGENCY_CONTACT));
+            }
+            if (headerMapping.containsKey(CONTACT_RELATIONSHIP)) {
+                contactRelationship = record.get(headerMapping.get(CONTACT_RELATIONSHIP));
             }
             if (headerMapping.containsKey(PHONE_NUMBER_COLUMN)) {
                 phone = record.get(headerMapping.get(PHONE_NUMBER_COLUMN));
@@ -175,6 +186,7 @@ public class StudentCSVImporterExporter {
                 existing.get().setGivenName(givenName);
                 existing.get().setFamilyName(familyName);
                 existing.get().setContactName(contactName);
+                existing.get().setContactRelationship(contactRelationship);
                 existing.get().setEmail(email);
                 existing.get().setPhone(phone);
                 existing.get().setSchool(school);
@@ -192,6 +204,7 @@ public class StudentCSVImporterExporter {
                         familyName,
                         null,
                         contactName,
+                        contactRelationship,
                         email,
                         phone,
                         school,
@@ -220,6 +233,7 @@ public class StudentCSVImporterExporter {
                 GENDER_COLUMN,
                 AGE_COLUMN,
                 EMERGENCY_CONTACT,
+                CONTACT_RELATIONSHIP,
                 PHONE_NUMBER_COLUMN,
                 EMAIL_COLUMN,
                 SCHOOL_COLUMN,
@@ -240,6 +254,7 @@ public class StudentCSVImporterExporter {
                     gender,
                     age,
                     student.getContactName(),
+                    student.getContactRelationship(),
                     student.getPhone(),
                     student.getEmail(),
                     student.getSchool(),

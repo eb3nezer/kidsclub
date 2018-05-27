@@ -13,7 +13,14 @@ public class StudentMapper extends BaseMapper<Student, StudentDto> implements Ma
     private StudentTeamMapper studentTeamMapper;
 
     @Override
+    protected String[] getIgnoreProperties() {
+        return new String[] {"gender", "studentTeam", "projectId", "project"};
+    }
+
+    @Override
     public Student toModel(StudentDto dto) {
+        Student model = super.toModel(dto);
+
         Gender gender = null;
         if (dto.getGender() != null) {
             gender = Gender.fromName(dto.getGender());
@@ -21,49 +28,34 @@ public class StudentMapper extends BaseMapper<Student, StudentDto> implements Ma
                 gender = Gender.fromCode(dto.getGender());
             }
         }
-
-        return new Student(
-                dto.getId(),
-                dto.getName(),
-                dto.getGivenName(),
-                dto.getFamilyName(),
-                dto.getMediaDescriptor(),
-                dto.getContactName(),
-                dto.getEmail(),
-                dto.getPhone(),
-                dto.getSchool(),
-                dto.getAge(),
-                dto.getSchoolYear(),
-                gender,
-                dto.getSpecialInstructions(),
-                null,
-                null
-        );
+        model.setGender(gender);
+        return model;
     }
 
     @Override
     public StudentDto toDto(Student model) {
+        StudentDto dto = super.toDto(model);
+
         String gender = null;
         if (model.getGender() != null) {
             gender = model.getGender().getDescription();
         }
-        return new StudentDto(
-                model.getId(),
-                model.getName(),
-                model.getGivenName(),
-                model.getFamilyName(),
-                model.getMediaDescriptor(),
-                model.getContactName(),
-                model.getEmail(),
-                model.getPhone(),
-                model.getSchool(),
-                model.getAge(),
-                gender,
-                model.getSpecialInstructions(),
-                model.getSchoolYear(),
-                model.getProject().getId(),
-                studentTeamMapper.toDtoShallow(model.getStudentTeam()),
-                model.getCreated(),
-                model.getUpdated());
+        dto.setGender(gender);
+        dto.setStudentTeam(studentTeamMapper.toDtoShallow(model.getStudentTeam()));
+        if (model.getProject() != null) {
+            dto.setProjectId(model.getProject().getId());
+        }
+
+        return dto;
+    }
+
+    @Override
+    protected Student constructModel() {
+        return new Student();
+    }
+
+    @Override
+    protected StudentDto constructDto() {
+        return new StudentDto();
     }
 }

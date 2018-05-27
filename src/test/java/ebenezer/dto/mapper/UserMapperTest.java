@@ -33,7 +33,7 @@ public class UserMapperTest {
                 Arrays.asList(permissions)
         );
         User model = userMapper.toModel(dto);
-        assertNull(model.getId());
+        assertEquals(1441L, model.getId().longValue());
         assertEquals("Ben Kelley", model.getName());
         assertEquals("B", model.getGivenName());
         assertEquals("Kelley", model.getFamilyName());

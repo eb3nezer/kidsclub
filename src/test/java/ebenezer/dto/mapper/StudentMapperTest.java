@@ -47,7 +47,7 @@ public class StudentMapperTest {
                 now,
                 now);
         Student model = studentMapper.toModel(dto);
-        assertNull("ID should be null", model.getId());
+        assertEquals("ID does not match", 243L, model.getId().longValue());
         assertEquals("name does not match", "A Student", model.getName());
         assertEquals("given name does not match", "A", model.getGivenName());
         assertEquals("family name does not match", "Student", model.getFamilyName());

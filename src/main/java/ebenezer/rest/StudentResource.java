@@ -11,10 +11,7 @@ import ebenezer.model.Media;
 import ebenezer.model.Student;
 import ebenezer.model.StudentTeam;
 import ebenezer.model.User;
-import ebenezer.service.MediaService;
-import ebenezer.service.StatsService;
-import ebenezer.service.StudentService;
-import ebenezer.service.UserService;
+import ebenezer.service.*;
 import org.apache.commons.csv.CSVPrinter;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
@@ -36,6 +33,8 @@ import java.util.stream.Collectors;
 public class StudentResource {
     @Inject
     private StudentService studentService;
+    @Inject
+    private StudentTeamService studentTeamService;
     @Inject
     private StudentMapper studentMapper;
     @Inject
@@ -150,11 +149,14 @@ public class StudentResource {
             @FormDataParam("name") String name,
             @FormDataParam("givenName") String givenName,
             @FormDataParam("familyName") String familyName,
+            @FormDataParam("contactName") String contactName,
+            @FormDataParam("contactRelationship") String contactRelationship,
             @FormDataParam("phone") String phone,
             @FormDataParam("email") String email,
             @FormDataParam("age") String age,
             @FormDataParam("school") String school,
             @FormDataParam("gender") String gender,
+            @FormDataParam("specialInstructions") String specialInstructions,
             @FormDataParam("schoolYear") String schoolYear,
             @FormDataParam("mediaDescriptor") String mediaDescriptor,
             @FormDataParam("team") String team
@@ -186,13 +188,15 @@ public class StudentResource {
                 name,
                 givenName,
                 familyName,
-                null,
                 mediaDescriptor,
+                contactName,
+                contactRelationship,
                 email,
                 phone,
                 school,
                 ageInt,
                 gender,
+                specialInstructions,
                 schoolYear,
                 null,
                 null,
@@ -246,7 +250,7 @@ public class StudentResource {
 
         studentTeamDto.setName(name);
 
-        Optional<StudentTeam> studentTeam = studentService.createStudentTeam(Long.valueOf(projectId), studentTeamMapper.toModel(studentTeamDto));
+        Optional<StudentTeam> studentTeam = studentTeamService.createStudentTeam(Long.valueOf(projectId), studentTeamMapper.toModel(studentTeamDto));
         if (studentTeam.isPresent()) {
             logStats("rest.student.team.create", studentTeam.get().getProject().getId().toString());
             return Response.status(Response.Status.OK).entity(studentTeamMapper.toDto(studentTeam.get())).build();
@@ -311,7 +315,7 @@ public class StudentResource {
                 null
         );
 
-        Optional<StudentTeam> studentTeam = studentService.updateStudentTeam(Long.valueOf(teamId), studentTeamMapper.toModel(updateRequest));
+        Optional<StudentTeam> studentTeam = studentTeamService.updateStudentTeam(Long.valueOf(teamId), studentTeamMapper.toModel(updateRequest));
         if (studentTeam.isPresent()) {
             logStats("rest.student.team.update", projectId);
             return Response.status(Response.Status.OK).entity(studentTeamMapper.toDto(studentTeam.get())).build();
@@ -328,7 +332,7 @@ public class StudentResource {
         if (projectId == null) {
             throw new ValidationException("projectId must be supplied");
         }
-        List<StudentTeam> teams = studentService.getStudentTeams(projectId, Boolean.valueOf(mine));
+        List<StudentTeam> teams = studentTeamService.getStudentTeams(projectId, Boolean.valueOf(mine));
         teams.sort(new StudentTeam.StudentTeamComparator());
         logStats("rest.student.teams.get", projectId.toString());
         return Response.status(Response.Status.OK).entity(studentTeamMapper.toDto(teams)).build();
@@ -338,7 +342,7 @@ public class StudentResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/teams/{id}")
     public Response getStudentTeam(@PathParam("id") String teamId) {
-        Optional<StudentTeam> team = studentService.getStudentTeam(Long.valueOf(teamId));
+        Optional<StudentTeam> team = studentTeamService.getStudentTeam(Long.valueOf(teamId));
         if (team.isPresent()) {
             logStats("rest.student.team.get", team.get().getProject().getId().toString());
             return Response.status(Response.Status.OK).entity(studentTeamMapper.toDto(team.get())).build();
@@ -351,7 +355,7 @@ public class StudentResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/teams/{id}/points/{adjustment}")
     public Response adjustPointsForTeam(@PathParam("id") String teamId, @PathParam("adjustment") String adjustment) {
-        Optional<StudentTeam> team = studentService.adjustPoints(Long.valueOf(teamId), Integer.valueOf(adjustment));
+        Optional<StudentTeam> team = studentTeamService.adjustPoints(Long.valueOf(teamId), Integer.valueOf(adjustment));
 
         if (team.isPresent()) {
             logStats("rest.student.team.points", team.get().getProject().getId().toString());

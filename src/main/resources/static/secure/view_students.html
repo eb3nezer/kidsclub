@@ -36,11 +36,15 @@
                 var name = student.name;
                 var teamName = "(<i>No team assigned</i>)";
                 var teamLink = teamName;
+                var alert = "";
+                if (student.specialInstructions) {
+                    alert = " <img src='/secure/icons/exclamation.gif' alt='Notes' height='25'>";
+                }
                 if (student.studentTeam && student.studentTeam.name) {
                     teamName = escapeHtml(student.studentTeam.name);
                     teamLink = `<a href="view_student_team.html#project=${projectId}&team=${student.studentTeam.id}">(${teamName})</a>`;
                 }
-                html = html + `<li><a href="view_student.html#project=${projectId}&student=${student.id}">${name}</a> ${teamLink}</li>`;
+                html = html + `<li><a href="view_student.html#project=${projectId}&student=${student.id}">${name}</a>${alert} ${teamLink}</li>`;
             });
             html = html + "</ul>";
             $("#student_list").html(html);

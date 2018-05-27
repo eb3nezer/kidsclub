@@ -43,11 +43,15 @@
             var name = escapeHtml(student.name);
             var givenName = escapeHtml(student.givenName);
             var familyName = escapeHtml(student.familyName);
+            var contactName = escapeHtml(student.contactName);
+            var contactRelationship = escapeHtml(student.contactRelationship);
             var email = escapeHtml(student.email);
             var school = escapeHtml(student.school);
             var age = escapeHtml(student.age);
             var schoolYear = escapeHtml(student.schoolYear);
             var phone = escapeHtml(student.phone);
+            var gender = student.gender;
+            var specialInstructions = escapeHtml(student.specialInstructions);
             var teamName = "(<i>No team assigned</i>)";
             var teamLink = teamName;
             if (student.studentTeam && student.studentTeam.name) {
@@ -68,10 +72,13 @@
             <tr><th>Family Name</th><td>${familyName}</td></tr>
             <tr><th>Team</th><td>${teamLink}</td></tr>
             <tr><th>Age</th><td>${age}</td></tr>
+            <tr><th>Emergency Contact</th><td>${contactName}</td></tr>
+            <tr><th>Emergency Contact Relationship</th><td>${contactRelationship}</td></tr>
             <tr><th>E-Mail</th><td><a href="mailto:${email}">${email}</a></td></tr>
             <tr><th>Phone</th><td><a href="tel:${phone}">${phone}</a></td></tr>
             <tr><th>School</th><td>${school}</td></tr>
             <tr><th>School Year</th><td>${schoolYear}</td></tr>
+            <tr><th>Special Instructions</th><td>${specialInstructions}</td></tr>
             </table>`;
             $("#student_details").html(html);
         }

@@ -34,6 +34,16 @@ public class ProjectMapper extends BaseMapper<Project, ProjectDto> implements Ma
         return new ProjectDto(model.getId(), model.getName(), projectUsers);
     }
 
+    @Override
+    protected Project constructModel() {
+        return new Project();
+    }
+
+    @Override
+    protected ProjectDto constructDto() {
+        return new ProjectDto();
+    }
+
     public ProjectDto toDtoNoUsers(Project model) {
         if (model == null) {
             return null;

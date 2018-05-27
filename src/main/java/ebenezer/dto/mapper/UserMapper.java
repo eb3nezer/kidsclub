@@ -19,21 +19,7 @@ public class UserMapper extends BaseMapper<User, UserDto> implements Mapper<User
             return null;
         }
 
-        User result = new User(
-                dto.getId(),
-                dto.getName(),
-                dto.getGivenName(),
-                dto.getFamilyName(),
-                dto.getEmail(),
-                dto.getHomePhone(),
-                dto.getMobilePhone(),
-                dto.getLoggedIn(),
-                dto.getActive(),
-                dto.getAvatarUrl(),
-                dto.getMediaDescriptor(),
-                dto.getRemoteCredential(),
-                dto.getRemoteCredentialSource()
-        );
+        User result = super.toModel(dto);
         if (dto.getUserSitePermissions() != null) {
             for (String key : dto.getUserSitePermissions()) {
                 UserSitePermission userSitePermission = new UserSitePermission(result, SitePermission.valueOf(key));
@@ -48,20 +34,29 @@ public class UserMapper extends BaseMapper<User, UserDto> implements Mapper<User
         if (model == null) {
             return null;
         }
-        return new UserDto(
-                model.getId(),
-                model.getName(),
-                model.getGivenName(),
-                model.getFamilyName(),
-                model.getEmail(),
-                model.getHomePhone(),
-                model.getMobilePhone(),
-                model.getLoggedIn(),
-                model.getActive(),
-                model.getAvatarUrl(),
-                model.getMediaDescriptor(),
-                model.getRemoteCredential(),
-                model.getRemoteCredentialSource(),
-                model.getUserSitePermissions().stream().map(s -> s.getPermissionKey().toString()).collect(Collectors.toList()));
+
+        UserDto result = super.toDto(model);
+        result.getUserSitePermissions().addAll(
+                model.getUserSitePermissions()
+                        .stream()
+                        .map(s -> s.getPermissionKey().toString())
+                        .collect(Collectors.toList())
+        );
+        return result;
+    }
+
+    @Override
+    protected String[] getIgnoreProperties() {
+        return new String[]{"userSitePermissions"};
+    }
+
+    @Override
+    protected User constructModel() {
+        return new User();
+    }
+
+    @Override
+    protected UserDto constructDto() {
+        return new UserDto();
     }
 }

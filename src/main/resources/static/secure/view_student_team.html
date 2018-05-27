@@ -30,7 +30,11 @@
             var html = "<ul>";
             $.each(team.students, function(index, student) {
                 var name = escapeHtml(student.name);
-                html = html + `<li><a href="view_student.html#project=${projectId}&student=${student.id}">${name}</a></li>`;
+                var alert = "";
+                if (student.specialInstructions) {
+                    alert = " <img src='/secure/icons/exclamation.gif' alt='Notes' height='25'>";
+                }
+                html = html + `<li><a href="view_student.html#project=${projectId}&student=${student.id}">${name}</a>${alert}</li>`;
             });
             html = html + "</ul>";
             $("#student_list").html(html);

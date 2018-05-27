@@ -43,8 +43,12 @@
             if (team.students && team.students.length > 0) {
                 result += `<h3>${name} Students</h3><ul>`;
                 $.each(team.students, function(index, student) {
+                    var alert = "";
+                    if (student.specialInstructions) {
+                        alert = " <img src='/secure/icons/exclamation.gif' alt='Notes' height='25'>";
+                    }
                     var studentName = escapeHtml(student.name);
-                    result += `<li><a href="view_student.html#project=${projectId}&student=${student.id}">${studentName}</a></li>`;
+                    result += `<li><a href="view_student.html#project=${projectId}&student=${student.id}">${studentName}</a>${alert}</li>`;
                 });
                 result += "</ul>";
             }

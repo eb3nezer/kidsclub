@@ -1,9 +1,12 @@
 package ebenezer.service;
 
 import ebenezer.dao.StudentDao;
+import ebenezer.dao.StudentTeamDao;
+import ebenezer.dto.StudentTeamDto;
 import ebenezer.model.Gender;
 import ebenezer.model.Project;
 import ebenezer.model.Student;
+import ebenezer.model.StudentTeam;
 import ebenezer.rest.ValidationException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -33,9 +36,13 @@ public class StudentCSVImporterExporter {
     private static final String SPECIAL_INSTRUCTIONS = "special instructions";
     private static final String CONTACT_RELATIONSHIP = "contact relationship";
     private static final String CONTACT_RELATIONSHIP_ALT = "relationship";
+    private static final String TEAM = "team";
 
     @Inject
     private StudentDao studentDao;
+
+    @Inject
+    private StudentTeamDao studentTeamDao;
 
     @Inject
     private AuditService auditService;
@@ -90,6 +97,7 @@ public class StudentCSVImporterExporter {
                 result.put(CONTACT_RELATIONSHIP, result.get(CONTACT_RELATIONSHIP_ALT));
             }
         }
+        findColumn(record, result, unusedColumns, TEAM);
 
         return result;
     }
@@ -118,6 +126,8 @@ public class StudentCSVImporterExporter {
             String specialInstructions = "";
             Integer age = null;
             String schoolYear = "";
+            String teamName = "";
+            Optional<StudentTeam> team = Optional.empty();
             Gender gender = null;
 
             if (headerMapping.containsKey(NAME_COLUMN)) {
@@ -179,6 +189,12 @@ public class StudentCSVImporterExporter {
                     }
                 }
             }
+            if (headerMapping.containsKey(TEAM)) {
+                teamName = record.get(headerMapping.get(TEAM));
+                if (teamName != null && !teamName.isEmpty()) {
+                    team = studentTeamDao.findByNameForProject(project.getId(), teamName);
+                }
+            }
 
             Optional<Student> existing = studentDao.findForProjectAndExactName(project.getId(), name);
             if (existing.isPresent()) {
@@ -194,6 +210,9 @@ public class StudentCSVImporterExporter {
                 existing.get().setSchoolYear(schoolYear);
                 existing.get().setGender(gender);
                 existing.get().setSpecialInstructions(specialInstructions);
+                if (team.isPresent()) {
+                    existing.get().setStudentTeam(team.orElseGet(null));
+                }
                 auditService.audit("Updating existing student " + existing.get() + " from CSV", new Date());
                 newStudents.add(existing.get());
             } else {
@@ -213,7 +232,7 @@ public class StudentCSVImporterExporter {
                         gender,
                         specialInstructions,
                         project,
-                        null
+                        team.orElseGet(null)
                 );
                 student = studentDao.create(student);
                 auditService.audit("Bulk added new student " + student + " from CSV", new Date());
@@ -238,7 +257,8 @@ public class StudentCSVImporterExporter {
                 EMAIL_COLUMN,
                 SCHOOL_COLUMN,
                 SCHOOL_YEAR_COLUMN,
-                SPECIAL_INSTRUCTIONS);
+                SPECIAL_INSTRUCTIONS,
+                TEAM);
         for (Student student : students) {
             String age = null;
             if (student.getAge() != null) {
@@ -247,6 +267,10 @@ public class StudentCSVImporterExporter {
             String gender = null;
             if (student.getGender() != null) {
                 gender = student.getGender().getDescription();
+            }
+            String teamName = null;
+            if (student.getStudentTeam() != null) {
+                teamName = student.getStudentTeam().getName();
             }
             csvPrinter.printRecord(student.getGivenName(),
                     student.getFamilyName(),
@@ -259,7 +283,8 @@ public class StudentCSVImporterExporter {
                     student.getEmail(),
                     student.getSchool(),
                     student.getSchoolYear(),
-                    student.getSpecialInstructions());
+                    student.getSpecialInstructions(),
+                    teamName);
         }
 
         csvPrinter.close();

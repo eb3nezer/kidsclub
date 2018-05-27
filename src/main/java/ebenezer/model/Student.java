@@ -220,7 +220,11 @@ public class Student extends ModelObject {
     }
 
     public void setGender(Gender gender) {
-        this.gender = gender.getCode();
+        if (gender == null) {
+            this.gender = null;
+        } else {
+            this.gender = gender.getCode();
+        }
     }
 
     public String getContactName() {

@@ -27,4 +27,20 @@ public class StudentTeamDao extends BaseDaoImpl<StudentTeam> {
         query.setParameter("projectId", projectId);
         return query.getResultList();
     }
+
+    public Optional<StudentTeam> findByNameForProject(Long projectId, String teamName) {
+        StudentTeam studentTeam = null;
+
+        TypedQuery<StudentTeam> query = getEntityManager().createQuery("select studentTeam from StudentTeam studentTeam " +
+                "where studentTeam.project.id = :projectId " +
+                "and studentTeam.name = :teamName", StudentTeam.class);
+        query.setParameter("projectId", projectId);
+        query.setParameter("teamName", teamName);
+        try {
+            studentTeam = query.getSingleResult();
+        } catch (NoResultException e) {
+        }
+
+        return Optional.ofNullable(studentTeam);
+    }
 }

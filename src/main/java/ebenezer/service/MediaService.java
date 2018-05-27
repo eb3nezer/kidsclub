@@ -49,6 +49,11 @@ public class MediaService {
     }
 
     public Optional<Media> storeData(InputStream inputStream, int maxSize, String filename, boolean shared, String description) throws IOException {
+        String contentType = getMIMETypeForFileName(filename);
+        if (contentType == null) {
+            throw new ValidationException("Unrecognised file type");
+        }
+
         byte[] data = new byte[maxSize];
         int bytesRead = 0;
         int chunk = 1024;
@@ -58,10 +63,6 @@ public class MediaService {
         }
         byte[] actualData = new byte[bytesRead];
         System.arraycopy(data, 0, actualData, 0, bytesRead);
-        String contentType = getMIMETypeForFileName(filename);
-        if (contentType == null) {
-            throw new ValidationException("Unrecognised file type");
-        }
 
         return storeData(actualData, contentType, shared, description);
     }

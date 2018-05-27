@@ -2,6 +2,7 @@ package ebenezer.dto;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @JsonAutoDetect
@@ -22,6 +23,7 @@ public class UserDto extends DtoObject {
     private List<String> userSitePermissions;
 
     public UserDto() {
+        userSitePermissions = new ArrayList<>();
     }
 
     public UserDto(Long id) {
@@ -113,5 +115,57 @@ public class UserDto extends DtoObject {
 
     public String getMobilePhone() {
         return mobilePhone;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setGivenName(String givenName) {
+        this.givenName = givenName;
+    }
+
+    public void setFamilyName(String familyName) {
+        this.familyName = familyName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setHomePhone(String homePhone) {
+        this.homePhone = homePhone;
+    }
+
+    public void setMobilePhone(String mobilePhone) {
+        this.mobilePhone = mobilePhone;
+    }
+
+    public void setLoggedIn(Boolean loggedIn) {
+        this.loggedIn = loggedIn;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
+    public void setAvatarUrl(String avatarUrl) {
+        this.avatarUrl = avatarUrl;
+    }
+
+    public void setMediaDescriptor(String mediaDescriptor) {
+        this.mediaDescriptor = mediaDescriptor;
+    }
+
+    public void setRemoteCredential(String remoteCredential) {
+        this.remoteCredential = remoteCredential;
+    }
+
+    public void setRemoteCredentialSource(String remoteCredentialSource) {
+        this.remoteCredentialSource = remoteCredentialSource;
     }
 }

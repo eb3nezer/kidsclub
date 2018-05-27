@@ -249,6 +249,13 @@ public class StudentService {
                     now);
         }
 
+        if (valueUpdated(existingStudent.get().getContactRelationship(), valuesToUpdate.getContactRelationship())) {
+            existingStudent.get().setContactRelationship(valuesToUpdate.getContactRelationship());
+            existingStudent.get().setUpdated(now);
+            auditService.audit("Set contact relationship to \"" + valuesToUpdate.getContactRelationship() + "\" for student id=" + studentId,
+                    now);
+        }
+
         if (valueUpdated(existingStudent.get().getPhone(), valuesToUpdate.getPhone())) {
             existingStudent.get().setPhone(valuesToUpdate.getPhone());
             existingStudent.get().setUpdated(now);

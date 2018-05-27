@@ -29,6 +29,9 @@ public class Student extends ModelObject {
     @Column(name = "contact_name")
     private String contactName;
 
+    @Column(name = "contact_relationship")
+    private String contactRelationship;
+
     @Column(name = "email")
     private String email;
 
@@ -77,6 +80,7 @@ public class Student extends ModelObject {
             String familyName,
             String mediaDescriptor,
             String contactName,
+            String contactRelationship,
             String email,
             String phone,
             String school,
@@ -93,6 +97,7 @@ public class Student extends ModelObject {
         this.familyName = familyName;
         this.mediaDescriptor = mediaDescriptor;
         this.contactName = contactName;
+        this.contactRelationship = contactRelationship;
         this.email = email;
         this.phone = phone;
         this.school = school;
@@ -142,12 +147,12 @@ public class Student extends ModelObject {
         return schoolYear;
     }
 
-    public Long getCreated() {
-        return created;
+    public Date getCreated() {
+        return new Date(created);
     }
 
-    public Long getUpdated() {
-        return updated;
+    public Date getUpdated() {
+        return new Date(updated);
     }
 
     public void setName(String name) {
@@ -234,6 +239,14 @@ public class Student extends ModelObject {
         this.specialInstructions = specialInstructions;
     }
 
+    public String getContactRelationship() {
+        return contactRelationship;
+    }
+
+    public void setContactRelationship(String contactRelationship) {
+        this.contactRelationship = contactRelationship;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -256,6 +269,7 @@ public class Student extends ModelObject {
                 ", familyName='" + familyName + '\'' +
                 ", mediaDescriptor='" + mediaDescriptor + '\'' +
                 ", contactName='" + contactName + '\'' +
+                ", contactRelationship='" + contactRelationship + '\'' +
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
                 ", school='" + school + '\'' +

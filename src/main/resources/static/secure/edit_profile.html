@@ -12,6 +12,7 @@
     <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/webjars/toastr/build/toastr.min.js"></script>
+    <script type="text/javascript" src="/secure/js/text_utils.js"></script>
     <script>
         function renderUser(data) {
             $("#id_field").val(data.id);
@@ -33,13 +34,22 @@
 
         function getData() {
             $.ajax({
-                url: "../../rest/users/me"
+                url: "/rest/users/me"
             }).done(renderUser).fail(function() {
                 toastr.error('Failed to get user data', 'Failed');
             });
         }
 
         function sendData() {
+            // Work around for empty file upload bug
+            if (is_safari) {
+                var $form = $('form');
+                var $inputs = $('input[type="file"]:not([disabled])', $form);
+                $inputs.each(function(_, input) {
+                    if (input.files.length > 0) return;
+                    $(input).prop('disabled', true);
+                })
+            }
             var form = $('form')[0]; // You need to use standard javascript object here
             var formData = new FormData(form);
             $.ajax({

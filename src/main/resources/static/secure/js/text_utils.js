@@ -9,3 +9,5 @@ function escapeHtml(html)
     div.appendChild(text);
     return div.innerHTML;
 }
+
+var is_safari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);

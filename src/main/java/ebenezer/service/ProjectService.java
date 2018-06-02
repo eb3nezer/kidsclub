@@ -5,6 +5,7 @@ import ebenezer.dao.UserDao;
 import ebenezer.dto.mapper.ProjectMapper;
 import ebenezer.dto.mapper.UserDetailsMapper;
 import ebenezer.model.Project;
+import ebenezer.model.ProjectProperty;
 import ebenezer.model.User;
 import ebenezer.permissions.ProjectPermission;
 import ebenezer.permissions.SitePermission;
@@ -12,6 +13,7 @@ import ebenezer.rest.NoPermissionException;
 import ebenezer.rest.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.PropertyValue;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -96,5 +98,91 @@ public class ProjectService  {
         }
 
         return Optional.of(project);
+    }
+
+    public Optional<Project> updateProject(Long projectId, Project projectToUpdate) {
+        Optional<User> user = userService.getCurrentUser();
+        if (!user.isPresent()) {
+            throw new NoPermissionException("Anonymous may not update projects");
+        }
+        if (!SitePermissionService.userHasPermission(user.get(), SitePermission.CREATE_PROJECT)) {
+            throw new NoPermissionException("You do not have permission to edit projects");
+        }
+        Optional<Project> existingProject = getProjectById(user.get(), projectId);
+        if (!existingProject.isPresent()) {
+            throw new ValidationException("Invalid project ID");
+        }
+
+        if (projectToUpdate.getName() == null || projectToUpdate.getName().isEmpty()) {
+            throw new ValidationException("The project name must not be blank");
+        }
+
+        Date now = new Date();
+        if (!existingProject.get().getName().equals(projectToUpdate.getName())) {
+            if (projectDao.findByName(projectToUpdate.getName()).isPresent()) {
+                throw new ValidationException("There is already a project with this name");
+            }
+            existingProject.get().setName(projectToUpdate.getName());
+            auditService.audit("Changed name for project id=" + projectId + " to \"" + projectToUpdate.getName() + "\"", now);
+            existingProject.get().setUpdated(now);
+        }
+
+        for (ProjectProperty projectProperty : projectToUpdate.getProjectProperties()) {
+            if (!existingProject.get().getProjectProperties().contains(projectProperty)) {
+                ProjectProperty newProjectProperty = new ProjectProperty(existingProject.get(), projectProperty.getPropertyKey(), projectProperty.getPropertyValue());
+                existingProject.get().getProjectProperties().add(newProjectProperty);
+                auditService.audit("Added new project property " + projectProperty.getPropertyKey() + "=" + projectProperty.getPropertyValue() +
+                        " for project id=" + projectId, now);
+                existingProject.get().setUpdated(now);
+            } else {
+                for (ProjectProperty existingProjectProperty : existingProject.get().getProjectProperties()) {
+                    if (existingProjectProperty.getPropertyKey().equals(projectProperty.getPropertyKey())) {
+                        if (!existingProjectProperty.getPropertyValue().equals(projectProperty.getPropertyValue())) {
+                            existingProjectProperty.setPropertyValue(projectProperty.getPropertyValue());
+                            auditService.audit("Updating project property " + projectProperty.getPropertyKey() + "=" + projectProperty.getPropertyValue() +
+                                    " for project id=" + projectId, now);
+                            existingProject.get().setUpdated(now);
+                        }
+                    }
+                }
+            }
+        }
+
+        return existingProject;
+    }
+
+    public String getPropertyValue(Project project, String key) {
+        String result = null;
+        if (project.getProjectProperties() != null) {
+            Optional<String> possibleResult = project.getProjectProperties()
+                    .stream()
+                    .filter(pp -> pp.getPropertyKey().equals(key))
+                    .findFirst()
+                    .map(ProjectProperty::getPropertyValue);
+            if (possibleResult.isPresent()) {
+                result = possibleResult.get();
+            }
+        }
+
+        return result;
+    }
+
+    public void setPropertyValue(Project project, String key, String value) {
+        if (project.getProjectProperties() == null) {
+            project.setProjectProperties(new HashSet<>());
+        }
+        Set<ProjectProperty> properties = project.getProjectProperties();
+        boolean found = false;
+        for (ProjectProperty projectProperty : properties) {
+            if (projectProperty.getPropertyKey().equals(key)) {
+                projectProperty.setPropertyValue(value);
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            ProjectProperty projectProperty = new ProjectProperty(project, key, value);
+            properties.add(projectProperty);
+        }
     }
 }

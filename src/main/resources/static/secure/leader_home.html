@@ -12,10 +12,11 @@
     <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
     <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/webjars/toastr/build/toastr.min.js"></script>
-    <script type="text/javascript" src="js/load_project.js"></script>
-    <script type="text/javascript" src="js/load_teams.js"></script>
-    <script type="text/javascript" src="js/load_user.js"></script>
-    <script type="text/javascript" src="js/text_utils.js"></script>
+    <script type="text/javascript" src="/secure/js/load_project.js"></script>
+    <script type="text/javascript" src="/secure/js/load_teams.js"></script>
+    <script type="text/javascript" src="/secure/js/load_user.js"></script>
+    <script type="text/javascript" src="/secure/js/load_students.js"></script>
+    <script type="text/javascript" src="/secure/js/text_utils.js"></script>
     <script>
         var projectId;
 
@@ -43,12 +44,10 @@
             if (team.students && team.students.length > 0) {
                 result += `<h3>${name} Students</h3><ul>`;
                 $.each(team.students, function(index, student) {
-                    var alert = "";
-                    if (student.specialInstructions) {
-                        alert = " <img src='/secure/icons/exclamation.gif' alt='Notes' height='25'>";
-                    }
-                    var studentName = escapeHtml(student.name);
-                    result += `<li><a href="view_student.html#project=${projectId}&student=${student.id}">${studentName}</a>${alert}</li>`;
+                    var studentHtml = "<li>";
+                    studentHtml += renderStudentForList(student, false);
+                    studentHtml += "</li>";
+                    result += studentHtml;
                 });
                 result += "</ul>";
             }

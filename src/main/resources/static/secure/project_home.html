@@ -42,10 +42,10 @@
                 html = html + '<tr>';
                 html = html + `<td><a href="view_student_team.html#project=${projectId}&team=${team.id}">${teamName}</a></td>`;
                 html = html + '<td>';
-                if (team.avatarUrl) {
+                if (team.mediaDescriptor) {
+                    html = html + `<img src='/rest/data/download/${team.mediaDescriptor}' width='50'/>`;
+                } else if (team.avatarUrl) {
                     html = html + `<img src='${team.avatarUrl}' width='50'/>`;
-                } else if (team.mediaDescriptor) {
-                    html = html + `<img src='../../rest/data/download/${team.mediaDescriptor}' width='50'/>`;
                 }
                 html = html + '</td>';
                 html = html + `<td>${team.score}</td><td>${team.students.length}</td></tr>`;

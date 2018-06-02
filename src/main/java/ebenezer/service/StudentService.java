@@ -71,6 +71,15 @@ public class StudentService {
 
         student.setProject(project.get());
 
+        if (student.getMediaPermitted() == null) {
+            String defaultMediaPermitted = projectService.getPropertyValue(project.get(), ProjectProperty.STUDENT_MEDIA_PERMITTED_DEFAULT);
+            if (defaultMediaPermitted != null) {
+                student.setMediaPermitted(Boolean.valueOf(defaultMediaPermitted));
+            } else {
+                student.setMediaPermitted(false);
+            }
+        }
+
         try {
             Student created = studentDao.create(student);
             auditService.audit("Created new student, id=" + student.getId() + " name=" + student.getName(),
@@ -287,7 +296,14 @@ public class StudentService {
         if (valueUpdated(existingStudent.get().getSpecialInstructions(), valuesToUpdate.getSpecialInstructions())) {
             existingStudent.get().setSpecialInstructions(valuesToUpdate.getSpecialInstructions());
             existingStudent.get().setUpdated(now);
-            auditService.audit("Set special instructions to \"" + valuesToUpdate.getSchoolYear() + "\" for student id=" + studentId,
+            auditService.audit("Set special instructions to \"" + valuesToUpdate.getSpecialInstructions() + "\" for student id=" + studentId,
+                    now);
+        }
+
+        if (valueUpdated(existingStudent.get().getMediaPermitted(), valuesToUpdate.getMediaPermitted())) {
+            existingStudent.get().setMediaPermitted(valuesToUpdate.getMediaPermitted());
+            existingStudent.get().setUpdated(now);
+            auditService.audit("Set media permitted to \"" + valuesToUpdate.getMediaPermitted() + "\" for student id=" + studentId,
                     now);
         }
 

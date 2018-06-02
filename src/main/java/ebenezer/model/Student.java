@@ -68,6 +68,9 @@ public class Student extends ModelObject {
     @JoinColumn(name = "team_id")
     private StudentTeam studentTeam;
 
+    @Column(name = "media_permitted")
+    private Boolean mediaPermitted;
+
     public Student() {
         created = System.currentTimeMillis();
         updated = created;
@@ -88,6 +91,7 @@ public class Student extends ModelObject {
             String schoolYear,
             Gender gender,
             String specialInstructions,
+            Boolean mediaPermitted,
             Project project,
             StudentTeam studentTeam) {
         this();
@@ -109,6 +113,7 @@ public class Student extends ModelObject {
         this.specialInstructions = specialInstructions;
         this.project = project;
         this.studentTeam = studentTeam;
+        this.mediaPermitted = mediaPermitted;
     }
 
     public Long getId() {
@@ -253,6 +258,18 @@ public class Student extends ModelObject {
 
     public void setContactRelationship(String contactRelationship) {
         this.contactRelationship = contactRelationship;
+    }
+
+    public Boolean getMediaPermitted() {
+        return mediaPermitted;
+    }
+
+    public Boolean isMediaPermitted() {
+        return mediaPermitted;
+    }
+
+    public void setMediaPermitted(Boolean mediaPermitted) {
+        this.mediaPermitted = mediaPermitted;
     }
 
     @Override

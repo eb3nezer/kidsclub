@@ -63,6 +63,20 @@ public class ProjectResource {
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
+    @PUT
+    @Consumes("application/json")
+    @Produces("application/json")
+    @Path("/{id}")
+    public Response updateProject(@PathParam("id") Long projectId, ProjectDto projectDto) {
+        Optional<Project> updated = projectService.updateProject(projectId, projectMapper.toModel(projectDto));
+        if (updated.isPresent()) {
+            logStats("rest.project.updated", updated.get().getId().toString());
+            return Response.status(Response.Status.OK).entity(projectMapper.toDto(updated.get())).build();
+        }
+
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
     @GET
     @Produces("application/json")
     @Path("/{id}")

@@ -25,6 +25,10 @@ public class Project extends ModelObject {
     )
     private Set<User> users = new HashSet<>();
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "project_id")
+    private Set<ProjectProperty> projectProperties;
+
     @Column(name = "created")
     private Long created;
 
@@ -76,6 +80,26 @@ public class Project extends ModelObject {
 
     public void setUpdated(Long updated) {
         this.updated = updated;
+    }
+
+    public Set<ProjectProperty> getProjectProperties() {
+        return projectProperties;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setUsers(Set<User> users) {
+        this.users = users;
+    }
+
+    public void setProjectProperties(Set<ProjectProperty> projectProperties) {
+        this.projectProperties = projectProperties;
     }
 
     @Override

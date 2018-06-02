@@ -23,6 +23,7 @@
             projectData = project;
             document.title = `${project.name} Project Administration`;
             $("#page_heading").text(`${projectData.name} Project Administration`);
+            $("#edit_project_link").attr('href', `edit_project.html#project=${project.id}`);
             $("#team_link").attr('href', `team_admin.html#project=${project.id}`);
             $("#students_link").attr('href', `student_admin.html#project=${project.id}`);
             $("#albums_link").attr('href', `album_admin.html#project=${project.id}`);
@@ -76,6 +77,9 @@
             if (docs || sysadmin) {
                 $("#admin_documents").css("display", "");
             }
+            if (sysadmin) {
+                $("#admin_project").css("display", "");
+            }
         }
 
         function renderPermissionsFailed() {
@@ -101,6 +105,7 @@
 <p>Number of project members: <div id="project_size"></div></p>
 <div id="student_teams"></div>
 <ul>
+    <li id="admin_project" style="display:none"><a id="edit_project_link">Edit Project</a></li>
     <li id="admin_members" style="display:none"><a id="team_link">Administer Project Members</a></li>
     <li id="admin_students" style="display: none"><a id="students_link">Administer Students and Teams</a></li>
     <li id="admin_photos" style="display: none"><a id="albums_link">Administer Photo Albums</a></li>

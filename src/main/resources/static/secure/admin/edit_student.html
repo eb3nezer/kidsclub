@@ -52,6 +52,7 @@
             $("#school_field").val(data.school);
             $("#school_year_field").val(data.schoolYear);
             $("#special_instructions_field").val(data.specialInstructions);
+            $("#media_permitted_field").prop('checked', data.mediaPermitted);
             if (data.studentTeam && data.studentTeam.id) {
                 $("#team_field").val(data.studentTeam.id);
             }
@@ -148,6 +149,7 @@
         <tr><td>School</td><td><input type="text" name="school" id="school_field"></td><td></td></tr>
         <tr><td>School Year</td><td><input type="text" name="schoolYear" id="school_year_field"></td><td></td></tr>
         <tr><td>Special instructions (allergies etc.)</td><td><textarea name="specialInstructions" id="special_instructions_field"></textarea></td></tr>
+        <tr><td>Media Permitted (permission to take photos etc.)</td><td><input type="checkbox" name="mediaPermitted" id="media_permitted_field"></td></tr>
         <tr><td>Upload photo</td><td><input type="file" name="file" id="file_field"></td><td><div id="upload_preview"></div></td></tr>
         <tr><td>Team</td><td><select name="team" id="team_field"></select></td><td></td></tr>
         <tr><td><button type="submit" class="btn btn-primary" onclick="submitForm(); return false;">Update</button></td></tr>

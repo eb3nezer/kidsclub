@@ -157,6 +157,7 @@ public class StudentResource {
             @FormDataParam("school") String school,
             @FormDataParam("gender") String gender,
             @FormDataParam("specialInstructions") String specialInstructions,
+            @FormDataParam("mediaPermitted") String mediaPermitted,
             @FormDataParam("schoolYear") String schoolYear,
             @FormDataParam("mediaDescriptor") String mediaDescriptor,
             @FormDataParam("team") String team
@@ -183,6 +184,13 @@ public class StudentResource {
         if (age != null && !age.isEmpty()) {
             ageInt = Integer.valueOf(age);
         }
+
+        Boolean mediaPermittedFlag = false;
+        if (mediaPermitted != null && (mediaPermitted.equalsIgnoreCase("on") ||
+                mediaPermitted.equalsIgnoreCase("checked") ||
+                mediaPermitted.equalsIgnoreCase("true"))) {
+            mediaPermittedFlag = true;
+        }
         StudentDto studentDto = new StudentDto(
                 Long.valueOf(studentId),
                 name,
@@ -197,6 +205,7 @@ public class StudentResource {
                 ageInt,
                 gender,
                 specialInstructions,
+                mediaPermittedFlag,
                 schoolYear,
                 null,
                 null,
@@ -290,7 +299,7 @@ public class StudentResource {
             }
         }
 
-        ProjectDto project = new ProjectDto(Long.valueOf(projectId), null, null);
+        ProjectDto project = new ProjectDto(Long.valueOf(projectId), null, null, null);
         List<UserDto> leaders = new ArrayList<>();
         if (leaderList != null && !leaderList.isEmpty()) {
             String leaderIDs[] = leaderList.split(",");

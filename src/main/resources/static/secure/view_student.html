@@ -52,6 +52,12 @@
             var phone = escapeHtml(student.phone);
             var gender = student.gender;
             var specialInstructions = escapeHtml(student.specialInstructions);
+            var noPhotos;
+            if (student.mediaPermitted) {
+                noPhotos = "allowed";
+            } else {
+                noPhotos = "<b>not allowed</b>";
+            }
             var teamName = "(<i>No team assigned</i>)";
             var teamLink = teamName;
             if (student.studentTeam && student.studentTeam.name) {
@@ -70,6 +76,7 @@
             <tr><th>Name</th><td>${name}</td></tr>
             <tr><th>Given Name</th><td>${givenName}</td></tr>
             <tr><th>Family Name</th><td>${familyName}</td></tr>
+            <tr><th>Gender</th><td>${gender}</td></tr>
             <tr><th>Team</th><td>${teamLink}</td></tr>
             <tr><th>Age</th><td>${age}</td></tr>
             <tr><th>Emergency Contact</th><td>${contactName}</td></tr>
@@ -79,6 +86,7 @@
             <tr><th>School</th><td>${school}</td></tr>
             <tr><th>School Year</th><td>${schoolYear}</td></tr>
             <tr><th>Special Instructions</th><td>${specialInstructions}</td></tr>
+            <tr><th>Photos</th><td>${noPhotos}</td></tr>
             </table>`;
             $("#student_details").html(html);
         }

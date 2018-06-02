@@ -41,6 +41,7 @@ public class StudentMapperTest {
                 7,
                 "M",
                 "allergic to food",
+                true,
                 "K",
                 4552345L,
                 studentTeam,
@@ -57,6 +58,7 @@ public class StudentMapperTest {
         assertEquals("Age does not match", 7, model.getAge().intValue());
         assertEquals("special instructions does not match", "allergic to food", model.getSpecialInstructions());
         assertEquals("school year does not match", "K", model.getSchoolYear());
+        assertTrue("media permission does not match", model.getMediaPermitted());
     }
 
     @Test
@@ -82,6 +84,7 @@ public class StudentMapperTest {
                 "K",
                 Gender.OTHER,
                 "allergic to food",
+                true,
                 project,
                 studentTeam);
         StudentDto dto = studentMapper.toDto(model);
@@ -97,5 +100,6 @@ public class StudentMapperTest {
         assertEquals("school year does not match", "K", dto.getSchoolYear());
         assertEquals("gender does not match", "Other", dto.getGender());
         assertEquals("wrong team returned", studentTeamDto, dto.getStudentTeam());
+        assertTrue("media permitted incorrect", dto.getMediaPermitted());
     }
 }

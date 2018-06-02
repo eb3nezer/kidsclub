@@ -1,14 +1,13 @@
 package ebenezer.dto.mapper;
 
 import ebenezer.dto.ProjectDto;
-import ebenezer.dto.UserDto;
 import ebenezer.model.Project;
+import ebenezer.model.ProjectProperty;
 import ebenezer.model.User;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class ProjectMapper extends BaseMapper<Project, ProjectDto> implements Mapper<Project, ProjectDto> {
@@ -20,7 +19,17 @@ public class ProjectMapper extends BaseMapper<Project, ProjectDto> implements Ma
         if (dto == null) {
             return null;
         }
-        return new Project(dto.getId(), dto.getName());
+        Project model = super.toModel(dto);
+        Set<ProjectProperty> projectProperties = new HashSet<>();
+        if (dto.getProperties() != null) {
+            for (Map.Entry<String, String> entry : dto.getProperties().entrySet()) {
+                ProjectProperty projectProperty = new ProjectProperty(model, entry.getKey(), entry.getValue());
+                projectProperties.add(projectProperty);
+            }
+        }
+        model.setProjectProperties(projectProperties);
+
+        return model;
     }
 
     @Override
@@ -28,10 +37,17 @@ public class ProjectMapper extends BaseMapper<Project, ProjectDto> implements Ma
         if (model == null) {
             return null;
         }
+        ProjectDto dto = super.toDto(model);
         List<User> users = new ArrayList<>(model.getUsers());
         users.sort(new User.UserComparator());
-        List<UserDto> projectUsers = userMapper.toDto(users);
-        return new ProjectDto(model.getId(), model.getName(), projectUsers);
+        dto.setUsers(userMapper.toDto(users));
+        Map<String, String> properties = new HashMap<>();
+        for (ProjectProperty property : model.getProjectProperties()) {
+            properties.put(property.getPropertyKey(), property.getPropertyValue());
+        }
+        dto.setProperties(properties);
+
+        return dto;
     }
 
     @Override
@@ -44,11 +60,18 @@ public class ProjectMapper extends BaseMapper<Project, ProjectDto> implements Ma
         return new ProjectDto();
     }
 
+    @Override
+    protected String[] getIgnoreProperties() {
+        return new String[]{"users", "projectProperties", "properties"};
+    }
+
     public ProjectDto toDtoNoUsers(Project model) {
         if (model == null) {
             return null;
         }
-        List<UserDto> projectUsers = new ArrayList<>();
-        return new ProjectDto(model.getId(), model.getName(), projectUsers);
+        ProjectDto dto = super.toDto(model);
+        dto.setUsers(new ArrayList<>());
+        dto.setProperties(new HashMap<>());
+        return dto;
     }
 }

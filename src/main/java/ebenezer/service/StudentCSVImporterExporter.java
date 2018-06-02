@@ -3,10 +3,7 @@ package ebenezer.service;
 import ebenezer.dao.StudentDao;
 import ebenezer.dao.StudentTeamDao;
 import ebenezer.dto.StudentTeamDto;
-import ebenezer.model.Gender;
-import ebenezer.model.Project;
-import ebenezer.model.Student;
-import ebenezer.model.StudentTeam;
+import ebenezer.model.*;
 import ebenezer.rest.ValidationException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -46,6 +43,9 @@ public class StudentCSVImporterExporter {
 
     @Inject
     private AuditService auditService;
+
+    @Inject
+    private ProjectService projectService;
 
     private boolean findColumn(CSVRecord record, Map<String, Integer> headerMapping, Set<Integer> unusedColumns, String columnName) {
         int index = 0;
@@ -103,6 +103,14 @@ public class StudentCSVImporterExporter {
     }
 
     public List<Student> bulkCreateStudents(Project project, InputStream inputStream) throws IOException {
+        String defaultMediaPermittedValue = projectService.getPropertyValue(project, ProjectProperty.STUDENT_MEDIA_PERMITTED_DEFAULT);
+        boolean defaultMediaPermitted;
+        if (defaultMediaPermittedValue != null) {
+            defaultMediaPermitted = Boolean.valueOf(defaultMediaPermittedValue);
+        } else {
+            defaultMediaPermitted = false;
+        }
+
         InputStreamReader isr = new InputStreamReader(inputStream);
         CSVParser parser = new CSVParser(isr, CSVFormat.DEFAULT);
         Iterator<CSVRecord> recordIterator = parser.iterator();
@@ -231,6 +239,7 @@ public class StudentCSVImporterExporter {
                         schoolYear,
                         gender,
                         specialInstructions,
+                        defaultMediaPermitted,
                         project,
                         team.orElseGet(null)
                 );

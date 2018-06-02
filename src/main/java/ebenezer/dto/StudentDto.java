@@ -22,6 +22,7 @@ public class StudentDto extends DtoObject {
     private String schoolYear;
     private String gender;
     private String specialInstructions;
+    private Boolean mediaPermitted;
     private Long projectId;
     private StudentTeamDto studentTeam;
     private Long created;
@@ -49,6 +50,7 @@ public class StudentDto extends DtoObject {
             Integer age,
             String gender,
             String specialInstructions,
+            Boolean mediaPermitted,
             String schoolYear,
             Long projectId,
             StudentTeamDto studentTeam,
@@ -72,6 +74,7 @@ public class StudentDto extends DtoObject {
         this.studentTeam = studentTeam;
         this.created = created;
         this.updated = updated;
+        this.mediaPermitted = mediaPermitted;
     }
 
     public Long getId() {
@@ -216,5 +219,13 @@ public class StudentDto extends DtoObject {
 
     public void setUpdated(Long updated) {
         this.updated = updated;
+    }
+
+    public Boolean getMediaPermitted() {
+        return mediaPermitted;
+    }
+
+    public void setMediaPermitted(Boolean mediaPermitted) {
+        this.mediaPermitted = mediaPermitted;
     }
 }

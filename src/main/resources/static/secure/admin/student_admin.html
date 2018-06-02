@@ -51,18 +51,8 @@
         function renderStudents(studentData) {
             var html = "<ul>";
             $.each(studentData, function(index, student) {
-                var name = escapeHtml(student.name);
-                var alert = "";
-                if (student.specialInstructions) {
-                    alert = " <img src='/secure/icons/exclamation.gif' alt='Notes' height='25'>";
-                }
-                var teamLink = "(<i>No team assigned</i>)";
-                if (student.studentTeam && student.studentTeam.name) {
-                    var teamName = escapeHtml(student.studentTeam.name);
-                    teamLink = `<a href="edit_student_team.html#project=${projectId}&team=${student.studentTeam.id}">(${teamName})</a>`;
-                }
-                html = html + `<li id="student_${student.id}"><div class="user_selector_container"><div class="user_selector_user"><a href="edit_student.html#project=${projectId}&student=${student.id}">${name}</a>${alert}</div><div class="user_selector_delete" onclick="deleteStudent(${student.id})">x</div> ${teamLink}</div></li>`;
-                html = html + '</li>';
+                var studentHtml = renderStudentForAdminList(student);
+                html = html + `<li id="student_${student.id}">${studentHtml}</li>`;
             });
             html = html + "</ul>";
             $("#student_list").html(html);

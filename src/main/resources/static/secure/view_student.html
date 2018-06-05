@@ -91,8 +91,35 @@
             $("#student_details").html(html);
         }
 
+        function renderAttendance(attendance) {
+            var html = "<table>";
+            html += "<tr><th>Status</th><th>Time</th><th>Who</th><th>Comments</th></tr>";
+            $.each(attendance, function(index, record) {
+                var verifierName = "";
+                if (record.verifier && record.verifier.name) {
+                    verifierName = escapeHtml(record.verifier.name);
+                }
+                var comments = "";
+                if (record.comment) {
+                    comments = escapeHtml(record.comment);
+                }
+                html += "<tr>";
+                html += `<td>${record.attendanceType}</td>`;
+                html += `<td>${record.recordTime}</td>`;
+                html += `<td>${verifierName}</td>`;
+                html += `<td>${comments}</td>`;
+                html += "</tr>";
+            });
+            html = html + "</table>";
+            $("#student_attendance").html(html);
+        }
+
         function loadStudentFailed() {
             toastr.error('Failed to get student', 'Failed');
+        }
+
+        function loadAttendanceFailed() {
+            toastr.error('Failed to get attendance data', 'Failed');
         }
 
         function getData() {
@@ -110,12 +137,17 @@
 
 	        loadProject(projectId, renderProject, loadProjectFailed);
 	        loadStudent(studentId, renderStudent, loadStudentFailed);
+	        loadAttendanceForStudent(projectId, studentId, renderAttendance, loadAttendanceFailed)
         }
 </script>
 </head>
 <body>
 <h1 id="page_heading"></h1>
 <div id="student_details"></div>
+<p>&nbsp;</p>
+<h2>Attendance Today</h2>
+<div id="student_attendance"></div>
+<p>&nbsp;</p>
 <ul>
     <li><a id="students_link">Students</a></li>
     <li><a id="project_home_link">Back</a></li>

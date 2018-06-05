@@ -90,4 +90,21 @@ public class StudentTeamMapper extends BaseMapper<StudentTeam, StudentTeamDto> i
                 model.getCreated().getTime(),
                 model.getUpdated().getTime());
     }
+
+    public StudentTeamDto toDtoShallowNoTeamMembersNoLeaders(StudentTeam model) {
+        if (model == null) {
+            return null;
+        }
+        return new StudentTeamDto(
+                model.getId(),
+                projectMapper.toDtoNoUsers(model.getProject()),
+                model.getName(),
+                model.getScore(),
+                null,
+                null,
+                model.getAvatarUrl(),
+                model.getMediaDescriptor(),
+                model.getCreated().getTime(),
+                model.getUpdated().getTime());
+    }
 }

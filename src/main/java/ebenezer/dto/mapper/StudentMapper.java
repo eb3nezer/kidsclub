@@ -19,6 +19,10 @@ public class StudentMapper extends BaseMapper<Student, StudentDto> implements Ma
 
     @Override
     public Student toModel(StudentDto dto) {
+        if (dto == null) {
+            return null;
+        }
+
         Student model = super.toModel(dto);
 
         Gender gender = null;
@@ -34,6 +38,10 @@ public class StudentMapper extends BaseMapper<Student, StudentDto> implements Ma
 
     @Override
     public StudentDto toDto(Student model) {
+        if (model == null) {
+            return null;
+        }
+
         StudentDto dto = super.toDto(model);
 
         String gender = null;
@@ -48,6 +56,27 @@ public class StudentMapper extends BaseMapper<Student, StudentDto> implements Ma
 
         return dto;
     }
+
+    public StudentDto toDtoShallow(Student model) {
+        if (model == null) {
+            return null;
+        }
+
+        StudentDto dto = super.toDto(model);
+
+        String gender = null;
+        if (model.getGender() != null) {
+            gender = model.getGender().getDescription();
+        }
+        dto.setGender(gender);
+        dto.setStudentTeam(studentTeamMapper.toDtoShallowNoTeamMembersNoLeaders(model.getStudentTeam()));
+        if (model.getProject() != null) {
+            dto.setProjectId(model.getProject().getId());
+        }
+
+        return dto;
+    }
+
 
     @Override
     protected Student constructModel() {

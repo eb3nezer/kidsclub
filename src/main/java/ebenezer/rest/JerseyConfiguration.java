@@ -21,5 +21,6 @@ public class JerseyConfiguration extends ResourceConfig {
         register(DataResource.class);
         register(AlbumResource.class);
         register(ProjectDocumentResource.class);
+        register(AttendanceResource.class);
     }
 }

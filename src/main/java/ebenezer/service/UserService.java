@@ -4,6 +4,7 @@ import ebenezer.dao.UserDao;
 import ebenezer.dto.*;
 import ebenezer.dto.mapper.UserDetailsMapper;
 import ebenezer.model.Project;
+import ebenezer.model.StudentTeam;
 import ebenezer.model.User;
 import ebenezer.permissions.ProjectPermission;
 import ebenezer.permissions.SitePermission;
@@ -46,9 +47,9 @@ public class UserService implements UserDetailsService {
     @Inject
     private UserDetailsMapper userDetailsMapper;
     @Inject
-    private ProjectPermissionService projectPermissionService;
-    @Inject
     private PermissionsService permissionsService;
+    @Inject
+    private StudentTeamService studentTeamService;
 
     public UserService() {
     }
@@ -352,13 +353,24 @@ public class UserService implements UserDetailsService {
                                 false);
                     }
                 }
+                // Check if this user is a team leader
+                List<StudentTeam> teams = studentTeamService.getStudentTeams(project.get().getId(), true);
+                for (StudentTeam team : teams) {
+                    team.getLeaders().remove(existingUser);
+                }
+
+                // Remove user from project
                 project.get().getUsers().remove(existingUser);
+                // Remove project from user
                 existingUser.getProjects().remove(project.get());
                 userDao.flush();
                 auditService.audit("Removed user id=" + existingUser.getId() +
                         " from project id=" + project.get().getId(), new Date());
+
+                // Check if this user is a member of any other projects
                 List<Project> projects = projectService.getProjectsForUser(userId);
                 if (projects.isEmpty()) {
+                    // This user is not a member of any project, so remove site permissions
                     for (PermissionRecordDto sitePermission : userPermissions.getUserSitePermissions()) {
                         if (sitePermission.isGranted()) {
                             permissionsService.updateSitePermission(currentUser.get(),
@@ -368,6 +380,7 @@ public class UserService implements UserDetailsService {
                                     true);
                         }
                     }
+                    // Now delete the user entirely
                     auditService.audit("Deleting user id=" + userId + " as this user is not a member of any project", new Date());
                     userDao.delete(existingUser);
                 }

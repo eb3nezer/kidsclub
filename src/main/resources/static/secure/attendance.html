@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>Attendance</title>
+    <meta name="description" content=""/>
+    <meta name="viewport" content="width=device-width"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/webjars/toastr/build/toastr.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/secure/css/kidsclub.css"/>
+    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/webjars/toastr/build/toastr.min.js"></script>
+    <script type="text/javascript" src="/secure/js/load_project.js"></script>
+    <script type="text/javascript" src="/secure/js/load_user.js"></script>
+    <script type="text/javascript" src="/secure/js/load_teams.js"></script>
+    <script type="text/javascript" src="/secure/js/load_students.js"></script>
+    <script type="text/javascript" src="/secure/js/text_utils.js"></script>
+    <script type="text/javascript" src="/secure/js/autocomplete.js"></script>
+    <script>
+        var projectId;
+        var attendanceAction;
+
+        function renderProject(project) {
+            document.title = `Attendance for ${project.name}`;
+            $("#project_home_link").attr("href", `project_home.html#project=${project.id}`);
+            $("#project_home_link").text(`${project.name} Home`);
+            $("#page_heading").text(`${project.name} Attendance`);
+            $("#project_id_field").val(project.id);
+        }
+
+        function loadProjectFailed() {
+            toastr.error('Failed to get project data', 'Failed');
+        }
+
+        function getAttendanceFailed() {
+            toastr.error('Failed to get recent attendance', 'Failed');
+        }
+
+        function studentAutoCompleteCallback(value) {
+            $("#student_id_field").val(value.id);
+            $("#selected_student").text(value.name);
+        }
+
+        function renderAttendance(attendance) {
+            var html = "<table>";
+            html += "<tr><th>Student</th><th>Status</th><th>Time</th><th>Who</th></tr>";
+            $.each(attendance, function(index, record) {
+                var studentHtml = renderStudentAttendanceForList(projectId, record, true);
+                var verifierName = escapeHtml(record.verifier.name);
+                html += "<tr>";
+                html += `<td>${studentHtml}</td>`;
+                html += `<td>${record.attendanceType}</td>`;
+                html += `<td>${record.recordTime}</td>`;
+                html += `<td>${verifierName}</td>`;
+                html += "</tr>";
+            });
+            html = html + "</table>";
+            $("#recent_attendance").html(html);
+        }
+
+        function getData() {
+            var results = new RegExp('[#&]project=([^&#]*)').exec(window.location.href);
+	        projectId = results[1] || 0;
+	        if (!projectId) {
+	            window.location="index.html";
+	        }
+
+	        loadProject(projectId, renderProject, loadProjectFailed);
+	        studentAutoComplete($("#add_student_field")[0], projectId, studentAutoCompleteCallback);
+	        loadAttendanceForProject(projectId, renderAttendance, getAttendanceFailed);
+        }
+
+        function sendData() {
+            var comment = $("#comment_field").val();
+            var attendanceType = $("#attendance_field").val();
+            var studentId = $("#student_id_field").val();
+            var operation = $("#attendance_field option:selected").text();
+            $.ajax({
+                url: `/rest/attendance/project/${projectId}/student/${studentId}`,
+                method: "PUT",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    attendanceType: attendanceType,
+                    comment: comment,
+                }),
+            }).done(function(data) {
+                var operation = $("#attendance_field option:selected").text();
+                toastr.success(`${operation} successful.`, 'Success');
+                loadAttendanceForProject(projectId, renderAttendance, getAttendanceFailed);
+                $("#add_student_field").val("");
+                $("#selected_student").text("");
+            }).fail(function(xhr, textStatus, error) {
+                if (xhr && xhr.responseJSON) {
+                    var errorObject = xhr.responseJSON;
+                    var message = `${operation} Failed. ${errorObject.error}`;
+                    toastr.error(message, 'Failed');
+                 } else {
+                    toastr.error(`${operation} Failed.`, 'Failed');
+                 }
+            });
+        }
+
+        function submitForm() {
+            sendData();
+        }
+    </script>
+</head>
+<body>
+<h1 id="page_heading">Sign In/Out</h1>
+<form>
+    <table>
+        <tr>
+            <td>Student (type to search)</td>
+            <td><div class="autocomplete"><input name="addstudent" type="text" id="add_student_field"></div></td>
+            <td id="selected_student"></td>
+        </tr>
+        <tr>
+            <td>Attendance</td>
+            <td>
+                <select id="attendance_field" name="attendance">
+                    <option value="I" selected>Sign In</option>
+                    <option value="O">Sign Out</option>
+                    <option value="A">Absent Today</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Comment</td>
+            <td><input type="text" name="comment" id="comment_field"></td>
+            <td>
+                <button type="submit" class="btn btn-primary" onclick="submitForm(); return false;">Save</button>
+                <input type="hidden" name="studentId" id="student_id_field">
+            </td>
+        </tr>
+    </table>
+</form>
+<h2>Recent attendance changes</h2>
+<div id="recent_attendance"></div>
+<ul>
+    <li><a href="project_home.html" id="project_home_link">Home</a></li>
+</ul>
+<ul>
+    <li><a href="/logout">Log out</a></li>
+</ul>
+
+<script>
+    getData();
+</script>
+</body>
+</html>

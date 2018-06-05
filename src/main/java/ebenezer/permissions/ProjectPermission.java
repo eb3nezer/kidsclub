@@ -7,7 +7,8 @@ public enum ProjectPermission {
     LIST_USERS("View all team members"),
     EDIT_ALBUMS("Create/delete photo albums"),
     PROJECT_ADMIN("Administer the project"),
-    EDIT_DOCUMENTS("Create/delete project documents");
+    EDIT_DOCUMENTS("Create/delete project documents"),
+    EDIT_ATTENDANCE("Sign students in or out");
 
     private String description;
 

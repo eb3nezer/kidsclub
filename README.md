@@ -1,9 +1,9 @@
-# Kids Club
+# KC
 A web app for managing children's holiday programs
 
 ## Getting Started
 
-You will need a PostreSQL database to run Kids Club. You should
+You will need a PostreSQL database to run KC. You should
 create a database, along with a user that has permission to create
 tables in the DB.
 
@@ -22,16 +22,16 @@ email address. This allows the admin to log in for the first time.
 * GOOGLE_CLIENT_SECRET - The client secret for Google OAuth2
 ## Building
 
-Kids Club uses a standard Maven build.
+KC uses a standard Maven build.
 
 ## Starting
 
-Kids Club uses Spring Boot. You either start it in your IDE,
+KC uses Spring Boot. You either start it in your IDE,
 or with "java -jar kidsclub.jar"
 
 ## License
 
-Kids Club is Copyright 2018 Ben Kelley.
+KC is Copyright 2018 Ben Kelley.
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

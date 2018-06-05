@@ -28,6 +28,7 @@
             $("#students_link").attr('href', `student_admin.html#project=${project.id}`);
             $("#albums_link").attr('href', `album_admin.html#project=${project.id}`);
             $("#documents_link").attr('href', `edit_documents.html#project=${project.id}`);
+            $("#attendance_link").attr('href', `../attendance.html#project=${project.id}`);
             $("#project_home_link").attr('href', `../project_home.html#project=${project.id}`);
             $("#project_size").text(projectData.users.length);
         }
@@ -63,6 +64,7 @@
             var users = userHasProjectPermission(permissions, 'LIST_USERS');
             var album = userHasProjectPermission(permissions, 'EDIT_ALBUMS');
             var docs = userHasProjectPermission(permissions, 'EDIT_DOCUMENTS');
+            var attendance = userHasProjectPermission(permissions, 'EDIT_ATTENDANCE');
             var sysadmin = userHasSitePermission(permissions, 'SYSTEM_ADMIN') || userHasProjectPermission(permissions, 'PROJECT_ADMIN');
             var team = userHasProjectPermission(permissions, 'CREATE_TEAM') || userHasProjectPermission(permissions, 'EDIT_STUDENTS')
             if (users || sysadmin) {
@@ -79,6 +81,9 @@
             }
             if (sysadmin) {
                 $("#admin_project").css("display", "");
+            }
+            if (sysadmin || attendance) {
+                $("#admin_attendance").css("display", "");
             }
         }
 
@@ -110,6 +115,7 @@
     <li id="admin_students" style="display: none"><a id="students_link">Administer Students and Teams</a></li>
     <li id="admin_photos" style="display: none"><a id="albums_link">Administer Photo Albums</a></li>
     <li id="admin_documents" style="display: none"><a id="documents_link">Administer Documents</a></li>
+    <li id="admin_attendance" style="display: none"><a id="attendance_link">Attendance</a></li>
 </ul>
 <ul>
     <li><a id="project_home_link">Back to view project</a></li>

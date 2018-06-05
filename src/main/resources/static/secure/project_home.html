@@ -14,6 +14,7 @@
     <script type="text/javascript" src="/webjars/toastr/build/toastr.min.js"></script>
     <script type="text/javascript" src="js/load_project.js"></script>
     <script type="text/javascript" src="js/load_teams.js"></script>
+    <script type="text/javascript" src="js/load_user.js"></script>
     <script type="text/javascript" src="js/text_utils.js"></script>
     <script>
         var projectId;
@@ -29,10 +30,24 @@
             $("#documents_link").attr('href', `view_documents.html#project=${project.id}`);
             $("#admin_link").attr('href', `admin/project_admin.html#project=${project.id}`);
             $("#leader_link").attr('href', `leader_home.html#project=${project.id}`);
+            $("#attendance_link").attr('href', `attendance.html#project=${project.id}`);
         }
 
         function getProjectFailed() {
             toastr.error('Failed to get project data', 'Failed');
+        }
+
+        function getPermissionsFailed() {
+            // Don't care
+        }
+
+        function renderPermissions(permissions) {
+            var attendance = userHasProjectPermission(permissions, 'EDIT_ATTENDANCE');
+            var sysadmin = userHasSitePermission(permissions, 'SYSTEM_ADMIN') || userHasProjectPermission(permissions, 'PROJECT_ADMIN');
+
+            if (sysadmin || attendance) {
+                $("#admin_attendance").css("display", "");
+            }
         }
 
         function renderTeams(teams) {
@@ -68,6 +83,7 @@
 
 	        loadProject(projectId, renderProject, getProjectFailed);
 	        loadTeams(projectId, renderTeams, getTeamsFailed);
+	        loadMyPermissions(projectId, renderPermissions, getPermissionsFailed);
         }
 </script>
 </head>
@@ -82,6 +98,7 @@
     <li><a id="students_link">View students</a></li>
     <li><a id="albums_link">View photos</a></li>
     <li><a id="documents_link">View documents</a></li>
+    <li id="admin_attendance" style="display: none"><a id="attendance_link">Attendance</a></li>
 </ul>
 <ul>
     <li><a id="leader_link">Leader Home</a></li>

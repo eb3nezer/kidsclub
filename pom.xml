@@ -15,6 +15,10 @@
 
     <properties>
         <docker.image.prefix>kc.ebenezer</docker.image.prefix>
+        <webpack.env>prod</webpack.env>
+        <node.version>v8.9.0</node.version>
+        <npm.version>5.6.0</npm.version>
+        <yarn.version>v1.3.2</yarn.version>
     </properties>
 
     <dependencies>
@@ -162,6 +166,20 @@
         <finalName>kidsclub</finalName>
         <plugins>
             <plugin>
+              <artifactId>maven-clean-plugin</artifactId>
+              <version>2.5</version>
+              <configuration>
+                <filesets>
+                  <fileset>
+                    <directory>dist</directory>
+                    <includes>
+                      <include>*</include>
+                    </includes>
+                  </fileset>
+                </filesets>
+              </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>2.0.0.RELEASE</version>
@@ -184,6 +202,44 @@
                         <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
                     </buildArgs>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>install node and yarn</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                        <configuration>
+                          <nodeVersion>${node.version}</nodeVersion>
+                          <npmVersion>${npm.version}</npmVersion>
+                        </configuration>
+                        <phase>generate-resources</phase>
+                    </execution>
+
+                  <execution>
+                    <id>npm install</id>
+                    <goals>
+                      <goal>npm</goal>
+                    </goals>
+                    <configuration>
+                      <arguments>install</arguments>
+                    </configuration>
+                  </execution>
+
+                  <execution>
+                    <id>prod</id>
+                    <goals>
+                      <goal>npm</goal>
+                    </goals>
+                    <configuration>
+                      <arguments>run-script ng build</arguments>
+                    </configuration>
+                    <phase>generate-resources</phase>
+                  </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

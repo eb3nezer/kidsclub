@@ -1,0 +1,17 @@
+<mat-toolbar color="primary">
+  <button mat-icon-button [matMenuTriggerFor]="appMenu">
+    <mat-icon>more_vert</mat-icon>
+  </button>
+  <span>KC Administration</span>
+  <span style="flex: 1 1 auto;"></span>
+  <span *ngIf="pageTitle">{{pageTitle}}</span>
+</mat-toolbar>
+
+<mat-menu #appMenu="matMenu" color="primary">
+  <button mat-menu-item [routerLink]="['admin']">Administration home</button>
+  <button mat-menu-item [routerLink]="['profile']">Edit your profile</button>
+  <button mat-menu-item [routerLink]="['audit']">View the audit log</button>
+  <button mat-menu-item [routerLink]="['newproject']">Create a new project</button>
+</mat-menu>
+
+<router-outlet></router-outlet>

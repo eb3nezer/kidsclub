@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "target/classes/static/kc-admin",
+            "outputPath": "target/classes/static/admin",
             "index": "src/main/js/kc-admin/index.html",
             "main": "src/main/js/kc-admin/main.ts",
             "polyfills": "src/main/js/kc-admin/polyfills.ts",

@@ -65,7 +65,7 @@ public class ProjectDocumentService {
         if (media.isPresent()) {
             ProjectDocument result = new ProjectDocument(project.get(), filename, description, media.get().getContentType(), media.get().getDescriptor());
             result = projectDocumentDao.create(result);
-            auditService.audit("Created document id=" + result.getId() + " in project id=" + result.getProject().getId() +
+            auditService.audit(project.get(), "Created document id=" + result.getId() + " in project id=" + result.getProject().getId() +
                             " with filename=\"" + result.getName() + "\"",
                     new Date());
             return Optional.of(result);
@@ -95,7 +95,7 @@ public class ProjectDocumentService {
         }
 
         projectDocumentDao.delete(document.get());
-        auditService.audit("Deleted document id=" + documentId + " in project id=" + projectId,
+        auditService.audit(project.get(), "Deleted document id=" + documentId + " in project id=" + projectId,
                 new Date());
     }
 }

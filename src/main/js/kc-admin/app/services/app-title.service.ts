@@ -4,7 +4,7 @@ import { Observable, Subscriber, of } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class ApptitleService {
+export class AppTitleService {
   titleSubscriber: Subscriber<string>;
   titleObserver: Observable<string>;
 

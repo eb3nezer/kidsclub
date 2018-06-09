@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ApptitleService } from "../apptitle.service";
+import { AppTitleService } from "../services/app-title.service";
 import { User } from "../model/user";
-import { UserProfileService } from "../user-profile.service";
+import { UserProfileService } from "../services/user-profile.service";
 
 @Component({
   selector: 'app-edit-profile',
@@ -12,9 +12,14 @@ export class EditProfileComponent implements OnInit {
   currentUser: User;
 
   constructor(
-    private apptitleService: ApptitleService,
+    private apptitleService: AppTitleService,
     private userProfileService: UserProfileService) {
-    this.currentUser = new User();
+    this.currentUser = new User("");
+  }
+
+  onSubmit() {
+      console.log("Submitted");
+      this.currentUser.email = "Hello@here";
   }
 
   ngOnInit() {
@@ -22,6 +27,6 @@ export class EditProfileComponent implements OnInit {
 
   ngAfterViewInit() {
     Promise.resolve(null).then(() => this.apptitleService.setTitle("Edit your profile"));
-    this.userProfileService.getUserObservable().subscribe(next => this.currentUser = next);
+    this.userProfileService.getCurrentUserObservable().subscribe(next => this.currentUser = next);
   }
 }

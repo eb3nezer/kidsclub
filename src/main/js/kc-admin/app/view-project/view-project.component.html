@@ -1,0 +1,28 @@
+<div class="mat-typography">
+<p>Project team members: {{((project && project.users) ? project.users.length : "")}}</p>
+    <table mat-table [dataSource]="teams" *ngIf="teams">
+    <ng-container matColumnDef="teamName">
+        <th mat-header-cell *matHeaderCellDef> Team </th>
+        <td mat-cell *matCellDef="let team"><a routerLink="/viewteam/{{project.id}}/team/{{team.id}}">{{team.name}}</a></td>
+    </ng-container>
+
+    <ng-container matColumnDef="teamAvatar">
+        <th mat-header-cell *matHeaderCellDef>&nbsp;</th>
+        <td mat-cell *matCellDef="let team"><img src="/rest/data/download/{{team.mediaDescriptor}}" width="50"></td>
+    </ng-container>
+
+    <ng-container matColumnDef="teamScore">
+        <th mat-header-cell *matHeaderCellDef>Score</th>
+        <td mat-cell *matCellDef="let team"> {{team.score}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="teamStudents">
+        <th mat-header-cell *matHeaderCellDef>Students</th>
+        <td mat-cell *matCellDef="let team"> {{team.students.length}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+<p><a routerLink="/editproject/{{project.id}}" *ngIf="project">Edit Project</a></p>
+</div>

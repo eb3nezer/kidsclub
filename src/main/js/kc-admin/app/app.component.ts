@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ApptitleService } from "./apptitle.service";
+import { AppTitleService } from "./services/app-title.service";
 
 @Component({
   selector: 'app-root',
@@ -8,16 +8,15 @@ import { ApptitleService } from "./apptitle.service";
 })
 
 export class AppComponent {
-  pageTitle = "";
+  pageTitle: string = "";
+  projectId: number = -1;
 
-  constructor(private apptitleService: ApptitleService) {
-
+  constructor(private apptitleService: AppTitleService) {
   }
 
   ngOnInit() {
     this.apptitleService.getTitle().subscribe(title => {
         this.pageTitle = title;
-        console.log(`Got new title ${title}`);
         document.title = title;
       },
       e => console.log('on error %s', e),

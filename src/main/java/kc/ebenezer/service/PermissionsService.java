@@ -159,7 +159,7 @@ public class PermissionsService {
         }
 
         if (overridePermission) {
-            auditService.audit("Overriding access to change user permissions for user id=" + currentUser.getId(),
+            auditService.audit(null, "Overriding access to change user permissions for user id=" + currentUser.getId(),
                     new Date(), AuditLevel.WARN);
         } else if (!SitePermissionService.userHasPermission(currentUser, SitePermission.SYSTEM_ADMIN)) {
             throw new NoPermissionException("You do not have permission to update site permissions");
@@ -172,13 +172,13 @@ public class PermissionsService {
         UserSitePermission userSitePermission = new UserSitePermission(user.get(), sitePermission);
         if (grant) {
             if (!currentSitePermissions.contains(sitePermission)) {
-                auditService.audit("Grant site permission " + sitePermission + " to user " + targetUserId, new Date());
+                auditService.audit(null, "Grant site permission " + sitePermission + " to user " + targetUserId, new Date());
                 userSitePermissionDao.create(userSitePermission);
                 user.get().getUserSitePermissions().add(userSitePermission);
             }
         } else {
             if (currentSitePermissions.contains(sitePermission)) {
-                auditService.audit("Revoke site permission " + sitePermission + " from user " + targetUserId, new Date());
+                auditService.audit(null, "Revoke site permission " + sitePermission + " from user " + targetUserId, new Date());
                 Optional<UserSitePermission> permissionToRevoke = user.get().getUserSitePermissions()
                         .stream()
                         .filter(p -> p.equals(userSitePermission))
@@ -213,6 +213,7 @@ public class PermissionsService {
         if (grant) {
             if (!currentProjectPermissions.contains(userProjectPermission)) {
                 auditService.audit(
+                    project.get(),
                         "Grant project permission " + projectPermission + " to user id=" + targetUserId +
                         " in project id=" + projectId, new Date());
                 userProjectPermissionDao.create(userProjectPermission);
@@ -220,7 +221,8 @@ public class PermissionsService {
             }
         } else {
             if (currentProjectPermissions.contains(userProjectPermission)) {
-                auditService.audit("Revoke project permission " + projectPermission + " from user id=" + targetUserId +
+                auditService.audit(project.get(),
+                    "Revoke project permission " + projectPermission + " from user id=" + targetUserId +
                         " in project id=" + projectId, new Date());
                 UserProjectPermission permissionToRevoke = currentProjectPermissions.remove(
                         currentProjectPermissions.indexOf(userProjectPermission));

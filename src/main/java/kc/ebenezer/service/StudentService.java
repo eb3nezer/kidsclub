@@ -82,7 +82,7 @@ public class StudentService {
 
         try {
             Student created = studentDao.create(student);
-            auditService.audit("Created new student, id=" + student.getId() + " name=" + student.getName(),
+            auditService.audit(project.get(), "Created new student, id=" + student.getId() + " name=" + student.getName(),
                     new Date());
             return created;
         } catch (Exception e) {
@@ -114,7 +114,7 @@ public class StudentService {
         }
         studentDao.delete(student.get());
 
-        auditService.audit("Deleted student, id=" + student.get().getId(), new Date());
+        auditService.audit(project.get(), "Deleted student, id=" + student.get().getId(), new Date());
     }
 
     public List<Student> bulkCreateStudents(Long projectId, InputStream inputStream) throws IOException {
@@ -212,7 +212,7 @@ public class StudentService {
             }
             existingStudent.get().setName(valuesToUpdate.getName());
             existingStudent.get().setUpdated(now);
-            auditService.audit("Set name to \"" + valuesToUpdate.getName() + "\" for student id=" + studentId,
+            auditService.audit(existingStudent.get().getProject(), "Set name to \"" + valuesToUpdate.getName() + "\" for student id=" + studentId,
                     now);
         }
 
@@ -226,97 +226,97 @@ public class StudentService {
 
             existingStudent.get().setEmail(valuesToUpdate.getEmail());
             existingStudent.get().setUpdated(now);
-            auditService.audit("Set email to \"" + valuesToUpdate.getEmail() + "\" for student id=" + studentId,
+            auditService.audit(existingStudent.get().getProject(), "Set email to \"" + valuesToUpdate.getEmail() + "\" for student id=" + studentId,
                     now);
         }
 
         if (valueUpdated(existingStudent.get().getGivenName(), valuesToUpdate.getGivenName())) {
             existingStudent.get().setGivenName(valuesToUpdate.getGivenName());
             existingStudent.get().setUpdated(now);
-            auditService.audit("Set given name to \"" + valuesToUpdate.getGivenName() + "\" for student id=" + studentId,
+            auditService.audit(existingStudent.get().getProject(), "Set given name to \"" + valuesToUpdate.getGivenName() + "\" for student id=" + studentId,
                     now);
         }
 
         if (valueUpdated(existingStudent.get().getFamilyName(), valuesToUpdate.getFamilyName())) {
             existingStudent.get().setFamilyName(valuesToUpdate.getFamilyName());
             existingStudent.get().setUpdated(now);
-            auditService.audit("Set family name to \"" + valuesToUpdate.getFamilyName() + "\" for student id=" + studentId,
+            auditService.audit(existingStudent.get().getProject(), "Set family name to \"" + valuesToUpdate.getFamilyName() + "\" for student id=" + studentId,
                     now);
         }
 
         if (valueUpdated(existingStudent.get().getGender(), valuesToUpdate.getGender())) {
             existingStudent.get().setGender(valuesToUpdate.getGender());
             existingStudent.get().setUpdated(now);
-            auditService.audit("Set gender to \"" + valuesToUpdate.getGender().getDescription() + "\" for student id=" + studentId,
+            auditService.audit(existingStudent.get().getProject(), "Set gender to \"" + valuesToUpdate.getGender().getDescription() + "\" for student id=" + studentId,
                     now);
         }
 
         if (valueUpdated(existingStudent.get().getContactName(), valuesToUpdate.getContactName())) {
             existingStudent.get().setContactName(valuesToUpdate.getContactName());
             existingStudent.get().setUpdated(now);
-            auditService.audit("Set emergency contact to \"" + valuesToUpdate.getContactName() + "\" for student id=" + studentId,
+            auditService.audit(existingStudent.get().getProject(), "Set emergency contact to \"" + valuesToUpdate.getContactName() + "\" for student id=" + studentId,
                     now);
         }
 
         if (valueUpdated(existingStudent.get().getContactRelationship(), valuesToUpdate.getContactRelationship())) {
             existingStudent.get().setContactRelationship(valuesToUpdate.getContactRelationship());
             existingStudent.get().setUpdated(now);
-            auditService.audit("Set contact relationship to \"" + valuesToUpdate.getContactRelationship() + "\" for student id=" + studentId,
+            auditService.audit(existingStudent.get().getProject(), "Set contact relationship to \"" + valuesToUpdate.getContactRelationship() + "\" for student id=" + studentId,
                     now);
         }
 
         if (valueUpdated(existingStudent.get().getPhone(), valuesToUpdate.getPhone())) {
             existingStudent.get().setPhone(valuesToUpdate.getPhone());
             existingStudent.get().setUpdated(now);
-            auditService.audit("Set phone number to \"" + valuesToUpdate.getPhone() + "\" for student id=" + studentId,
+            auditService.audit(existingStudent.get().getProject(), "Set phone number to \"" + valuesToUpdate.getPhone() + "\" for student id=" + studentId,
                     now);
         }
 
         if (valueUpdated(existingStudent.get().getAge(), valuesToUpdate.getAge())) {
             existingStudent.get().setAge(valuesToUpdate.getAge());
             existingStudent.get().setUpdated(now);
-            auditService.audit("Set age to \"" + valuesToUpdate.getAge() + "\" for student id=" + studentId,
+            auditService.audit(existingStudent.get().getProject(), "Set age to \"" + valuesToUpdate.getAge() + "\" for student id=" + studentId,
                     now);
         }
 
         if (valueUpdated(existingStudent.get().getSchool(), valuesToUpdate.getSchool())) {
             existingStudent.get().setSchool(valuesToUpdate.getSchool());
             existingStudent.get().setUpdated(now);
-            auditService.audit("Set school to \"" + valuesToUpdate.getSchool() + "\" for student id=" + studentId,
+            auditService.audit(existingStudent.get().getProject(), "Set school to \"" + valuesToUpdate.getSchool() + "\" for student id=" + studentId,
                     now);
         }
 
         if (valueUpdated(existingStudent.get().getSchoolYear(), valuesToUpdate.getSchoolYear())) {
             existingStudent.get().setSchoolYear(valuesToUpdate.getSchoolYear());
             existingStudent.get().setUpdated(now);
-            auditService.audit("Set school year to \"" + valuesToUpdate.getSchoolYear() + "\" for student id=" + studentId,
+            auditService.audit(existingStudent.get().getProject(), "Set school year to \"" + valuesToUpdate.getSchoolYear() + "\" for student id=" + studentId,
                     now);
         }
 
         if (valueUpdated(existingStudent.get().getSpecialInstructions(), valuesToUpdate.getSpecialInstructions())) {
             existingStudent.get().setSpecialInstructions(valuesToUpdate.getSpecialInstructions());
             existingStudent.get().setUpdated(now);
-            auditService.audit("Set special instructions to \"" + valuesToUpdate.getSpecialInstructions() + "\" for student id=" + studentId,
+            auditService.audit(existingStudent.get().getProject(), "Set special instructions to \"" + valuesToUpdate.getSpecialInstructions() + "\" for student id=" + studentId,
                     now);
         }
 
         if (valueUpdated(existingStudent.get().getMediaPermitted(), valuesToUpdate.getMediaPermitted())) {
             existingStudent.get().setMediaPermitted(valuesToUpdate.getMediaPermitted());
             existingStudent.get().setUpdated(now);
-            auditService.audit("Set media permitted to \"" + valuesToUpdate.getMediaPermitted() + "\" for student id=" + studentId,
+            auditService.audit(existingStudent.get().getProject(), "Set media permitted to \"" + valuesToUpdate.getMediaPermitted() + "\" for student id=" + studentId,
                     now);
         }
 
         if (valueUpdated(existingStudent.get().getMediaDescriptor(), valuesToUpdate.getMediaDescriptor())) {
             if (existingStudent.get().getMediaDescriptor() != null && !existingStudent.get().getMediaDescriptor().isEmpty()) {
                 mediaService.deleteData(existingStudent.get().getMediaDescriptor());
-                auditService.audit("Deleting media \"" + existingStudent.get().getMediaDescriptor() +
+                auditService.audit(existingStudent.get().getProject(), "Deleting media \"" + existingStudent.get().getMediaDescriptor() +
                                 "\" so it can be replaced with for user id=" + valuesToUpdate.getMediaDescriptor(),
                         now);
             }
             existingStudent.get().setMediaDescriptor(valuesToUpdate.getMediaDescriptor());
             existingStudent.get().setUpdated(now);
-            auditService.audit("Set media descriptor to \"" + valuesToUpdate.getMediaDescriptor() +
+            auditService.audit(existingStudent.get().getProject(), "Set media descriptor to \"" + valuesToUpdate.getMediaDescriptor() +
                             "\" for student id=" + studentId,
                     now);
         }
@@ -339,7 +339,7 @@ public class StudentService {
                 newTeam.get().getStudents().add(existingStudent.get());
             }
             existingStudent.get().setUpdated(now);
-            auditService.audit("Set team to \"" + teamId + "\" for student id=" + studentId,
+            auditService.audit(existingStudent.get().getProject(), "Set team to \"" + teamId + "\" for student id=" + studentId,
                     now);
         }
 

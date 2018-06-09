@@ -1,7 +1,10 @@
 package kc.ebenezer.model;
 
+import org.springframework.lang.NonNull;
+
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "audit_records")
@@ -12,9 +15,11 @@ public class AuditRecord extends ModelObject {
     @Column(name = "id")
     private Long id;
 
+    @NonNull
     @Column(name = "change", length = 1024)
     private String change;
 
+    @NonNull
     @Column(name = "change_time")
     private Long changeTime;
 
@@ -25,23 +30,30 @@ public class AuditRecord extends ModelObject {
     @Column(name = "audit_level")
     private String auditLevel;
 
+    @NonNull
     @Column(name = "created")
     private Long created;
 
+    @NonNull
     @Column(name = "updated")
     private Long updated;
+
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project project;
 
     public AuditRecord() {
         created = System.currentTimeMillis();
         updated = created;
     }
 
-    public AuditRecord(String change, Date changeTime, User user, AuditLevel auditLevel) {
+    public AuditRecord(String change, Date changeTime, User user, AuditLevel auditLevel, Project project) {
         this();
         this.change = change;
         this.changeTime = changeTime.getTime();
         this.user = user;
         this.auditLevel = auditLevel.getCode();
+        this.project = project;
     }
 
     public Long getId() {
@@ -85,5 +97,50 @@ public class AuditRecord extends ModelObject {
             return null;
         }
         return AuditLevel.forCode(auditLevel);
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setChange(String change) {
+        this.change = change;
+    }
+
+    public void setChangeTime(Date changeTime) {
+        this.changeTime = changeTime.getTime();
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setAuditLevel(String auditLevel) {
+        this.auditLevel = auditLevel;
+    }
+
+    public void setCreated(Long created) {
+        this.created = created;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AuditRecord that = (AuditRecord) o;
+        return Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 }

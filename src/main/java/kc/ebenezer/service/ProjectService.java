@@ -89,7 +89,7 @@ public class ProjectService  {
         }
         projectDao.flush();
 
-        auditService.audit("Created new project. name=\"" + project.getName() +
+        auditService.audit(project, "Created new project. name=\"" + project.getName() +
                 "\" id=" + project.getId(),
                 new Date(created.getCreated()));
         // Grant all project permissions
@@ -123,7 +123,7 @@ public class ProjectService  {
                 throw new ValidationException("There is already a project with this name");
             }
             existingProject.get().setName(projectToUpdate.getName());
-            auditService.audit("Changed name for project id=" + projectId + " to \"" + projectToUpdate.getName() + "\"", now);
+            auditService.audit(existingProject.get(), "Changed name for project id=" + projectId + " to \"" + projectToUpdate.getName() + "\"", now);
             existingProject.get().setUpdated(now);
         }
 
@@ -131,7 +131,7 @@ public class ProjectService  {
             if (!existingProject.get().getProjectProperties().contains(projectProperty)) {
                 ProjectProperty newProjectProperty = new ProjectProperty(existingProject.get(), projectProperty.getPropertyKey(), projectProperty.getPropertyValue());
                 existingProject.get().getProjectProperties().add(newProjectProperty);
-                auditService.audit("Added new project property " + projectProperty.getPropertyKey() + "=" + projectProperty.getPropertyValue() +
+                auditService.audit(existingProject.get(), "Added new project property " + projectProperty.getPropertyKey() + "=" + projectProperty.getPropertyValue() +
                         " for project id=" + projectId, now);
                 existingProject.get().setUpdated(now);
             } else {
@@ -139,7 +139,7 @@ public class ProjectService  {
                     if (existingProjectProperty.getPropertyKey().equals(projectProperty.getPropertyKey())) {
                         if (!existingProjectProperty.getPropertyValue().equals(projectProperty.getPropertyValue())) {
                             existingProjectProperty.setPropertyValue(projectProperty.getPropertyValue());
-                            auditService.audit("Updating project property " + projectProperty.getPropertyKey() + "=" + projectProperty.getPropertyValue() +
+                            auditService.audit(existingProject.get(), "Updating project property " + projectProperty.getPropertyKey() + "=" + projectProperty.getPropertyValue() +
                                     " for project id=" + projectId, now);
                             existingProject.get().setUpdated(now);
                         }

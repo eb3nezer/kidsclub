@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ApptitleService } from "../apptitle.service";
+import { AppTitleService } from "../services/app-title.service";
 
 @Component({
   selector: 'app-create-project',
@@ -8,7 +8,7 @@ import { ApptitleService } from "../apptitle.service";
 })
 export class CreateProjectComponent implements OnInit {
 
-  constructor(private apptitleService: ApptitleService) { }
+  constructor(private apptitleService: AppTitleService) { }
 
   ngOnInit() {
   }

@@ -36,4 +36,20 @@ public class AuditRecordDao extends BaseDaoImpl<AuditRecord> {
         query.setMaxResults(records);
         return query.getResultList();
     }
+
+    public List<AuditRecord> findByDateRangeForProject(Date startDate, Date endDate, Long projectId, int start, int records) {
+        TypedQuery<AuditRecord> query = getEntityManager().createQuery(
+            "select record from AuditRecord record " +
+                "left join record.user user " +
+                "where record.changeTime >= :startDate " +
+                "and record.changeTime <= :endDate " +
+                "and record.project.id = :projectId " +
+                "order by record.changeTime desc", AuditRecord.class);
+        query.setParameter("startDate", startDate.getTime());
+        query.setParameter("endDate", endDate.getTime());
+        query.setParameter("projectId", projectId);
+        query.setFirstResult(start);
+        query.setMaxResults(records);
+        return query.getResultList();
+    }
 }

@@ -1,37 +1,39 @@
 import { Component, OnInit } from '@angular/core';
 import { AppTitleService } from "../services/app-title.service";
 import { ProjectService } from "../services/project.service";
+import { TeamService } from "../services/team.service";
 import { Project } from "../model/project";
 import {ActivatedRoute, Router} from "@angular/router";
+import { StudentTeam } from "../model/studentTeam";
 
 @Component({
-  selector: 'app-edit-project',
-  templateUrl: './edit-project.component.html',
-  styleUrls: ['./edit-project.component.css']
+  selector: 'app-view-project',
+  templateUrl: './view-project.component.html',
+  styleUrls: ['./view-project.component.css']
 })
-export class EditProjectComponent implements OnInit {
+export class ViewProjectComponent implements OnInit {
     project: Project;
-    mediaPermitted: boolean;
+    teams: StudentTeam[];
+    displayedColumns = ['teamName', 'teamAvatar', 'teamScore', 'teamStudents'];
 
     constructor(
         private appTitleService: AppTitleService,
         private projectService: ProjectService,
+        private teamService: TeamService,
         private route: ActivatedRoute) {
-        this.project = new Project();
     }
 
-    loadProject() {
+    loadProjectAndTeams() {
         const projectId = +this.route.snapshot.paramMap.get('id');
         if (projectId) {
             this.projectService.getProjectObservable(projectId).subscribe(project => {
                 this.project = project;
-                if (project.properties.studentMediaPermittedDefault === 'true') {
-                    this.mediaPermitted = true;
-                } else {
-                    this.mediaPermitted = false;
-                }
-                this.appTitleService.setTitle(`Edit details for ${project.name}`);
+                this.appTitleService.setTitle(`${project.name} Project Administration`)
             });
+
+            this.teamService.getTeamsForProject(projectId).subscribe(teams => {
+                this.teams = teams;
+            })
         }
     }
 
@@ -39,7 +41,6 @@ export class EditProjectComponent implements OnInit {
     }
 
     ngAfterViewInit() {
-        Promise.resolve(null).then(() => this.loadProject());
+        Promise.resolve(null).then(() => this.loadProjectAndTeams());
     }
-
 }

@@ -138,7 +138,7 @@ public class AttendanceService {
         attendanceRecord.setRecordTime(now);
 
         AttendanceRecord result = attendanceRecordDao.create(attendanceRecord);
-        auditService.audit("Added attendance for student id=" + studentId + ", project id=" + projectId +
+        auditService.audit(project.get(), "Added attendance for student id=" + studentId + ", project id=" + projectId +
                 ", type=" + attendanceRecord.getAttendanceType().getName(), now);
 
         return Optional.of(result);

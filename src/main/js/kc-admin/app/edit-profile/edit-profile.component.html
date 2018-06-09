@@ -1,33 +1,37 @@
+<form #profileForm="ngForm">
 <mat-list>
   <mat-list-item>
-    <mat-form-field appearance="standard"><mat-label>Given Name</mat-label><input matInput name="givenName" value="{{currentUser.givenName}}"></mat-form-field>
+    <mat-form-field appearance="standard"><mat-label>Given Name</mat-label><input matInput name="givenName" [(ngModel)]="currentUser.givenName"></mat-form-field>
   </mat-list-item>
   <mat-list-item>
-    <mat-form-field appearance="standard"><mat-label>Family Name</mat-label><input matInput name="familyName" value="{{currentUser.familyName}}"></mat-form-field>
+    <mat-form-field appearance="standard"><mat-label>Family Name</mat-label><input matInput name="familyName" [(ngModel)]="currentUser.familyName"></mat-form-field>
   </mat-list-item>
   <mat-list-item>
-    <mat-form-field appearance="standard"><mat-label>Name</mat-label><input matInput name="name" value="{{currentUser.name}}"></mat-form-field>
+    <mat-form-field appearance="standard"><mat-label>Name</mat-label><input matInput name="name" [(ngModel)]="currentUser.name"></mat-form-field>
     <span>How you would like to be known on this site. <b>Required</b>.</span>
   </mat-list-item>
   <mat-list-item>
-    <mat-form-field appearance="standard"><mat-label>Mobile Number</mat-label><input matInput name="mobilePhone" value="{{currentUser.mobilePhone}}"></mat-form-field>
+    <mat-form-field appearance="standard"><mat-label>Mobile Number</mat-label><input matInput name="mobilePhone" [(ngModel)]="currentUser.mobilePhone"></mat-form-field>
   </mat-list-item>
   <mat-list-item>
-    <mat-form-field appearance="standard"><mat-label>Home Number</mat-label><input matInput name="homePhone" value="{{currentUser.homePhone}}"></mat-form-field>
+    <mat-form-field appearance="standard"><mat-label>Home Number</mat-label><input matInput name="homePhone" [(ngModel)]="currentUser.homePhone"></mat-form-field>
   </mat-list-item>
   <mat-list-item>
-    <mat-form-field appearance="standard" disabled="true"><mat-label>E-Mail Address</mat-label><input matInput name="email" value="{{currentUser.email}}"></mat-form-field>
+    <mat-form-field appearance="standard" disabled="true"><mat-label>E-Mail Address</mat-label><input matInput name="email" [(ngModel)]="currentUser.email"></mat-form-field>
     <span>You need to contact an admin if you want to change your email address.</span>
   </mat-list-item>
-  <mat-list-item>
-    <mat-form-field appearance="standard"><mat-label>Avatar URL</mat-label><input matInput name="avatarUrl" value="{{currentUser.avatarUrl}}"></mat-form-field>
-    <span id="avatar_preview"></span>
+  <mat-list-item style="height: 120px">
+    <mat-form-field appearance="standard"><mat-label>Avatar URL</mat-label><input matInput name="avatarUrl" [(ngModel)]="currentUser.avatarUrl"></mat-form-field>
+      <span id="upload_preview" *ngIf="currentUser.avatarUrl"><img src="{{currentUser.avatarUrl}}" width="100"/></span>
   </mat-list-item>
-  <mat-list-item>
+  <mat-list-item style="height: 120px">
     <button mat-button (click)="imgFileInput.click()">Upload photo</button>
+      <input type="hidden" name="mediaDescriptor" [(ngModel)]="currentUser.mediaDescriptor">
     <input hidden type="file" #imgFileInput />
-    <span id="upload_preview"></span>
+      <span id="avatar_preview" *ngIf="currentUser.mediaDescriptor"><img src="/rest/data/download/{{currentUser.mediaDescriptor}}" width="100"/></span>
   </mat-list-item>
 </mat-list>
 
-<button mat-raised-button color="primary">Save</button>
+<button mat-raised-button color="primary" (click)="onSubmit()">Save</button>
+</form>
+

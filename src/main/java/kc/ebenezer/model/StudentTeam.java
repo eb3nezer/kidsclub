@@ -44,7 +44,7 @@ public class StudentTeam extends ModelObject {
     @Column(name = "updated")
     private Long updated;
 
-    @OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
     @JoinTable(
             name = "student_team_leaders",
             joinColumns = { @JoinColumn(name = "student_team_id") },

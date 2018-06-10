@@ -25,13 +25,26 @@ export class EditProjectComponent implements OnInit {
         if (projectId) {
             this.projectService.getProjectObservable(projectId).subscribe(project => {
                 this.project = project;
-                if (project.properties.studentMediaPermittedDefault === 'true') {
-                    this.mediaPermitted = true;
-                } else {
-                    this.mediaPermitted = false;
-                }
+                this.mediaPermitted = project.properties.studentMediaPermittedDefault === 'true';
                 this.appTitleService.setTitle(`Edit details for ${project.name}`);
             });
+        }
+    }
+
+    onSubmit() {
+        if (this.project) {
+            if (this.mediaPermitted) {
+                this.project.properties.studentMediaPermittedDefault = 'true';
+            } else {
+                this.project.properties.studentMediaPermittedDefault = 'false';
+            }
+
+            this.projectService.updateProject(this.project.id, this.project).subscribe(project => {
+                this.project = project;
+                this.mediaPermitted = project.properties.studentMediaPermittedDefault === 'true';
+                this.appTitleService.setTitle(`Edit details for ${project.name}`);
+                this.appTitleService.setMessages("Project updated");
+            })
         }
     }
 

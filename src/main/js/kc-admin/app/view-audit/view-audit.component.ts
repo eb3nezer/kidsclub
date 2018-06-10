@@ -13,8 +13,8 @@ import {AuditRecord} from "../model/auditRecord";
   styleUrls: ['./view-audit.component.css']
 })
 export class ViewAuditComponent implements OnInit {
-    private project: Project;
-    private auditRecords: AuditRecord[];
+    project: Project;
+    auditRecords: AuditRecord[];
     displayedColumns = ['auditEvent', 'auditTime', 'auditUser', 'auditProject'];
 
     constructor(private apptitleService: AppTitleService,

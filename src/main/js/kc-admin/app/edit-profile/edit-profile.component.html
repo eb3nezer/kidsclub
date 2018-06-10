@@ -24,11 +24,16 @@
     <mat-form-field appearance="standard"><mat-label>Avatar URL</mat-label><input matInput name="avatarUrl" [(ngModel)]="currentUser.avatarUrl"></mat-form-field>
       <span id="upload_preview" *ngIf="currentUser.avatarUrl"><img src="{{currentUser.avatarUrl}}" width="100"/></span>
   </mat-list-item>
-  <mat-list-item style="height: 120px">
-    <button mat-button (click)="imgFileInput.click()">Upload photo</button>
-      <input type="hidden" name="mediaDescriptor" [(ngModel)]="currentUser.mediaDescriptor">
-    <input hidden type="file" #imgFileInput />
+  <mat-list-item>
+    <label>
+        <input type="file" (change)="setFile($event)" style="display:none" multiple/>
+        <a mat-raised-button>
+            <mat-icon>file_upload</mat-icon>
+            Upload a new photo
+        </a>
+    </label> <span *ngIf="newFilename">File to upload: {{newFilename}}</span>
       <span id="avatar_preview" *ngIf="currentUser.mediaDescriptor"><img src="/rest/data/download/{{currentUser.mediaDescriptor}}" width="100"/></span>
+      <input type="hidden" name="mediaDescriptor" [(ngModel)]="currentUser.mediaDescriptor">
   </mat-list-item>
 </mat-list>
 

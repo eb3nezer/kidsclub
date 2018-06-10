@@ -7,16 +7,21 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   providedIn: 'root'
 })
 export class ProjectService {
-    private meUrlForGet = '/rest/projects';
+    private urlForGet = '/rest/projects';
+    private urlForUpdate = '/rest/projects';
 
     constructor(private http: HttpClient) {
     }
 
     getProjectObservable(id: number): Observable<Project> {
-        return this.http.get<Project>(`${this.meUrlForGet}/${id}`);
+        return this.http.get<Project>(`${this.urlForGet}/${id}`);
+    }
+
+    updateProject(projectId: number, project: Project): Observable<Project> {
+        return this.http.put<Project>(`${this.urlForUpdate}/${projectId}`, project);
     }
 
     getAllProjectsObservable(): Observable<Project[]> {
-        return this.http.get<Project[]>(this.meUrlForGet);
+        return this.http.get<Project[]>(this.urlForGet);
     }
 }

@@ -6,7 +6,7 @@ import {EditProjectComponent} from "./edit-project/edit-project.component";
 import {ViewAuditComponent} from "./view-audit/view-audit.component";
 import {CreateProjectComponent} from "./create-project/create-project.component";
 import {ViewProjectComponent} from "./view-project/view-project.component";
-import {ViewTeamComponent} from "./view-team/view-team.component";
+import {EditTeamComponent} from "./edit-team/edit-team.component";
 
 const routes: Routes = [
     { path: '', redirectTo: '/admin', pathMatch: 'full' },
@@ -16,7 +16,7 @@ const routes: Routes = [
     { path: 'audit', component: ViewAuditComponent },
     { path: 'audit/:id', component: ViewAuditComponent },
     { path: 'viewproject/:id', component: ViewProjectComponent },
-    { path: 'viewteam/:projectId/team/:teamId', component: ViewTeamComponent },
+    { path: 'viewteam/:projectId/team/:teamId', component: EditTeamComponent },
     { path: 'newproject', component: CreateProjectComponent },
     { path: 'editproject/:id', component: EditProjectComponent }
 ];

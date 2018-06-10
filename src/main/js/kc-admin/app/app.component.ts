@@ -10,6 +10,7 @@ import { AppTitleService } from "./services/app-title.service";
 export class AppComponent {
   pageTitle: string = "";
   projectId: number = -1;
+  messages: string;
 
   constructor(private apptitleService: AppTitleService) {
   }
@@ -21,6 +22,8 @@ export class AppComponent {
       },
       e => console.log('on error %s', e),
       () => console.log('on complete'));
+
+    this.apptitleService.getMessages().subscribe(messages => this.messages = messages);
   }
 
   ngAfterViewInit() {

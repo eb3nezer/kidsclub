@@ -1,5 +1,6 @@
 export class User {
-    constructor(public name?: string,
+    constructor(public id?: number,
+                public name?: string,
         public givenName?: string,
         public familyName?: string,
         public email?: string,
@@ -9,5 +10,7 @@ export class User {
         public mediaDescriptor?: string) {
   }
 
-
+    public toString(): string {
+        return name;
+    }
 }

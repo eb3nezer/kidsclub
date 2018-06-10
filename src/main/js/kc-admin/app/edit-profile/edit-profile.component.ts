@@ -10,17 +10,30 @@ import { UserProfileService } from "../services/user-profile.service";
 })
 export class EditProfileComponent implements OnInit {
   currentUser: User;
+  fileToUpload: File;
+  newFilename = "";
 
   constructor(
     private apptitleService: AppTitleService,
     private userProfileService: UserProfileService) {
-    this.currentUser = new User("");
+    this.currentUser = new User();
   }
 
   onSubmit() {
       console.log("Submitted");
-      this.currentUser.email = "Hello@here";
+      this.userProfileService.updateCurrentUserObservable(this.currentUser, this.fileToUpload).subscribe(next => {
+          this.currentUser = next;
+          this.newFilename = "";
+          this.apptitleService.setMessages("Your profile was updated successfully.")
+      });
   }
+
+    private setFile(event) {
+        if (event.srcElement.files && event.srcElement.files.length >= 1) {
+            this.fileToUpload = event.srcElement.files[0];
+            this.newFilename = this.fileToUpload.name;
+        }
+    }
 
   ngOnInit() {
   }

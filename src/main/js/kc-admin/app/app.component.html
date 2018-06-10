@@ -13,5 +13,5 @@
   <button mat-menu-item [routerLink]="['audit']">View the audit log</button>
   <button mat-menu-item [routerLink]="['newproject']">Create a new project</button>
 </mat-menu>
-
+<span *ngIf="messages">{{messages}}</span>
 <router-outlet></router-outlet>

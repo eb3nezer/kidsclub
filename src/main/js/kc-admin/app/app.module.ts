@@ -13,9 +13,10 @@ import {
     MatFormFieldModule,
     MatListModule,
     MatGridListModule,
-    MatTableModule
+    MatTableModule,
+    MatAutocompleteModule
 } from "@angular/material";
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { AppRoutingModule } from './/app-routing.module';
 import { AdminHomeComponent } from './admin-home/admin-home.component';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
@@ -24,24 +25,25 @@ import { ViewAuditComponent } from './view-audit/view-audit.component';
 import { CreateProjectComponent } from './create-project/create-project.component';
 import { HttpClientModule } from "@angular/common/http";
 import { ViewProjectComponent } from './view-project/view-project.component';
-import { ViewTeamComponent } from './view-team/view-team.component';
+import { EditTeamComponent } from './edit-team/edit-team.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    AdminHomeComponent,
-    EditProfileComponent,
-    EditProjectComponent,
-    ViewAuditComponent,
-    CreateProjectComponent,
-    ViewProjectComponent,
-    ViewTeamComponent
+    declarations: [
+        AppComponent,
+        AdminHomeComponent,
+        EditProfileComponent,
+        EditProjectComponent,
+        ViewAuditComponent,
+        CreateProjectComponent,
+        ViewProjectComponent,
+        EditTeamComponent
   ],
     imports: [
         BrowserModule,
         FormsModule,
         BrowserAnimationsModule,
         FormsModule,
+        ReactiveFormsModule,
         MatButtonModule,
         MatCheckboxModule,
         MatMenuModule,
@@ -53,7 +55,8 @@ import { ViewTeamComponent } from './view-team/view-team.component';
         MatListModule,
         MatGridListModule,
         HttpClientModule,
-        MatTableModule
+        MatTableModule,
+        MatAutocompleteModule
   ],
   providers: [],
   bootstrap: [AppComponent]

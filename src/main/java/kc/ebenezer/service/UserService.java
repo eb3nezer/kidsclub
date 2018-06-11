@@ -324,12 +324,12 @@ public class UserService implements UserDetailsService {
         return result;
     }
 
-    public boolean unInviteUser(Long userId, UserInvitationDto userInvitationDto) {
+    public boolean unInviteUser(Long userId, Long projectId) {
         Optional<User> currentUser = getCurrentUser();
         if (!currentUser.isPresent()) {
             throw new NoPermissionException("Anonymous may not uninvite users");
         }
-        Optional<Project> project = projectService.getProjectById(currentUser.get(), userInvitationDto.getProjectId());
+        Optional<Project> project = projectService.getProjectById(currentUser.get(), projectId);
         if (!project.isPresent()) {
             throw new NoPermissionException("You are not a member of this project");
         }

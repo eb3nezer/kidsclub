@@ -46,7 +46,7 @@ export class ViewStudentsComponent implements OnInit {
             width: '250px',
             data: {
                 title: "Confirm",
-                text: `Are you sure you wish to delete <b>${student.name}?</b> This operation cannot be undone.`,
+                text: `Are you sure you wish to delete ${student.name}? This operation cannot be undone.`,
                 buttons: ["Delete", "Cancel"]
             }
         });

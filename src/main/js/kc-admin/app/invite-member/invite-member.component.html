@@ -1,0 +1,20 @@
+<form #inviteForm="ngForm">
+    <div *ngIf="bulkInvite">
+        <mat-form-field appearance="standard"><mat-label>E-Mail Addresses (one per line)</mat-label>
+            <textarea rows="6" matInput name="bulkEmails" [(ngModel)]="bulkEmails"></textarea>
+        </mat-form-field>
+    </div>
+    <div *ngIf="!bulkInvite">
+        <mat-list>
+            <mat-list-item>
+                <mat-form-field appearance="standard"><mat-label>E-Mail Address</mat-label><input matInput name="email" [(ngModel)]="email"></mat-form-field>
+            </mat-list-item>
+            <mat-list-item>
+                <mat-form-field appearance="standard"><mat-label>Name (optional)</mat-label><input matInput name="name" [(ngModel)]="name"></mat-form-field>
+            </mat-list-item>
+        </mat-list>
+    </div>
+
+    <button mat-raised-button color="primary" (click)="onSubmit()">Invite</button>&nbsp;
+    <button mat-raised-button (click)="onCancel()">Cancel</button>
+</form>

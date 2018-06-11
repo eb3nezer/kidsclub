@@ -33,6 +33,8 @@ import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.componen
 import { ImportStudentsComponent } from './import-students/import-students.component';
 import { UserPermissionsComponent } from './user-permissions/user-permissions.component';
 import { CreateTeamComponent } from './create-team/create-team.component';
+import { InviteMemberComponent } from './invite-member/invite-member.component';
+import { AttendanceComponent } from './attendance/attendance.component';
 
 @NgModule({
     declarations: [
@@ -50,7 +52,9 @@ import { CreateTeamComponent } from './create-team/create-team.component';
         ConfirmDialogComponent,
         ImportStudentsComponent,
         UserPermissionsComponent,
-        CreateTeamComponent
+        CreateTeamComponent,
+        InviteMemberComponent,
+        AttendanceComponent
   ],
     imports: [
         BrowserModule,

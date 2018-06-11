@@ -1,10 +1,15 @@
-<button mat-raised-button>Invite</button>&nbsp;
-<button mat-raised-button>Bulk Invite</button>
+<button *ngIf="project" mat-raised-button routerLink="/invitemember/{{project.id}}/3">Invite</button>&nbsp;
+<button *ngIf="project" mat-raised-button routerLink="/invitemember/{{project.id}}/5">Bulk Invite</button>
 
-<table mat-table [dataSource]="project.users" *ngIf="project">
+<table mat-table [dataSource]="projectUsers" *ngIf="project">
     <ng-container matColumnDef="userName">
         <th mat-header-cell *matHeaderCellDef>Name</th>
-        <td mat-cell *matCellDef="let user"><a routerLink="/userpermissions/{{project.id}}/user/{{user.id}}">{{user.name}}</a></td>
+        <td mat-cell *matCellDef="let user">
+            <div class="removable">
+                <div class="removable-label"><a routerLink="/userpermissions/{{project.id}}/user/{{user.id}}">{{user.name}}</a></div>
+                <div class="removable-control"><mat-icon (click)="removeMember(user)">delete</mat-icon></div>
+            </div>
+        </td>
     </ng-container>
 
     <ng-container matColumnDef="userPhone">

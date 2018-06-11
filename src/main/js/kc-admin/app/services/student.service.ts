@@ -38,7 +38,7 @@ export class StudentService {
     updateStudent(student: Student, profilePhoto: File): Observable<Student> {
         const formData: FormData = new FormData();
         for (let property in student) {
-            if (student.hasOwnProperty(property)) {
+            if (student.hasOwnProperty(property) && student[property]) {
                 formData.append(property, student[property]);
             }
         }

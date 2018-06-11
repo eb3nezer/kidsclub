@@ -13,6 +13,8 @@ import {EditStudentComponent} from "./edit-add-student/edit-student.component";
 import {ImportStudentsComponent} from "./import-students/import-students.component";
 import {UserPermissionsComponent} from "./user-permissions/user-permissions.component";
 import {CreateTeamComponent} from "./create-team/create-team.component";
+import {InviteMemberComponent} from "./invite-member/invite-member.component";
+import {AttendanceComponent} from "./attendance/attendance.component";
 
 const routes: Routes = [
     { path: '', redirectTo: '/admin', pathMatch: 'full' },
@@ -32,6 +34,8 @@ const routes: Routes = [
     { path: 'importstudents/:id', component: ImportStudentsComponent },
     { path: 'userpermissions/:projectId/user/:userId', component: UserPermissionsComponent },
     { path: 'createteam/:projectId', component: CreateTeamComponent },
+    { path: 'invitemember/:projectId/:inviteType', component: InviteMemberComponent },
+    { path: 'attendance/:projectId', component: AttendanceComponent }
 ];
 
 @NgModule({

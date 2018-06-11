@@ -98,11 +98,12 @@ public class StudentResource {
     }
 
     @DELETE
-    @Consumes(MediaType.APPLICATION_JSON)
     @Path("/{id}")
-    public Response deleteStudent(@PathParam("id") Long studentId, StudentDto studentDto) {
-        studentService.deleteStudent(studentId, studentDto.getProjectId());
-        logStats("rest.student.delete", studentDto.getProjectId().toString());
+    public Response deleteStudent(@PathParam("id") Long studentId) {
+        Optional<Student> deleted = studentService.deleteStudent(studentId);
+        if (deleted.isPresent()) {
+            logStats("rest.student.delete", deleted.get().getProject().getId().toString());
+        }
 
         return Response.status(Response.Status.OK).build();
     }
@@ -162,7 +163,7 @@ public class StudentResource {
             @FormDataParam("mediaDescriptor") String mediaDescriptor,
             @FormDataParam("team") String team
     ) throws IOException {
-        if (mediaDescriptor != null && mediaDescriptor.isEmpty()) {
+        if (mediaDescriptor != null && (mediaDescriptor.isEmpty() || mediaDescriptor.equals("null"))) {
             mediaDescriptor = null;
         }
 

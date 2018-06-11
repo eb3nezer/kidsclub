@@ -37,7 +37,14 @@ public class Application {
         "/admin/newproject",
         "/admin/audit",
         "/admin/profile",
-        "/admin/viewteam/**"
+        "/admin/viewteam/**",
+        "/admin/viewmembers/**",
+        "/admin/viewstudents/**",
+        "/admin/userpermissions/**",
+        "/admin/importstudents/**",
+        "/admin/editstudent/**",
+        "/admin/userpermissions/**",
+        "/admin/createteam/**"
     })
     public String index() {
         return "forward:/admin/index.html";

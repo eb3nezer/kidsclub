@@ -8,10 +8,13 @@
 </mat-toolbar>
 
 <mat-menu #appMenu="matMenu" color="primary">
-  <button mat-menu-item [routerLink]="['admin']">Administration home</button>
-  <button mat-menu-item [routerLink]="['profile']">Edit your profile</button>
-  <button mat-menu-item [routerLink]="['audit']">View the audit log</button>
-  <button mat-menu-item [routerLink]="['newproject']">Create a new project</button>
+    <button mat-menu-item routerLink="admin">Administration home</button>
+    <button *ngIf="currentProject" mat-menu-item routerLink="viewproject/{{currentProject.id}}">{{currentProject.name}} Administration</button>
+    <button *ngIf="currentProject" mat-menu-item routerLink="viewmembers/{{currentProject.id}}">{{currentProject.name}} Members</button>
+    <button *ngIf="currentProject" mat-menu-item routerLink="viewstudents/{{currentProject.id}}">{{currentProject.name}} Students</button>
+    <button *ngIf="currentProject" mat-menu-item routerLink="audit/{{currentProject.id}}">Audit log</button>
+    <button *ngIf="!currentProject" mat-menu-item routerLink="audit">Audit log</button>
+    <button mat-menu-item [routerLink]="['profile']">Edit your profile</button>
+    <button mat-menu-item [routerLink]="['newproject']">Create a new project</button>
 </mat-menu>
-<span *ngIf="messages">{{messages}}</span>
 <router-outlet></router-outlet>

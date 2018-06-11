@@ -201,7 +201,11 @@ public class UserResource {
         Optional<User> currentUser = userService.getUserById(Long.valueOf(id));
         if (currentUser.isPresent()) {
             UserPermissionsDto result = permissionsService.setUserPermissionsDto(Long.valueOf(id), userPermissionsDto);
-            logStats("rest.user.set.permissions", userPermissionsDto.getProject().getId().toString());
+            String projectId = null;
+            if (userPermissionsDto.getProject() != null) {
+                projectId = userPermissionsDto.getProject().getId().toString();
+            }
+            logStats("rest.user.set.permissions", projectId);
 
             return Response.status(Response.Status.OK).entity(result).build();
         }

@@ -1,0 +1,23 @@
+<div class="mat-typography">
+    <div *ngIf="permissions">
+        <img *ngIf="permissions.user.mediaDescriptor; else elseBlock" src="/rest/data/download/{{permissions.user.mediaDescriptor}}" width="200">
+        <ng-template #elseBlock><img *ngIf="permissions.user.avatarUrl" src="{{permissions.user.avatarUrl}}" width="200"></ng-template>
+        <form #permissionsForm="ngForm">
+            <h2 *ngIf="project">Permissions for {{project.name}}</h2>
+            <mat-list>
+                <mat-list-item *ngFor="let upp of permissions.userProjectPermissions">
+                    <mat-checkbox [(ngModel)]="upp.granted" name="{{upp.key}}" (change)="onToggleProjectPermission($event)">{{upp.description}}</mat-checkbox>
+                </mat-list-item>
+            </mat-list>
+            <h2>Global Permissions</h2>
+            <mat-list>
+                <mat-list-item *ngFor="let usp of permissions.userSitePermissions">
+                    <mat-checkbox [(ngModel)]="usp.granted" name="{{usp.key}}" (change)="onToggleSitePermission($event)">{{usp.description}}</mat-checkbox>
+                </mat-list-item>
+            </mat-list>
+        </form>
+    </div>
+
+    <button mat-raised-button (click)="onCancel()">Done</button>
+
+</div>

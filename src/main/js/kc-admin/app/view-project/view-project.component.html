@@ -1,5 +1,19 @@
 <div class="mat-typography">
-<p>Project team members: {{((project && project.users) ? project.users.length : "")}}</p>
+    <div style="display: block" *ngIf="project">
+        <div style="display: flex;">
+            <button mat-raised-button routerLink="/editproject/{{project.id}}">Edit Project</button>&nbsp;
+            <button mat-raised-button><a href="/secure/project_home.html#project={{project.id}}">View Project</a></button>
+        </div>
+        <div style="height: 20px;"></div>
+        <div style="display: flex;">
+            <div><button mat-raised-button routerLink="/viewmembers/{{project.id}}">Members</button></div>&nbsp;
+            <div><button mat-raised-button routerLink="/viewstudents/{{project.id}}">Students</button></div>&nbsp;
+            <div><button mat-raised-button routerLink="/editalbums/{{project.id}}">Albums</button></div>&nbsp;
+            <div><button mat-raised-button routerLink="/editdocuments/{{project.id}}">Documents</button></div>&nbsp;
+            <div><button mat-raised-button routerLink="/attendance/{{project.id}}">Attendance</button></div>
+        </div>
+    </div>
+    <p>Project team members: {{((project && project.users) ? project.users.length : "")}}</p>
     <table mat-table [dataSource]="teams" *ngIf="teams">
     <ng-container matColumnDef="teamName">
         <th mat-header-cell *matHeaderCellDef> Team </th>
@@ -24,15 +38,4 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
-    <div style="display: block" *ngIf="project">
-        <div style="display: flex;">
-            <button mat-raised-button routerLink="/editproject/{{project.id}}">Edit Project</button>
-            <button mat-raised-button><a href="/secure/project_home.html#project={{project.id}}">View Project</a></button>
-        </div>
-        <div><button mat-raised-button routerLink="/editproject/{{project.id}}">Members</button></div>
-        <div><button mat-raised-button routerLink="/editproject/{{project.id}}">Students</button></div>
-        <div><button mat-raised-button routerLink="/editproject/{{project.id}}">Albums</button></div>
-        <div><button mat-raised-button routerLink="/editproject/{{project.id}}">Documents</button></div>
-        <div><button mat-raised-button routerLink="/editproject/{{project.id}}">Attendance</button></div>
-    </div>
 </div>

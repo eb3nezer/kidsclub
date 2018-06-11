@@ -3,18 +3,16 @@ import { AppTitleService } from "../services/app-title.service";
 import { ProjectService } from "../services/project.service";
 import { TeamService } from "../services/team.service";
 import { Project } from "../model/project";
-import {ActivatedRoute} from "@angular/router";
-import { StudentTeam } from "../model/studentTeam";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
-  selector: 'app-view-project',
-  templateUrl: './view-project.component.html',
-  styleUrls: ['./view-project.component.css']
+  selector: 'app-view-members',
+  templateUrl: './view-members.component.html',
+  styleUrls: ['./view-members.component.css']
 })
-export class ViewProjectComponent implements OnInit {
+export class ViewMembersComponent implements OnInit {
     project: Project;
-    teams: StudentTeam[];
-    displayedColumns = ['teamName', 'teamAvatar', 'teamScore', 'teamStudents'];
+    displayedColumns = ['userName', 'userPhone', 'userEmail', 'userPhoto', 'userNotes'];
 
     constructor(
         private appTitleService: AppTitleService,
@@ -23,25 +21,22 @@ export class ViewProjectComponent implements OnInit {
         private route: ActivatedRoute) {
     }
 
-    loadProjectAndTeams() {
+    loadProject() {
         const projectId = +this.route.snapshot.paramMap.get('id');
         if (projectId) {
             this.projectService.getProjectObservable(projectId).subscribe(project => {
                 this.project = project;
-                this.appTitleService.setTitle(`${project.name} Project Administration`)
+                this.appTitleService.setTitle(`${project.name} Project Members`);
                 this.appTitleService.setCurrentProject(project);
             });
-
-            this.teamService.getTeamsForProject(projectId).subscribe(teams => {
-                this.teams = teams;
-            })
         }
     }
 
-    ngOnInit() {
-    }
+  ngOnInit() {
+  }
 
     ngAfterViewInit() {
-        Promise.resolve(null).then(() => this.loadProjectAndTeams());
+        Promise.resolve(null).then(() => this.loadProject());
     }
+
 }

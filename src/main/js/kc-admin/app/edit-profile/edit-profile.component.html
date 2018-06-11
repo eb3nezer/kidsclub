@@ -20,11 +20,11 @@
     <mat-form-field appearance="standard" disabled="true"><mat-label>E-Mail Address</mat-label><input matInput name="email" [(ngModel)]="currentUser.email"></mat-form-field>
     <span>You need to contact an admin if you want to change your email address.</span>
   </mat-list-item>
-  <mat-list-item style="height: 120px">
+  <mat-list-item style="height: auto">
     <mat-form-field appearance="standard"><mat-label>Avatar URL</mat-label><input matInput name="avatarUrl" [(ngModel)]="currentUser.avatarUrl"></mat-form-field>
       <span id="upload_preview" *ngIf="currentUser.avatarUrl"><img src="{{currentUser.avatarUrl}}" width="100"/></span>
   </mat-list-item>
-  <mat-list-item>
+  <mat-list-item style="height: auto;">
     <label>
         <input type="file" (change)="setFile($event)" style="display:none" multiple/>
         <a mat-raised-button>

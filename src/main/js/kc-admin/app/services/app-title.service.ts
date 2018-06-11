@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subscriber, of } from 'rxjs';
+import {Project} from "../model/project";
 
 @Injectable({
   providedIn: 'root'
@@ -7,27 +8,27 @@ import { Observable, Subscriber, of } from 'rxjs';
 export class AppTitleService {
   titleSubscriber: Subscriber<string>;
   titleObserver: Observable<string>;
-  messagesSubscriber: Subscriber<string>;
-  messagesObserver: Observable<string>;
+  currentProjectSubscriber: Subscriber<Project>;
+  currentProjectObserver: Observable<Project>;
 
   constructor() {
     this.titleObserver = Observable.create(observer => this.titleSubscriber = observer);
-    this.messagesObserver = Observable.create(observer => this.messagesSubscriber = observer);
+    this.currentProjectObserver = Observable.create(observer => this.currentProjectSubscriber = observer);
   }
 
-    getTitle(): Observable<string> {
+    getTitleObserver(): Observable<string> {
         return this.titleObserver;
-    }
-
-    getMessages(): Observable<string> {
-        return this.messagesObserver;
     }
 
     setTitle(newTitle: string): void {
         this.titleSubscriber.next(newTitle);
     }
 
-    setMessages(newMessages: string): void {
-        this.messagesSubscriber.next(newMessages);
+    getCurrentProjectObserver(): Observable<Project> {
+      return this.currentProjectObserver;
+    }
+
+    setCurrentProject(project: Project): void {
+        this.currentProjectSubscriber.next(project);
     }
 }

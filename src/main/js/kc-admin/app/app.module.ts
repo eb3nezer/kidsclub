@@ -14,10 +14,10 @@ import {
     MatListModule,
     MatGridListModule,
     MatTableModule,
-    MatAutocompleteModule
+    MatAutocompleteModule, MatSelectModule, MatDialogModule, MatSnackBarModule
 } from "@angular/material";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
-import { AppRoutingModule } from './/app-routing.module';
+import { AppRoutingModule } from './app-routing.module';
 import { AdminHomeComponent } from './admin-home/admin-home.component';
 import { EditProfileComponent } from './edit-profile/edit-profile.component';
 import { EditProjectComponent } from './edit-project/edit-project.component';
@@ -26,6 +26,13 @@ import { CreateProjectComponent } from './create-project/create-project.componen
 import { HttpClientModule } from "@angular/common/http";
 import { ViewProjectComponent } from './view-project/view-project.component';
 import { EditTeamComponent } from './edit-team/edit-team.component';
+import { ViewMembersComponent } from './view-members/view-members.component';
+import { ViewStudentsComponent } from './view-students/view-students.component';
+import { EditStudentComponent } from './edit-add-student/edit-student.component';
+import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+import { ImportStudentsComponent } from './import-students/import-students.component';
+import { UserPermissionsComponent } from './user-permissions/user-permissions.component';
+import { CreateTeamComponent } from './create-team/create-team.component';
 
 @NgModule({
     declarations: [
@@ -36,7 +43,14 @@ import { EditTeamComponent } from './edit-team/edit-team.component';
         ViewAuditComponent,
         CreateProjectComponent,
         ViewProjectComponent,
-        EditTeamComponent
+        EditTeamComponent,
+        ViewMembersComponent,
+        ViewStudentsComponent,
+        EditStudentComponent,
+        ConfirmDialogComponent,
+        ImportStudentsComponent,
+        UserPermissionsComponent,
+        CreateTeamComponent
   ],
     imports: [
         BrowserModule,
@@ -56,9 +70,13 @@ import { EditTeamComponent } from './edit-team/edit-team.component';
         MatGridListModule,
         HttpClientModule,
         MatTableModule,
-        MatAutocompleteModule
+        MatAutocompleteModule,
+        MatSelectModule,
+        MatDialogModule,
+        MatSnackBarModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+    entryComponents: [ConfirmDialogComponent]
 })
 export class AppModule { }

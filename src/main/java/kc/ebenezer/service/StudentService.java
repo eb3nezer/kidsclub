@@ -91,22 +91,21 @@ public class StudentService {
         }
     }
 
-    public void deleteStudent(Long studentId, Long projectId) {
+    public Optional<Student> deleteStudent(Long studentId) {
         Optional<User> currentUser = userService.getCurrentUser();
         if (!currentUser.isPresent()) {
             throw new NoPermissionException("Anonymous cannot delete students");
         }
-        Optional<Project> project = projectService.getProjectById(currentUser.get(), projectId);
+        Optional<Student> student = studentDao.findById(studentId);
+        if (!student.isPresent()) {
+            throw new ValidationException("Invalid student");
+        }
+        Optional<Project> project = projectService.getProjectById(currentUser.get(), student.get().getProject().getId());
         if (!project.isPresent()) {
             throw new ValidationException("Invalid project");
         }
         if (!projectPermissionService.userHasPermission(currentUser.get(), project.get(), ProjectPermission.EDIT_STUDENTS)) {
             throw new NoPermissionException("You do not have permission to create/edit students");
-        }
-
-        Optional<Student> student = studentDao.findById(studentId);
-        if (!student.isPresent()) {
-            throw new ValidationException("Invalid student");
         }
 
         if (student.get().getStudentTeam() != null) {
@@ -115,6 +114,8 @@ public class StudentService {
         studentDao.delete(student.get());
 
         auditService.audit(project.get(), "Deleted student, id=" + student.get().getId(), new Date());
+
+        return student;
     }
 
     public List<Student> bulkCreateStudents(Long projectId, InputStream inputStream) throws IOException {

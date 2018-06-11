@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AppTitleService } from "./services/app-title.service";
+import {Project} from "./model/project";
 
 @Component({
   selector: 'app-root',
@@ -9,21 +10,21 @@ import { AppTitleService } from "./services/app-title.service";
 
 export class AppComponent {
   pageTitle: string = "";
-  projectId: number = -1;
-  messages: string;
+  projectId: number;
+  currentProject: Project;
 
   constructor(private apptitleService: AppTitleService) {
   }
 
   ngOnInit() {
-    this.apptitleService.getTitle().subscribe(title => {
+    this.apptitleService.getTitleObserver().subscribe(title => {
         this.pageTitle = title;
         document.title = title;
       },
       e => console.log('on error %s', e),
       () => console.log('on complete'));
 
-    this.apptitleService.getMessages().subscribe(messages => this.messages = messages);
+    this.apptitleService.getCurrentProjectObserver().subscribe(project => this.currentProject = project);
   }
 
   ngAfterViewInit() {

@@ -11,6 +11,8 @@ import { Project } from "../model/project";
 import { StudentTeam } from "../model/studentTeam";
 import { User } from "../model/user";
 import { Student } from "../model/student";
+import {Location} from "@angular/common";
+import {MatSnackBar} from "@angular/material";
 
 @Component({
   selector: 'app-view-team',
@@ -35,7 +37,9 @@ export class EditTeamComponent implements OnInit {
         private teamService: TeamService,
         private studentService: StudentService,
         private route: ActivatedRoute,
-        private userProfileService: UserProfileService) {
+        private userProfileService: UserProfileService,
+        private location: Location,
+        private snackBar: MatSnackBar) {
         this.project = new Project();
         this.team = new StudentTeam();
     }
@@ -47,7 +51,8 @@ export class EditTeamComponent implements OnInit {
         if (projectId) {
             this.projectService.getProjectObservable(projectId).subscribe(project => {
                 this.project = project;
-                this.appTitleService.setTitle(`Edit team for ${project.name}`)
+                this.appTitleService.setTitle(`Edit team for ${project.name}`);
+                this.appTitleService.setCurrentProject(project);
             });
         }
 
@@ -133,9 +138,15 @@ export class EditTeamComponent implements OnInit {
             this.team = team;
             this.leaders = team.leaders;
             this.students = team.students;
-            this.appTitleService.setMessages("Team updated");
+            this.snackBar.open(`Team updated`, 'Dismiss', {
+                duration: 10000,
+            });
             this.newFilename = "";
         });
+    }
+
+    onCancel() {
+        this.location.back();
     }
 
     ngOnInit() {

@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { AppTitleService } from "../services/app-title.service";
 import { ProjectService } from "../services/project.service";
 import { Project } from "../model/project";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
+import {Location} from "@angular/common";
+import {MatSnackBar} from "@angular/material";
 
 @Component({
   selector: 'app-edit-project',
@@ -16,7 +18,9 @@ export class EditProjectComponent implements OnInit {
     constructor(
         private appTitleService: AppTitleService,
         private projectService: ProjectService,
-        private route: ActivatedRoute) {
+        private route: ActivatedRoute,
+        private location: Location,
+        private snackBar: MatSnackBar) {
         this.project = new Project();
     }
 
@@ -27,6 +31,7 @@ export class EditProjectComponent implements OnInit {
                 this.project = project;
                 this.mediaPermitted = project.properties.studentMediaPermittedDefault === 'true';
                 this.appTitleService.setTitle(`Edit details for ${project.name}`);
+                this.appTitleService.setCurrentProject(project);
             });
         }
     }
@@ -43,9 +48,15 @@ export class EditProjectComponent implements OnInit {
                 this.project = project;
                 this.mediaPermitted = project.properties.studentMediaPermittedDefault === 'true';
                 this.appTitleService.setTitle(`Edit details for ${project.name}`);
-                this.appTitleService.setMessages("Project updated");
+                this.snackBar.open('Project updated', 'Dismiss', {
+                    duration: 10000,
+                });
             })
         }
+    }
+
+    onCancel() {
+        this.location.back();
     }
 
     ngOnInit() {

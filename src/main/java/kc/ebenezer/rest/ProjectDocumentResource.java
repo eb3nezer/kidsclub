@@ -95,6 +95,15 @@ public class ProjectDocumentResource {
         return Response.status(Response.Status.OK).build();
     }
 
+    @DELETE
+    @Path("/{documentId}/project/{projectId}")
+    public Response deleteDocument(@PathParam("documentId") Long documentId, @PathParam("projectId") Long projectId) {
+        projectDocumentService.deleteProjectDocument(projectId, documentId);
+        logStats("rest.document.delete", projectId.toString());
+
+        return Response.status(Response.Status.OK).build();
+    }
+
     private void logStats(String key, String projectId) {
         Map<String, String> metadata = new HashMap<>();
         if (projectId != null) {

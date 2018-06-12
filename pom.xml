@@ -206,6 +206,7 @@
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.6</version>
                 <executions>
                     <execution>
                         <id>install node and yarn</id>
@@ -235,7 +236,7 @@
                       <goal>npm</goal>
                     </goals>
                     <configuration>
-                      <arguments>run-script ng build</arguments>
+                      <arguments>run-script buildprod</arguments>
                     </configuration>
                     <phase>generate-resources</phase>
                   </execution>

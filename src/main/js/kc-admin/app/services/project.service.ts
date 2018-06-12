@@ -34,4 +34,12 @@ export class ProjectService {
             catchError(this.errorService.handleError('Get all projects', []))
         );
     }
+
+    createProject(name: string): Observable<Project> {
+        const newProject = new Project(undefined, name);
+
+        return this.http.put<Project>(this.urlForUpdate, newProject).pipe(
+            catchError(this.errorService.handleError('Create project', undefined))
+        );
+    }
 }

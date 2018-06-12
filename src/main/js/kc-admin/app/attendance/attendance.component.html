@@ -28,6 +28,7 @@
     <button mat-raised-button (click)="onCancel()">Cancel</button>
 </form>
 
+<h2 class="mat-typography">Recent Attendance Updates</h2>
 <table mat-table [dataSource]="recentAttendance" *ngIf="recentAttendance">
     <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>Student</th>

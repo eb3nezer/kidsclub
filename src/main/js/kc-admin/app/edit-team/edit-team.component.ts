@@ -65,14 +65,14 @@ export class EditTeamComponent implements OnInit {
         }
     }
 
-    private setFile(event) {
+    setFile(event) {
         if (event.srcElement.files && event.srcElement.files.length >= 1) {
             this.fileToUpload = event.srcElement.files[0];
             this.newFilename = this.fileToUpload.name;
         }
     }
 
-    private leaderChosen(event) {
+    leaderChosen(event) {
         let found = false;
         for (let i = 0; i < this.leaders.length && !found; i++) {
             if (this.leaders[i].id === this.userAutocomplete.value.id) {
@@ -85,7 +85,7 @@ export class EditTeamComponent implements OnInit {
         this.userAutocomplete.setValue(undefined);
     }
 
-    private removeLeader(leaderId: number) {
+    removeLeader(leaderId: number) {
         let found = false;
         for (let i = 0; i < this.leaders.length && !found; i++) {
             if (this.leaders[i].id === leaderId) {
@@ -95,7 +95,7 @@ export class EditTeamComponent implements OnInit {
         }
     }
 
-    private studentChosen(event) {
+    studentChosen(event) {
         let found = false;
         for (let i = 0; i < this.students.length && !found; i++) {
             if (this.students[i].id === this.studentAutocomplete.value.id) {
@@ -108,7 +108,7 @@ export class EditTeamComponent implements OnInit {
         this.studentAutocomplete.setValue(undefined);
     }
 
-    private removeStudent(studentId: number) {
+    removeStudent(studentId: number) {
         let found = false;
         for (let i = 0; i < this.students.length && !found; i++) {
             if (this.students[i].id === studentId) {

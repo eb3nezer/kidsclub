@@ -35,6 +35,9 @@ import { UserPermissionsComponent } from './user-permissions/user-permissions.co
 import { CreateTeamComponent } from './create-team/create-team.component';
 import { InviteMemberComponent } from './invite-member/invite-member.component';
 import { AttendanceComponent } from './attendance/attendance.component';
+import { EditAlbumsComponent } from './edit-albums/edit-albums.component';
+import { EditDocumentsComponent } from './edit-documents/edit-documents.component';
+import { DocumentsComponent } from './documents/documents.component';
 
 @NgModule({
     declarations: [
@@ -54,7 +57,10 @@ import { AttendanceComponent } from './attendance/attendance.component';
         UserPermissionsComponent,
         CreateTeamComponent,
         InviteMemberComponent,
-        AttendanceComponent
+        AttendanceComponent,
+        EditAlbumsComponent,
+        EditDocumentsComponent,
+        DocumentsComponent
   ],
     imports: [
         BrowserModule,

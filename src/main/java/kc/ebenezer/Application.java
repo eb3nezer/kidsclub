@@ -46,7 +46,9 @@ public class Application {
         "/admin/userpermissions/**",
         "/admin/createteam/**",
         "/admin/invitemember/**",
-        "/admin/attendance/**"
+        "/admin/attendance/**",
+        "/admin/documents/**",
+        "/admin/editalbums/**"
     })
     public String index() {
         return "forward:/admin/index.html";

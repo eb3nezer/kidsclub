@@ -6,6 +6,7 @@ import { Project } from "../model/project";
 import {ActivatedRoute} from "@angular/router";
 import { Location } from '@angular/common';
 import {MatSnackBar} from "@angular/material";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-import-students',
@@ -24,25 +25,29 @@ export class ImportStudentsComponent implements OnInit {
         private studentService: StudentService,
         private route: ActivatedRoute,
         private location: Location,
-        public snackBar: MatSnackBar) {
+        private snackBar: MatSnackBar,
+        private router: Router) {
     }
 
-    private setFile(event) {
+    setFile(event) {
         if (event.srcElement.files && event.srcElement.files.length >= 1) {
             this.fileToUpload = event.srcElement.files[0];
             this.newFilename = this.fileToUpload.name;
         }
     }
 
-    private onCancel() {
+    onCancel() {
         this.location.back();
     }
 
-    private onSubmit() {
+    onSubmit() {
         this.studentService.importCSVFile(this.project.id, this.fileToUpload).subscribe(result => {
             this.snackBar.open(`Imported ${result.length} students`, 'Dismiss', {
                 duration: 10000,
-            })
+            });
+            if (result.length > 0) {
+                this.router.navigate(["viewstudents", this.project.id]);
+            }
         });
     }
 
@@ -58,7 +63,8 @@ export class ImportStudentsComponent implements OnInit {
     }
 
     ngOnInit() {
-  }
+    }
+
     ngAfterViewInit() {
         Promise.resolve(null).then(() => this.loadProject());
     }

@@ -4,7 +4,6 @@ import kc.ebenezer.Application;
 import kc.ebenezer.dto.AlbumDto;
 import kc.ebenezer.dto.mapper.AlbumItemMapper;
 import kc.ebenezer.dto.mapper.AlbumMapper;
-import kc.ebenezer.dto.mapper.UserMapper;
 import kc.ebenezer.model.Album;
 import kc.ebenezer.model.AlbumItem;
 import kc.ebenezer.service.AlbumService;
@@ -38,8 +37,6 @@ public class AlbumResource {
     private AlbumItemMapper albumItemMapper;
     @Inject
     private AlbumService albumService;
-    @Inject
-    private UserMapper userMapper;
     @Inject
     private StatsService statsService;
 

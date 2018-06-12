@@ -45,7 +45,7 @@ export class CreateTeamComponent implements OnInit {
         }
     }
 
-    private setFile(event) {
+    setFile(event) {
         if (event.srcElement.files && event.srcElement.files.length >= 1) {
             this.fileToUpload = event.srcElement.files[0];
             this.newFilename = this.fileToUpload.name;

@@ -69,7 +69,7 @@ public abstract class CustomAuthenticationSuccessHandler extends SavedRequestAwa
                 Optional<User> userResult = userService.getUserByEmail(email);
                 if (userResult.isPresent()) {
                     if (!userResult.get().getActive()) {
-                        auditService.audit("Denying access to disabled user email=\"" + email + "\"", new Date(), AuditLevel.DEBUG);
+                        auditService.audit(null, "Denying access to disabled user email=\"" + email + "\"", new Date(), AuditLevel.DEBUG);
                     } else {
                         user = userResult.get();
                         LOG.info("Found existing user id=" + user.getId());
@@ -79,7 +79,7 @@ public abstract class CustomAuthenticationSuccessHandler extends SavedRequestAwa
                         user.setUpdated(System.currentTimeMillis());
                     }
                 } else {
-                    auditService.audit("Denying access to unknown user email=\"" + email + "\"", new Date(), AuditLevel.DEBUG);
+                    auditService.audit(null, "Denying access to unknown user email=\"" + email + "\"", new Date(), AuditLevel.DEBUG);
                     LOG.info("User with email " + email + " does not already exist");
                 }
 
@@ -104,7 +104,7 @@ public abstract class CustomAuthenticationSuccessHandler extends SavedRequestAwa
                                 getCredentialSource(),
                                 authentication.getName());
                         userService.createUser(user);
-                        auditService.audit("Creating new user on login email=\"" + email + "\"", new Date());
+                        auditService.audit(null, "Creating new user on login email=\"" + email + "\"", new Date());
                         LOG.info("Created new user for email " + email + ". id=" + user.getId());
                     } else {
                         user.setName(displayName);
@@ -113,7 +113,7 @@ public abstract class CustomAuthenticationSuccessHandler extends SavedRequestAwa
                         user.setAvatarUrl(avatarUrl);
                         user.setUpdated(new Date());
                         user.setLoggedIn(Boolean.TRUE);
-                        auditService.audit("Updating user details after first login for email=\"" + email + "\"", new Date());
+                        auditService.audit(null, "Updating user details after first login for email=\"" + email + "\"", new Date());
                     }
                     newUser = true;
                 }
@@ -138,7 +138,7 @@ public abstract class CustomAuthenticationSuccessHandler extends SavedRequestAwa
                             .collect(Collectors.toSet());
                     for (SitePermission sitePermission : SitePermission.values()) {
                         if (!existingPermissions.contains(sitePermission)) {
-                            auditService.audit("Adding new site permission " + sitePermission.toString() +
+                            auditService.audit(null, "Adding new site permission " + sitePermission.toString() +
                                     " to admin email=\"" + email + "\" at login", new Date());
                             UserSitePermission userSitePermission = new UserSitePermission(user, sitePermission);
                             userSitePermission = userSitePermissionDao.create(userSitePermission);

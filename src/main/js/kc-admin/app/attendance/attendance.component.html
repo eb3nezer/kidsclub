@@ -1,0 +1,70 @@
+<form #attendanceForm="ngForm">
+    <mat-list *ngIf="project">
+        <mat-list-item>
+            <mat-form-field appearance="standard">
+                <mat-label>Student (type to search)</mat-label>
+                <input matInput name="chooseStudent" id="chooseStudentField" [formControl]="studentAutocomplete" [matAutocomplete]="auto">
+            </mat-form-field>
+            <mat-autocomplete #auto="matAutocomplete">
+                <mat-option *ngFor="let option of studentSuggestions | async" [value]="option" (click)="studentChosen($event)">{{option.name}}</mat-option>
+            </mat-autocomplete>
+        </mat-list-item>
+        <mat-list-item>
+            <mat-form-field appearance="standard">
+                <mat-label>Attendance</mat-label>
+                <mat-select name="attendanceCode" [(ngModel)]="attendanceCode">
+                    <mat-option value="I">Sign In</mat-option>
+                    <mat-option value="O">Sign Out</mat-option>
+                    <mat-option value="A">Absent</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-list-item>
+        <mat-list-item>
+            <mat-form-field appearance="standard"><mat-label>Comment</mat-label><input matInput name="name" [(ngModel)]="comment"></mat-form-field>
+        </mat-list-item>
+    </mat-list>
+
+    <button mat-raised-button color="primary" (click)="onSubmit()">Save</button>&nbsp;
+    <button mat-raised-button (click)="onCancel()">Cancel</button>
+</form>
+
+<h2 class="mat-typography">Recent Attendance Updates</h2>
+<table mat-table [dataSource]="recentAttendance" *ngIf="recentAttendance">
+    <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Student</th>
+        <td mat-cell *matCellDef="let record">
+            {{record.student.name}}
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="team">
+        <th mat-header-cell *matHeaderCellDef>Team</th>
+        <td mat-cell *matCellDef="let record">
+            <span *ngIf="record.student.studentTeam">{{record.student.studentTeam.name}}</span>
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Status</th>
+        <td mat-cell *matCellDef="let record">
+            {{record.attendanceType}}
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="time">
+        <th mat-header-cell *matHeaderCellDef>Time</th>
+        <td mat-cell *matCellDef="let record">
+            {{record.recordTime}}
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="who">
+        <th mat-header-cell *matHeaderCellDef>Who</th>
+        <td mat-cell *matCellDef="let record">
+            {{record.verifier.name}}
+        </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>

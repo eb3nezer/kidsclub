@@ -3,6 +3,7 @@ package kc.ebenezer.service;
 import kc.ebenezer.dao.AuditRecordDao;
 import kc.ebenezer.model.AuditLevel;
 import kc.ebenezer.model.AuditRecord;
+import kc.ebenezer.model.Project;
 import kc.ebenezer.model.User;
 import kc.ebenezer.permissions.SitePermission;
 import kc.ebenezer.rest.NoPermissionException;
@@ -42,21 +43,25 @@ public class AuditService {
         auditingService = Executors.newSingleThreadExecutor();
     }
 
-    public boolean audit(String change, Date changeTime, AuditLevel auditLevel) {
+    public boolean audit(Project project, String change, Date changeTime, AuditLevel auditLevel) {
         Optional<User> currentUser = userService.getCurrentUser();
 
-        auditingService.submit(new AuditJob(change, changeTime, currentUser, auditLevel, entityManagerFactory));
+        auditingService.submit(new AuditJob(change, changeTime, currentUser, Optional.ofNullable(project), auditLevel, entityManagerFactory));
         return true;
     }
 
-    public boolean audit(String change, Date changeTime) {
-        return audit(change, changeTime, AuditLevel.INFO);
+    public boolean audit(Project project, String change, Date changeTime) {
+        return audit(project, change, changeTime, AuditLevel.INFO);
     }
 
-    public List<AuditRecord> getAuditRecords(Date startDate, Date endDate, int start, int records) {
+    public List<AuditRecord> getAuditRecords(Date startDate, Date endDate, Optional<Long> projectId, int start, int records) {
         Optional<User> currentUser = userService.getCurrentUser();
         if (currentUser.isPresent() && SitePermissionService.userHasPermission(currentUser.get(), SitePermission.VIEW_AUDIT)) {
-            return auditRecordDao.findByDateRange(startDate, endDate, start, records);
+            if (projectId.isPresent()) {
+                return auditRecordDao.findByDateRangeForProject(startDate, endDate, projectId.get(), start, records);
+            } else {
+                return auditRecordDao.findByDateRange(startDate, endDate, start, records);
+            }
         }
 
         throw new NoPermissionException("You do not have permission to view audit records");
@@ -68,11 +73,13 @@ public class AuditService {
         private Optional<User> user;
         private AuditLevel auditLevel;
         private EntityManagerFactory entityManagerFactory;
+        private Optional<Project> project;
 
-        public AuditJob(String change, Date changeTime, Optional<User> user, AuditLevel auditLevel, EntityManagerFactory entityManagerFactory) {
+        public AuditJob(String change, Date changeTime, Optional<User> user, Optional<Project> project, AuditLevel auditLevel, EntityManagerFactory entityManagerFactory) {
             this.change = change;
             this.changeTime = changeTime;
             this.user = user;
+            this.project = project;
             this.auditLevel = auditLevel;
             this.entityManagerFactory = entityManagerFactory;
         }
@@ -82,7 +89,7 @@ public class AuditService {
             EntityManager entityManager = entityManagerFactory.createEntityManager();
 
             try {
-                AuditRecord auditRecord = new AuditRecord(change, changeTime, user.orElse(null), auditLevel);
+                AuditRecord auditRecord = new AuditRecord(change, changeTime, user.orElse(null), auditLevel, project.orElse(null));
                 EntityTransaction transaction = entityManager.getTransaction();
                 transaction.begin();
                 entityManager.persist(auditRecord);

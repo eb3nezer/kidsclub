@@ -63,7 +63,7 @@ public class UserService implements UserDetailsService {
     }
 
     public User createUser(User user) {
-        auditService.audit("Created new user, id=" + user.getId() + " email=" + user.getEmail(),
+        auditService.audit(null, "Created new user, id=" + user.getId() + " email=" + user.getEmail(),
                 new Date());
         User created = userDao.create(user);
         userDao.flush();
@@ -161,35 +161,35 @@ public class UserService implements UserDetailsService {
             }
             existingUser.get().setName(valuesToUpdate.getName());
             existingUser.get().setUpdated(now);
-            auditService.audit("Set name to \"" + valuesToUpdate.getName() + "\" for user id=" + valuesToUpdate.getId(),
+            auditService.audit(null, "Set name to \"" + valuesToUpdate.getName() + "\" for user id=" + valuesToUpdate.getId(),
                     now);
         }
 
         if (valueUpdated(existingUser.get().getGivenName(), valuesToUpdate.getGivenName())) {
             existingUser.get().setGivenName(valuesToUpdate.getGivenName());
             existingUser.get().setUpdated(now);
-            auditService.audit("Set given name to \"" + valuesToUpdate.getGivenName() + "\" for user id=" + valuesToUpdate.getId(),
+            auditService.audit(null, "Set given name to \"" + valuesToUpdate.getGivenName() + "\" for user id=" + valuesToUpdate.getId(),
                     now);
         }
 
         if (valueUpdated(existingUser.get().getFamilyName(), valuesToUpdate.getFamilyName())) {
             existingUser.get().setFamilyName(valuesToUpdate.getFamilyName());
             existingUser.get().setUpdated(now);
-            auditService.audit("Set family name to \"" + valuesToUpdate.getFamilyName() + "\" for user id=" + valuesToUpdate.getId(),
+            auditService.audit(null, "Set family name to \"" + valuesToUpdate.getFamilyName() + "\" for user id=" + valuesToUpdate.getId(),
                     now);
         }
 
         if (valueUpdated(existingUser.get().getMobilePhone(), valuesToUpdate.getMobilePhone())) {
             existingUser.get().setMobilePhone(valuesToUpdate.getMobilePhone());
             existingUser.get().setUpdated(now);
-            auditService.audit("Set mobile number to \"" + valuesToUpdate.getMobilePhone() + "\" for user id=" + valuesToUpdate.getId(),
+            auditService.audit(null, "Set mobile number to \"" + valuesToUpdate.getMobilePhone() + "\" for user id=" + valuesToUpdate.getId(),
                     now);
         }
 
         if (valueUpdated(existingUser.get().getHomePhone(), valuesToUpdate.getHomePhone())) {
             existingUser.get().setHomePhone(valuesToUpdate.getHomePhone());
             existingUser.get().setUpdated(now);
-            auditService.audit("Set home number to \"" + valuesToUpdate.getHomePhone() + "\" for user id=" + valuesToUpdate.getId(),
+            auditService.audit(null, "Set home number to \"" + valuesToUpdate.getHomePhone() + "\" for user id=" + valuesToUpdate.getId(),
                     now);
         }
 
@@ -201,20 +201,20 @@ public class UserService implements UserDetailsService {
             }
             existingUser.get().setAvatarUrl(valuesToUpdate.getAvatarUrl());
             existingUser.get().setUpdated(now);
-            auditService.audit("Set avatar URL to \"" + valuesToUpdate.getAvatarUrl() + "\" for user id=" + valuesToUpdate.getId(),
+            auditService.audit(null, "Set avatar URL to \"" + valuesToUpdate.getAvatarUrl() + "\" for user id=" + valuesToUpdate.getId(),
                     now);
         }
 
         if (valueUpdated(existingUser.get().getMediaDescriptor(), valuesToUpdate.getMediaDescriptor())) {
             if (existingUser.get().getMediaDescriptor() != null && !existingUser.get().getMediaDescriptor().isEmpty()) {
                 mediaService.deleteData(existingUser.get().getMediaDescriptor());
-                auditService.audit("Deleting media \"" + existingUser.get().getMediaDescriptor() +
+                auditService.audit(null, "Deleting media \"" + existingUser.get().getMediaDescriptor() +
                                 "\" so it can be replaced with for user id=" + valuesToUpdate.getMediaDescriptor(),
                         now);
             }
             existingUser.get().setMediaDescriptor(valuesToUpdate.getMediaDescriptor());
             existingUser.get().setUpdated(now);
-            auditService.audit("Set media descriptor to \"" + valuesToUpdate.getMediaDescriptor() + "\" for user id=" + valuesToUpdate.getId(),
+            auditService.audit(null, "Set media descriptor to \"" + valuesToUpdate.getMediaDescriptor() + "\" for user id=" + valuesToUpdate.getId(),
                     now);
         }
 
@@ -268,12 +268,12 @@ public class UserService implements UserDetailsService {
                     null);
             userToInvite = Optional.of(userDao.create(newUser));
             userDao.flush();
-            auditService.audit("Created new user for invite. New user id=" + userToInvite.get().getId() +
+            auditService.audit(null, "Created new user for invite. New user id=" + userToInvite.get().getId() +
                     " email=\"" + email + "\"", new Date());
         }
 
         project.getUsers().add(userToInvite.get());
-        auditService.audit("Added user id=" + userToInvite.get().getId() +
+        auditService.audit(project, "Added user id=" + userToInvite.get().getId() +
                 " to project id=" + project.getId(), new Date());
         permissionsService.updateProjectPermission(
                 currentUser, userToInvite.get().getId(), project.getId(), ProjectPermission.LIST_USERS,true);
@@ -324,12 +324,12 @@ public class UserService implements UserDetailsService {
         return result;
     }
 
-    public boolean unInviteUser(Long userId, UserInvitationDto userInvitationDto) {
+    public boolean unInviteUser(Long userId, Long projectId) {
         Optional<User> currentUser = getCurrentUser();
         if (!currentUser.isPresent()) {
             throw new NoPermissionException("Anonymous may not uninvite users");
         }
-        Optional<Project> project = projectService.getProjectById(currentUser.get(), userInvitationDto.getProjectId());
+        Optional<Project> project = projectService.getProjectById(currentUser.get(), projectId);
         if (!project.isPresent()) {
             throw new NoPermissionException("You are not a member of this project");
         }
@@ -364,7 +364,7 @@ public class UserService implements UserDetailsService {
                 // Remove project from user
                 existingUser.getProjects().remove(project.get());
                 userDao.flush();
-                auditService.audit("Removed user id=" + existingUser.getId() +
+                auditService.audit(project.get(), "Removed user id=" + existingUser.getId() +
                         " from project id=" + project.get().getId(), new Date());
 
                 // Check if this user is a member of any other projects
@@ -381,7 +381,7 @@ public class UserService implements UserDetailsService {
                         }
                     }
                     // Now delete the user entirely
-                    auditService.audit("Deleting user id=" + userId + " as this user is not a member of any project", new Date());
+                    auditService.audit(project.get(), "Deleting user id=" + userId + " as this user is not a member of any project", new Date());
                     userDao.delete(existingUser);
                 }
                 return true;

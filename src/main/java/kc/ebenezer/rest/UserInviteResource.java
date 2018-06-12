@@ -50,13 +50,13 @@ public class UserInviteResource {
         return Response.status(Response.Status.OK).entity(userMapper.toDto(invited)).build();
     }
 
-    @Path("/{id}")
+    @Path("/{userId}/project/{projectId}")
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response unInviteNewUser(@PathParam("id") String userId, UserInvitationDto userInvitation) {
-        boolean result = userService.unInviteUser(Long.valueOf(userId), userInvitation);
+    public Response unInviteNewUser(@PathParam("userId") Long userId, @PathParam("projectId") Long projectId) {
+        boolean result = userService.unInviteUser(userId, projectId);
         if (result) {
-            logStats("rest.user.uninvite", userInvitation.getProjectId());
+            logStats("rest.user.uninvite", projectId);
             return Response.status(Response.Status.OK).build();
         }
 

@@ -1,0 +1,15 @@
+.removable-container {
+    display: block;
+}
+
+.removable {
+    display: flex;
+}
+
+.removable-label {
+    width: 200px;
+}
+
+.removable-control {
+    cursor: pointer;
+}

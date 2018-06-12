@@ -1,0 +1,52 @@
+<form #teamForm="ngForm">
+    <mat-list>
+        <mat-list-item>
+            <mat-form-field appearance="standard"><mat-label>Team Name</mat-label><input matInput name="name" [(ngModel)]="team.name"></mat-form-field>
+        </mat-list-item>
+        <mat-list-item>
+
+            <mat-form-field appearance="standard">
+                <mat-label>Add leaders</mat-label>
+                <input matInput name="addLeader" id="addLeaderField" [formControl]="userAutocomplete" [matAutocomplete]="auto">
+            </mat-form-field>
+            <mat-autocomplete #auto="matAutocomplete">
+                <mat-option *ngFor="let option of leaderSuggestions | async" [value]="option" (click)="leaderChosen($event)">{{option.name}}</mat-option>
+            </mat-autocomplete>
+
+        </mat-list-item>
+        <mat-list-item style="height: auto;">
+            <div class="removable-container">
+            <div class="removable" *ngFor="let leader of leaders"><div class="removable-label">{{leader.name}}</div><div class="removable-control"><mat-icon (click)="removeLeader(leader.id)">delete</mat-icon></div></div>
+            </div>
+        </mat-list-item>
+        <mat-list-item>
+
+            <mat-form-field appearance="standard">
+                <mat-label>Add students</mat-label>
+                <input matInput name="addStudent" id="addStudentField" [formControl]="studentAutocomplete" [matAutocomplete]="auto2">
+            </mat-form-field>
+            <mat-autocomplete #auto2="matAutocomplete">
+                <mat-option *ngFor="let option of studentSuggestions | async" [value]="option" (click)="studentChosen($event)">{{option.name}}</mat-option>
+            </mat-autocomplete>
+        </mat-list-item>
+        <mat-list-item style="height: auto;">
+            <div class="removable-container">
+                <div class="removable" *ngFor="let student of students"><div class="removable-label">{{student.name}}</div><div class="removable-control"><mat-icon (click)="removeStudent(student.id)">delete</mat-icon></div></div>
+            </div>
+        </mat-list-item>
+        <mat-list-item style="height: auto;">
+            <label>
+                <input type="file" (change)="setFile($event)" style="display:none" multiple/>
+                <a mat-raised-button>
+                    <mat-icon>file_upload</mat-icon>
+                    Upload a new photo
+                </a>
+            </label> <span *ngIf="newFilename">File to upload: {{newFilename}}</span>
+            <span id="media_preview" *ngIf="team.mediaDescriptor"><img src="/rest/data/download/{{team.mediaDescriptor}}" width="200"/></span>
+            <input type="hidden" name="mediaDescriptor" [(ngModel)]="team.mediaDescriptor">
+        </mat-list-item>
+    </mat-list>
+
+    <button mat-raised-button color="primary" (click)="onSubmit()">Save</button>&nbsp;
+    <button mat-raised-button (click)="onCancel()">Cancel</button>&nbsp;
+</form>

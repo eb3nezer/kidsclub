@@ -37,9 +37,20 @@ public class AuditResource {
 
     @GET
     @Produces("application/json")
-    public Response getAuditRecords(@QueryParam("startDate") String startDateText, @QueryParam("endDate") String endDateText) {
+    public Response getAuditRecords(
+        @QueryParam("startDate") String startDateText,
+        @QueryParam("endDate") String endDateText,
+        @QueryParam("projectId") Long projectId,
+        @QueryParam("count") Integer count,
+        @QueryParam("start") Integer start) {
+        if (count == null) {
+            count = 100;
+        }
+        if (start == null) {
+            start = 0;
+        }
         DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-        Date startDate = null;
+        Date startDate;
         try {
             startDate = dateFormat.parse("1900/01/01 00:00:00");
             if (startDateText != null) {
@@ -49,7 +60,7 @@ public class AuditResource {
             if (endDateText != null) {
                 endDate = dateFormat.parse(endDateText);
             }
-            List<AuditRecord> records = auditService.getAuditRecords(startDate, endDate, 0, 100);
+            List<AuditRecord> records = auditService.getAuditRecords(startDate, endDate, Optional.ofNullable(projectId),0, 100);
             statsService.logStats("rest.media.download", new HashMap<>());
 
             return Response.status(Response.Status.OK).entity(auditRecordMapper.toDto(records)).build();

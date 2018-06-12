@@ -55,7 +55,7 @@ public class AlbumService {
         }
 
         Album album = new Album(name, description, project.get(), shared);
-        auditService.audit("Created new photo album \"" + name + "\"", album.getCreated());
+        auditService.audit(project.get(), "Created new photo album \"" + name + "\"", album.getCreated());
         result = Optional.ofNullable(albumDao.create(album));
 
         return result;
@@ -111,7 +111,7 @@ public class AlbumService {
                 newAlbumItem = albumItemDao.create(newAlbumItem);
                 album.get().getItems().add(newAlbumItem);
                 album.get().updated();
-                auditService.audit("Added new photo \"" + media.get().getDescriptor() + "\" to album id=" + albumId,
+                auditService.audit(album.get().getProject(), "Added new photo \"" + media.get().getDescriptor() + "\" to album id=" + albumId,
                         album.get().getUpdated());
                 result = Optional.of(newAlbumItem);
             } else {

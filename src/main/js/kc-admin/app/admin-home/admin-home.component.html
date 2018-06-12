@@ -1,0 +1,17 @@
+<div *ngIf="projects" class="mat-typography">
+    <h2>Administer Projects</h2>
+    <mat-list role="list">
+        <mat-list-item role="listitem" *ngFor="let thisProject of projects">
+            <a routerLink="/viewproject/{{thisProject.id}}">{{thisProject.name}}</a>
+        </mat-list-item>
+    </mat-list>
+</div>
+<div *ngIf="project" class="mat-typography">
+    <h2>Details for {{project.name}}</h2>
+</div>
+<div class="mat-typography">
+    <ul>
+        <li><a routerLink="/newproject">Create a new project</a></li>
+        <li><a routerLink="/audit">View the audit log</a></li>
+    </ul>
+</div>

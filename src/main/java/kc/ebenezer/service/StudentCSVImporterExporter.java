@@ -221,7 +221,7 @@ public class StudentCSVImporterExporter {
                 if (team.isPresent()) {
                     existing.get().setStudentTeam(team.orElseGet(null));
                 }
-                auditService.audit("Updating existing student " + existing.get() + " from CSV", new Date());
+                auditService.audit(project, "Updating existing student " + existing.get() + " from CSV", new Date());
                 newStudents.add(existing.get());
             } else {
                 Student student = new Student(
@@ -244,7 +244,7 @@ public class StudentCSVImporterExporter {
                         team.orElseGet(null)
                 );
                 student = studentDao.create(student);
-                auditService.audit("Bulk added new student " + student + " from CSV", new Date());
+                auditService.audit(project, "Bulk added new student " + student + " from CSV", new Date());
                 newStudents.add(student);
             }
         });

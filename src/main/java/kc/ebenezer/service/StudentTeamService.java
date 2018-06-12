@@ -105,7 +105,7 @@ public class StudentTeamService {
 
         StudentTeam studentTeam1 = studentTeamDao.create(studentTeam);
 
-        auditService.audit("Created new student team, id=" + studentTeam.getId() + " name=" + studentTeam.getName(),
+        auditService.audit(project.get(), "Created new student team, id=" + studentTeam.getId() + " name=" + studentTeam.getName(),
                 new Date());
 
         return Optional.of(studentTeam);
@@ -149,21 +149,21 @@ public class StudentTeamService {
             }
             existingTeam.get().setName(valuesToUpdate.getName());
             existingTeam.get().updated();
-            auditService.audit("Set name to \"" + valuesToUpdate.getName() + "\" for team id=" + existingTeam.get().getId(),
+            auditService.audit(project.get(), "Set name to \"" + valuesToUpdate.getName() + "\" for team id=" + existingTeam.get().getId(),
                     now);
         }
 
         if (valueUpdated(existingTeam.get().getMediaDescriptor(), valuesToUpdate.getMediaDescriptor())) {
             if (existingTeam.get().getMediaDescriptor() != null && !existingTeam.get().getMediaDescriptor().isEmpty()) {
                 mediaService.deleteData(existingTeam.get().getMediaDescriptor());
-                auditService.audit("Deleting media \"" + existingTeam.get().getMediaDescriptor() +
+                auditService.audit(project.get(), "Deleting media \"" + existingTeam.get().getMediaDescriptor() +
                                 "\" so it can be replaced with \"" + valuesToUpdate.getMediaDescriptor() + "\" for team id="
                                 + existingTeam.get().getId(),
                         now);
             }
             existingTeam.get().setMediaDescriptor(valuesToUpdate.getMediaDescriptor());
             existingTeam.get().updated();
-            auditService.audit("Set media descriptor to \"" + valuesToUpdate.getMediaDescriptor() +
+            auditService.audit(project.get(), "Set media descriptor to \"" + valuesToUpdate.getMediaDescriptor() +
                             "\" for team id=" + existingTeam.get().getId(),
                     now);
         }
@@ -174,7 +174,7 @@ public class StudentTeamService {
             if (!valuesToUpdate.getLeaders().contains(existingLeader)) {
                 existingTeam.get().getLeaders().remove(existingLeader);
                 existingTeam.get().updated();
-                auditService.audit("Remove user id=" + existingLeader.getId() + " as leader from team id=" + existingTeam.get().getId(),
+                auditService.audit(project.get(), "Remove user id=" + existingLeader.getId() + " as leader from team id=" + existingTeam.get().getId(),
                         now);
             }
         }
@@ -186,7 +186,7 @@ public class StudentTeamService {
                 if (actualLeader.isPresent()) {
                     existingTeam.get().getLeaders().add(actualLeader.get());
                     existingTeam.get().updated();
-                    auditService.audit("Added user id=" + newLeader.getId() + " as leader to team id=" + existingTeam.get().getId(),
+                    auditService.audit(project.get(), "Added user id=" + newLeader.getId() + " as leader to team id=" + existingTeam.get().getId(),
                             now);
                 }
             }
@@ -197,7 +197,7 @@ public class StudentTeamService {
             if (!valuesToUpdate.getStudents().contains(existingStudent)) {
                 existingTeam.get().getStudents().remove(existingStudent);
                 existingTeam.get().updated();
-                auditService.audit("Remove student id=" + existingStudent.getId() + " from team id=" + existingTeam.get().getId(),
+                auditService.audit(project.get(), "Remove student id=" + existingStudent.getId() + " from team id=" + existingTeam.get().getId(),
                         now);
             }
         }
@@ -209,7 +209,7 @@ public class StudentTeamService {
                 if (actualStudent.isPresent()) {
                     existingTeam.get().getStudents().add(actualStudent.get());
                     existingTeam.get().updated();
-                    auditService.audit("Added student id=" + newStudent.getId() + " to team id=" + existingTeam.get().getId(),
+                    auditService.audit(project.get(), "Added student id=" + newStudent.getId() + " to team id=" + existingTeam.get().getId(),
                             now);
                 }
             }
@@ -231,7 +231,7 @@ public class StudentTeamService {
             throw new NoPermissionException("You cannot adjust points for teams in other projects");
         }
         team.get().setScore(team.get().getScore() + adjustment);
-        auditService.audit("Adjusted points by " + adjustment + " for team " + teamId, new Date());
+        auditService.audit(team.get().getProject(), "Adjusted points by " + adjustment + " for team " + teamId, new Date());
         return team;
     }
 

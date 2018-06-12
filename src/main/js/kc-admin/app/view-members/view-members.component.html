@@ -1,0 +1,43 @@
+<button *ngIf="project" mat-raised-button routerLink="/invitemember/{{project.id}}/3">Invite</button>&nbsp;
+<button *ngIf="project" mat-raised-button routerLink="/invitemember/{{project.id}}/5">Bulk Invite</button>
+
+<table mat-table [dataSource]="projectUsers" *ngIf="project">
+    <ng-container matColumnDef="userName">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let user">
+            <div class="removable">
+                <div class="removable-label"><a routerLink="/userpermissions/{{project.id}}/user/{{user.id}}">{{user.name}}</a></div>
+                <div class="removable-control"><mat-icon (click)="removeMember(user)">delete</mat-icon></div>
+            </div>
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="userPhone">
+        <th mat-header-cell *matHeaderCellDef>Phone</th>
+        <td mat-cell *matCellDef="let user">
+            <a *ngIf="user.mobilePhone" href="tel:{{user.mobilePhone}}}">{{user.mobilePhone}}</a>&nbsp;
+            <a *ngIf="user.homePhone" href="tel:{{user.homePhone}}}">{{user.homePhone}}</a>
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="userEmail">
+        <th mat-header-cell *matHeaderCellDef>E-Mail</th>
+        <td mat-cell *matCellDef="let user"><a href="mailto:{{user.email}}">{{user.email}}</a></td>
+    </ng-container>
+
+    <ng-container matColumnDef="userPhoto">
+        <th mat-header-cell *matHeaderCellDef>Photo</th>
+        <td mat-cell *matCellDef="let user">
+            <img *ngIf="user.mediaDescriptor; else elseBlock" src="/rest/data/download/{{user.mediaDescriptor}}" width="50">
+            <ng-template #elseBlock><img *ngIf="user.avatarUrl" src="{{user.avatarUrl}}" width="50"></ng-template>
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="userNotes">
+        <th mat-header-cell *matHeaderCellDef>Notes</th>
+        <td mat-cell *matCellDef="let user"><span *ngIf="!user.loggedIn">(Never logged in)</span></td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>

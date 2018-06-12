@@ -1,0 +1,99 @@
+<form #profileForm="ngForm">
+    <mat-list>
+        <mat-list-item>
+            <mat-form-field appearance="standard"><mat-label>Given Name</mat-label><input matInput name="givenName" [(ngModel)]="currentStudent.givenName"></mat-form-field>
+        </mat-list-item>
+        <mat-list-item>
+            <mat-form-field appearance="standard"><mat-label>Family Name</mat-label><input matInput name="familyName" [(ngModel)]="currentStudent.familyName"></mat-form-field>
+        </mat-list-item>
+        <mat-list-item>
+            <mat-form-field appearance="standard"><mat-label>Name</mat-label><input matInput name="name" [(ngModel)]="currentStudent.name"></mat-form-field>
+            <span>This is how the student will be described in KC. <b>Required</b>.</span>
+        </mat-list-item>
+        <mat-list-item>
+            <mat-form-field appearance="standard">
+                <mat-label>Gender</mat-label>
+                <mat-select name="gender" [(ngModel)]="currentStudent.gender">
+                    <mat-option value="Male">Male</mat-option>
+                    <mat-option value="Female">Female</mat-option>
+                    <mat-option value="Other">Other</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-list-item>
+        <mat-list-item>
+            <mat-form-field appearance="standard">
+                <mat-label>Emergency Contact Name</mat-label>
+                <input matInput name="contactName" [(ngModel)]="currentStudent.contactName">
+            </mat-form-field>
+        </mat-list-item>
+        <mat-list-item>
+            <mat-form-field appearance="standard">
+                <mat-label>Emergency Contact Relationship to student (e.g. father, mother, aunt)</mat-label>
+                <input matInput name="contactRelationship" [(ngModel)]="currentStudent.contactRelationship">
+            </mat-form-field>
+        </mat-list-item>
+        <mat-list-item>
+            <mat-form-field appearance="standard">
+                <mat-label>Contact phone number(s)</mat-label>
+                <input matInput name="phone" [(ngModel)]="currentStudent.phone">
+            </mat-form-field>
+        </mat-list-item>
+        <mat-list-item>
+            <mat-form-field appearance="standard">
+                <mat-label>Contact E-Mail address(s)</mat-label>
+                <input matInput name="email" [(ngModel)]="currentStudent.email">
+            </mat-form-field>
+        </mat-list-item>
+        <mat-list-item>
+            <mat-form-field appearance="standard">
+                <mat-label>Age</mat-label>
+                <input matInput name="age" [(ngModel)]="currentStudent.age">
+            </mat-form-field>
+        </mat-list-item>
+        <mat-list-item>
+            <mat-form-field appearance="standard">
+                <mat-label>School</mat-label>
+                <input matInput name="school" [(ngModel)]="currentStudent.school">
+            </mat-form-field>
+        </mat-list-item>
+        <mat-list-item>
+            <mat-form-field appearance="standard">
+                <mat-label>School Year</mat-label>
+                <input matInput name="schoolYear" [(ngModel)]="currentStudent.schoolYear">
+            </mat-form-field>
+        </mat-list-item>
+        <mat-list-item style="height: auto;">
+            <mat-form-field appearance="standard">
+                <mat-label>Special Instructions (allergies etc.)</mat-label>
+                <textarea matInput name="specialInstructions" [(ngModel)]="currentStudent.specialInstructions"></textarea>
+            </mat-form-field>
+        </mat-list-item>
+        <mat-list-item>
+            <mat-checkbox [(ngModel)]="currentStudent.mediaPermitted" name="mediaPermitted">Media permitted</mat-checkbox>
+        </mat-list-item>
+        <mat-list-item style="height: auto;" *ngIf="!createMode">
+            <label>
+                <input type="file" (change)="setFile($event)" style="display:none" multiple/>
+                <a mat-raised-button>
+                    <mat-icon>file_upload</mat-icon>
+                    Upload a photo
+                </a>
+            </label> <span *ngIf="newFilename">File to upload: {{newFilename}}</span>
+            <span id="avatar_preview" *ngIf="currentStudent.mediaDescriptor"><img src="/rest/data/download/{{currentStudent.mediaDescriptor}}" width="200"/></span>
+            <input type="hidden" name="mediaDescriptor" [(ngModel)]="currentStudent.mediaDescriptor">
+        </mat-list-item>
+        <mat-list-item>
+            <mat-form-field>
+                <mat-select name="team" placeholder="Team" [(ngModel)]="currentStudentTeamId">
+                    <mat-option *ngFor="let team of allTeams" [value]="team.id">
+                        {{ team.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </mat-list-item>
+    </mat-list>
+
+    <button mat-raised-button color="primary" *ngIf="!createMode" (click)="onSubmit()">Save</button>
+    <button mat-raised-button color="primary" *ngIf="createMode" (click)="onSubmit()">Add</button>
+    &nbsp;<button mat-raised-button (click)="onCancel()">Cancel</button>
+</form>

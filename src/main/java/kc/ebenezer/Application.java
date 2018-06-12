@@ -9,11 +9,15 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter;
+import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 
 @SpringBootApplication
+@Controller
 @EnableTransactionManagement
 public class Application {
     public static final Long MAX_UPLOAD_SIZE = 5000000L;
@@ -23,6 +27,31 @@ public class Application {
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
+    }
+
+    @RequestMapping({
+        "/admin",
+        "/admin/admin",
+        "/admin/viewproject/**",
+        "/admin/editproject/**",
+        "/admin/newproject",
+        "/admin/audit",
+        "/admin/profile",
+        "/admin/viewteam/**",
+        "/admin/viewmembers/**",
+        "/admin/viewstudents/**",
+        "/admin/userpermissions/**",
+        "/admin/importstudents/**",
+        "/admin/editstudent/**",
+        "/admin/userpermissions/**",
+        "/admin/createteam/**",
+        "/admin/invitemember/**",
+        "/admin/attendance/**",
+        "/admin/documents/**",
+        "/admin/editalbums/**"
+    })
+    public String index() {
+        return "forward:/admin/index.html";
     }
 
     @Bean

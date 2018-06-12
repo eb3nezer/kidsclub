@@ -89,19 +89,19 @@ public class StatsService {
                 transaction.commit();
 
                 // Clean up
-                Date oldestRecord = new Date(System.currentTimeMillis() - (STATS_RETENTION_DAYS * 24L * 60L * 60L * 1000L));
-
-                transaction.begin();
-                Query query = entityManager.createQuery(
-                        "delete from StatsRecord stats where stats.created < :oldest");
-                query.setParameter("oldest", oldestRecord.getTime());
-                int rows = query.executeUpdate();
-                if (rows > 0) {
-                    LOG.info("Deleted " + rows + " old stats records");
-                    transaction.commit();
-                } else {
-                    transaction.rollback();
-                }
+//                Date oldestRecord = new Date(System.currentTimeMillis() - (STATS_RETENTION_DAYS * 24L * 60L * 60L * 1000L));
+//
+//                transaction.begin();
+//                Query query = entityManager.createQuery(
+//                        "delete from StatsRecord stats where stats.created < :oldest");
+//                query.setParameter("oldest", oldestRecord.getTime());
+//                int rows = query.executeUpdate();
+//                if (rows > 0) {
+//                    LOG.info("Deleted " + rows + " old stats records");
+//                    transaction.commit();
+//                } else {
+//                    transaction.rollback();
+//                }
 
                 entityManager.close();
             } catch (Exception e) {

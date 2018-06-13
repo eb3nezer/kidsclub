@@ -13,10 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.persistence.*;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -75,37 +72,53 @@ public class StatsService {
 
         @Override
         public void run() {
+            EntityManager entityManager = null;
+
             try {
-                EntityManager entityManager = entityManagerFactory.createEntityManager();
+                entityManager = entityManagerFactory.createEntityManager();
                 EntityTransaction transaction = entityManager.getTransaction();
                 transaction.begin();
 
                 StatsRecord statsRecord = new StatsRecord(key);
                 for (Map.Entry<String, String> entry : metadata.entrySet()) {
-                    StatsMetadata statsMetadata = new StatsMetadata(entry.getKey(), entry.getValue(), statsRecord);
+                    StatsMetadata statsMetadata = new StatsMetadata(entry.getKey(), entry.getValue());
                     statsRecord.getMetadata().add(statsMetadata);
                 }
                 entityManager.persist(statsRecord);
                 transaction.commit();
 
                 // Clean up
-//                Date oldestRecord = new Date(System.currentTimeMillis() - (STATS_RETENTION_DAYS * 24L * 60L * 60L * 1000L));
-//
-//                transaction.begin();
-//                Query query = entityManager.createQuery(
-//                        "delete from StatsRecord stats where stats.created < :oldest");
-//                query.setParameter("oldest", oldestRecord.getTime());
-//                int rows = query.executeUpdate();
-//                if (rows > 0) {
-//                    LOG.info("Deleted " + rows + " old stats records");
-//                    transaction.commit();
-//                } else {
-//                    transaction.rollback();
-//                }
-
-                entityManager.close();
+                Date oldestRecord = new Date(System.currentTimeMillis() - (STATS_RETENTION_DAYS * 24L * 60L * 60L * 1000L));
+                transaction.begin();
+                TypedQuery<StatsRecord> query = entityManager.createQuery("select stats from StatsRecord stats left join stats.metadata where stats.created < :oldest", StatsRecord.class);
+                query.setParameter("oldest", oldestRecord.getTime());
+                query.setMaxResults(100);
+                List<StatsRecord> results = query.getResultList();
+                int rows = 0;
+                for (StatsRecord record : results) {
+                    List<StatsMetadata> toRemove = new ArrayList<>(record.getMetadata());
+                    for (StatsMetadata metadata: toRemove) {
+                        if (!record.getMetadata().remove(metadata)) {
+                            LOG.warn("Failed to remove metadata");
+                        } else {
+                            entityManager.remove(metadata);
+                        }
+                    }
+                    entityManager.remove(record);
+                    rows++;
+                }
+                if (rows > 0) {
+                    LOG.info("Deleted " + rows + " old stats records");
+                    transaction.commit();
+                } else {
+                    transaction.rollback();
+                }
             } catch (Exception e) {
                 LOG.error("Failed to log stats", e);
+            } finally {
+                if (entityManager != null) {
+                    entityManager.close();
+                }
             }
         }
     }

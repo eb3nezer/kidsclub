@@ -1,0 +1,51 @@
+<h2><a routerLink="team/{{project.id}}/{{team.id}}">{{team.name}}</a></h2>
+
+<h3>{{team.name}} Students</h3>
+
+<table mat-table [dataSource]="students">
+    <ng-container matColumnDef="userName">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let student">{{student.name}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="warnings">
+        <th mat-header-cell *matHeaderCellDef>&nbsp;</th>
+        <td mat-cell *matCellDef="let student">
+            <span *ngIf="student.specialInstructions"><mat-icon color="accent">warning</mat-icon></span>
+            <span *ngIf="!student.mediaPermitted"><mat-icon color="accent">broken_image</mat-icon></span>
+        </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="['userName', 'warnings']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['userName', 'warnings'];"></tr>
+</table>
+
+<h3>{{team.name}} Leaders</h3>
+
+<table mat-table [dataSource]="leaders">
+    <ng-container matColumnDef="userName">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let user">{{user.name}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="userEmail">
+        <th mat-header-cell *matHeaderCellDef>E-Mail</th>
+        <td mat-cell *matCellDef="let user"><a href="mailto:{{user.email}}">{{user.email}}</a></td>
+    </ng-container>
+
+    <ng-container matColumnDef="userPhone">
+        <th mat-header-cell *matHeaderCellDef>Phone</th>
+        <td mat-cell *matCellDef="let user"><a *ngIf="user.mobilePhone" href="tel:{{user.mobilePhone}}">{{user.mobilePhone}}</a></td>
+    </ng-container>
+
+    <ng-container matColumnDef="userPhoto">
+        <th mat-header-cell *matHeaderCellDef>Photo</th>
+        <td mat-cell *matCellDef="let user">
+            <img *ngIf="user.mediaDescriptor; else elseBlock" src="/rest/data/download/{{user.mediaDescriptor}}" width="50">
+            <ng-template #elseBlock><img *ngIf="user.avatarUrl" src="{{user.avatarUrl}}" width="50"></ng-template>
+        </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="['userName', 'userEmail', 'userPhone', 'userPhoto']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['userName', 'userEmail', 'userPhone', 'userPhoto'];"></tr>
+</table>

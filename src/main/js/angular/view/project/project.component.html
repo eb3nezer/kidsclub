@@ -1,0 +1,34 @@
+<div *ngIf="project">
+    <button mat-raised-button routerLink="/members/{{project.id}}">Members</button>&nbsp;
+    <button mat-raised-button routerLink="/students/{{project.id}}">Students</button>&nbsp;
+    <button mat-raised-button routerLink="/photos/{{project.id}}">Photos</button>&nbsp;
+    <button mat-raised-button routerLink="/documents/{{project.id}}">Documents</button>
+</div>
+
+<table mat-table [dataSource]="teams">
+    <ng-container matColumnDef="teamName">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let team"><a routerLink="team/{{project.id}}/{{team.id}}"> {{team.name}} </a></td>
+    </ng-container>
+
+    <ng-container matColumnDef="teamIcon">
+        <th mat-header-cell *matHeaderCellDef>&nbsp;</th>
+        <td mat-cell *matCellDef="let team">
+            <img *ngIf="team.mediaDescriptor; else elseBlock" src="/rest/data/download/{{team.mediaDescriptor}}" width="50">
+            <ng-template #elseBlock> <img *ngIf="team.avatarUrl" src="{{team.avatarUrl}}" width="50"> </ng-template>
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="teamScore">
+        <th mat-header-cell *matHeaderCellDef>Score</th>
+        <td mat-cell *matCellDef="let team"> {{team.score}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="teamStudents">
+        <th mat-header-cell *matHeaderCellDef>Students</th>
+        <td mat-cell *matCellDef="let team"> {{team.students.length}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="['teamName', 'teamIcon', 'teamScore', 'teamStudents']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['teamName', 'teamIcon', 'teamScore', 'teamStudents'];"></tr>
+</table>

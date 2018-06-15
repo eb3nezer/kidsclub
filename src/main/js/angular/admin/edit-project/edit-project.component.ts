@@ -27,7 +27,7 @@ export class EditProjectComponent implements OnInit {
     loadProject() {
         const projectId = +this.route.snapshot.paramMap.get('id');
         if (projectId) {
-            this.projectService.getProjectObservable(projectId).subscribe(project => {
+            this.projectService.getProject(projectId).subscribe(project => {
                 this.project = project;
                 this.mediaPermitted = project.properties.studentMediaPermittedDefault === 'true';
                 this.appTitleService.setTitle(`Edit details for ${project.name}`);

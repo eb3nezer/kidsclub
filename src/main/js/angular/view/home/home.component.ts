@@ -28,7 +28,7 @@ export class HomeComponent implements OnInit {
     loadProjects() {
         var projectId = +this.route.snapshot.paramMap.get('id');
         if (!projectId) {
-            this.projectService.getAllProjectsObservable().subscribe(projects => {
+            this.projectService.getAllProjects().subscribe(projects => {
                 if (projects.length > 1) {
                     this.projects = projects;
                 } else {
@@ -40,7 +40,7 @@ export class HomeComponent implements OnInit {
                 }
             });
         } else {
-            this.projectService.getProjectObservable(projectId).subscribe(project => {
+            this.projectService.getProject(projectId).subscribe(project => {
                 this.project = project;
                 this.apptitleService.setCurrentProject(this.project);
                 this.teamService.getMyTeams(projectId).subscribe(teams => {

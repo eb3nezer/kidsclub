@@ -4,8 +4,8 @@ export class AlbumItem {
         public order?: number,
         public description?: string,
         public mediaDescriptor?: string,
-        public created?: number,
-        public updated?: number
+        public created?: string,
+        public updated?: string
     ) {
     }
 }

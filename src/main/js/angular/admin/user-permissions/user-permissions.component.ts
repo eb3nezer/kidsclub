@@ -34,7 +34,7 @@ export class UserPermissionsComponent implements OnInit {
     loadData() {
         const projectId = +this.route.snapshot.paramMap.get('projectId');
         if (projectId) {
-            this.projectService.getProjectObservable(projectId).subscribe(project => {
+            this.projectService.getProject(projectId).subscribe(project => {
                 this.project = project;
                 this.appTitleService.setCurrentProject(project);
             });

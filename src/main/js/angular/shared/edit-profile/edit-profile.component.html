@@ -1,3 +1,8 @@
+<div class="mat-typography" *ngIf="newUser">
+    <h1>Welcome</h1>
+    <p>It looks like this is the first time on this site. How about you take a moment to check if your
+        user profile information is correct.</p>
+</div>
 <form #profileForm="ngForm">
 <mat-list>
   <mat-list-item>
@@ -37,6 +42,8 @@
   </mat-list-item>
 </mat-list>
 
-<button mat-raised-button color="primary" (click)="onSubmit()">Save</button>
+<button mat-raised-button color="primary" (click)="onSubmit()">Save</button>&nbsp;
+    <button mat-raised-button (click)="onCancel()">Cancel</button>&nbsp;
+
 </form>
 

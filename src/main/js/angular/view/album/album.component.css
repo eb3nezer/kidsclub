@@ -1,0 +1,14 @@
+.album_container {
+    display: -webkit-flex; /* Safari */
+    -webkit-flex-wrap: wrap; /* Safari 6.1+ */
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.photo_wrapper {
+    padding: 10px;
+}
+
+.photo {
+    width: 250px;
+}

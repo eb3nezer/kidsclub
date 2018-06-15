@@ -8,7 +8,7 @@
 <table mat-table [dataSource]="teams">
     <ng-container matColumnDef="teamName">
         <th mat-header-cell *matHeaderCellDef>Name</th>
-        <td mat-cell *matCellDef="let team"><a routerLink="team/{{project.id}}/{{team.id}}"> {{team.name}} </a></td>
+        <td mat-cell *matCellDef="let team"> <a routerLink="/team/{{project.id}}/{{team.id}}">{{team.name}}</a> </td>
     </ng-container>
 
     <ng-container matColumnDef="teamIcon">

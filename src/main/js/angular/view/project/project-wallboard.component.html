@@ -1,0 +1,15 @@
+<div class="scoreboard_container" *ngIf="teams">
+    <div class="photo_wrapper" *ngFor="let item of album.items">
+        <mat-card class="photo">
+            <mat-card-header>
+                <mat-card-title>{{item.description}}</mat-card-title>
+                <mat-card-subtitle>{{item.updated}}</mat-card-subtitle>
+            </mat-card-header>
+            <img mat-card-image src="/rest/data/download/{{item.mediaDescriptor}}">
+            <mat-card-actions>
+                <button mat-raised-button><a href="/rest/data/download/{{item.mediaDescriptor}}">Download</a></button>
+                <button mat-button (click)="deletePhoto(item)">Delete</button>
+            </mat-card-actions>
+        </mat-card>
+    </div>
+</div>

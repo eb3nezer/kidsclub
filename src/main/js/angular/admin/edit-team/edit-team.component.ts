@@ -49,7 +49,7 @@ export class EditTeamComponent implements OnInit {
         const teamId = +this.route.snapshot.paramMap.get('teamId');
 
         if (projectId) {
-            this.projectService.getProjectObservable(projectId).subscribe(project => {
+            this.projectService.getProject(projectId).subscribe(project => {
                 this.project = project;
                 this.appTitleService.setTitle(`Edit team for ${project.name}`);
                 this.appTitleService.setCurrentProject(project);
@@ -57,7 +57,7 @@ export class EditTeamComponent implements OnInit {
         }
 
         if (teamId) {
-            this.teamService.getTeamObservable(teamId).subscribe(team => {
+            this.teamService.getTeam(teamId).subscribe(team => {
                 this.team = team;
                 this.leaders = team.leaders;
                 this.students = team.students;
@@ -134,7 +134,7 @@ export class EditTeamComponent implements OnInit {
             leaderList += this.leaders[i].id.toString();
         }
 
-        this.teamService.updateTeamObservable(this.team, studentList, leaderList, this.fileToUpload).subscribe(team => {
+        this.teamService.updateTeam(this.team, studentList, leaderList, this.fileToUpload).subscribe(team => {
             this.team = team;
             this.leaders = team.leaders;
             this.students = team.students;

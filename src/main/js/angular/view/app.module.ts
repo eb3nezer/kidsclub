@@ -5,7 +5,7 @@ import { AppComponent } from './app.component';
 import {HomeComponent} from "./home/home.component";
 import {
     MatAutocompleteModule,
-    MatButtonModule, MatCheckboxModule, MatDialogModule, MatFormFieldModule, MatGridListModule,
+    MatButtonModule, MatCardModule, MatCheckboxModule, MatDialogModule, MatFormFieldModule, MatGridListModule,
     MatIconModule,
     MatInputModule, MatListModule,
     MatMenuModule, MatSelectModule, MatSnackBarModule, MatTableModule,
@@ -19,6 +19,16 @@ import {AppRoutingModule} from "./app-routing.module";
 import {LeaderComponent} from "./leader/leader.component";
 import {LeaderTeamComponent} from "./leader/leader-team.component";
 import {ProjectComponent} from "./project/project.component";
+import {MembersComponent} from "./members/members.component";
+import {StudentsComponent} from "./students/students.component";
+import {StudentComponent} from "./student/student.component";
+import {TeamComponent} from "./team/team.component";
+import {DocumentsComponent} from "./documents/documents.component";
+import {ConfirmDialogComponent} from "../shared/confirm-dialog/confirm-dialog.component";
+import {AlbumsComponent} from "./albums/albums.component";
+import {AlbumComponent} from "./album/album.component";
+import {EditProfileComponent} from "../shared/edit-profile/edit-profile.component";
+import {ProjectWallboardComponent} from "./project/project-wallboard.component";
 
 @NgModule({
     declarations: [
@@ -26,7 +36,17 @@ import {ProjectComponent} from "./project/project.component";
         HomeComponent,
         LeaderComponent,
         LeaderTeamComponent,
-        ProjectComponent
+        ProjectComponent,
+        MembersComponent,
+        StudentsComponent,
+        StudentComponent,
+        TeamComponent,
+        DocumentsComponent,
+        ConfirmDialogComponent,
+        AlbumsComponent,
+        AlbumComponent,
+        EditProfileComponent,
+        ProjectWallboardComponent
     ],
     imports: [
         BrowserModule,
@@ -49,9 +69,11 @@ import {ProjectComponent} from "./project/project.component";
         MatDialogModule,
         MatSnackBarModule,
         RouterModule,
-        AppRoutingModule
+        AppRoutingModule,
+        MatCardModule
     ],
     providers: [],
-    bootstrap: [AppComponent]
+    bootstrap: [AppComponent],
+    entryComponents: [ConfirmDialogComponent]
 })
 export class AppModule { }

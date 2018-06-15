@@ -1,0 +1,47 @@
+<mat-list *ngIf="student">
+    <mat-list-item *ngIf="student.givenName">
+        <div class="data-display"><div class="data-display-key">Given Name</div><div class="data-display-value">{{student.givenName}}</div></div>
+    </mat-list-item>
+    <mat-list-item *ngIf="student.familyName">
+        <div class="data-display"><div class="data-display-key">Family Name</div><div class="data-display-value">{{student.familyName}}</div></div>
+    </mat-list-item>
+    <mat-list-item *ngIf="student.name">
+        <div class="data-display"><div class="data-display-key">Name</div><div class="data-display-value">{{student.name}}</div></div>
+    </mat-list-item>
+    <mat-list-item *ngIf="student.gender">
+        <div class="data-display"><div class="data-display-key">Gender</div><div class="data-display-value">{{student.gender}}</div></div>
+    </mat-list-item>
+    <mat-list-item *ngIf="student.contactName">
+        <div class="data-display"><div class="data-display-key">Emergency Contact</div><div class="data-display-value">{{student.contactName}}</div></div>
+    </mat-list-item>
+    <mat-list-item *ngIf="student.contactRelationship">
+        <div class="data-display"><div class="data-display-key">Relationship</div><div class="data-display-value">{{student.contactRelationship}}</div></div>
+    </mat-list-item>
+    <mat-list-item *ngIf="student.phone">
+        <div class="data-display"><div class="data-display-key">Contact phone number(s)</div><div class="data-display-value">{{student.phone}}</div></div>
+    </mat-list-item>
+    <mat-list-item *ngIf="student.email">
+        <div class="data-display"><div class="data-display-key">E-Mail Address</div><div class="data-display-value"><a href="{{student.email}}">{{student.email}}</a></div></div>
+    </mat-list-item>
+    <mat-list-item *ngIf="student.age">
+        <div class="data-display"><div class="data-display-key">Age</div><div class="data-display-value">{{student.age}}</div></div>
+    </mat-list-item>
+    <mat-list-item *ngIf="student.school">
+        <div class="data-display"><div class="data-display-key">School</div><div class="data-display-value">{{student.school}}</div></div>
+    </mat-list-item>
+    <mat-list-item *ngIf="student.schoolYear">
+        <div class="data-display"><div class="data-display-key">School Year</div><div class="data-display-value">{{student.schoolYear}}</div></div>
+    </mat-list-item>
+    <mat-list-item *ngIf="student.specialInstructions">
+        <div class="data-display"><div class="data-display-key">Special Instructions</div><div class="data-display-value">{{student.specialInstructions}}</div></div>
+    </mat-list-item>
+    <mat-list-item *ngIf="student.givenName">
+        <div class="data-display"><div class="data-display-key">Media permitted</div><div class="data-display-value">{{student.mediaPermitted}}</div></div>
+    </mat-list-item>
+    <mat-list-item style="height: auto;" *ngIf="student.mediaDescriptor">
+        <div class="data-display"><div class="data-display-key">Photo</div><div class="data-display-value"><img src="/rest/data/download/{{student.mediaDescriptor}}" width="200"/></div></div>
+    </mat-list-item>
+    <mat-list-item *ngIf="student.studentTeam">
+        <div class="data-display"><div class="data-display-key">Team</div><div class="data-display-value"><a routerLink="/team/{{project.id}}/{{student.studentTeam.id}}">{{student.studentTeam.name}}</a></div></div>
+    </mat-list-item>
+</mat-list>

@@ -9,9 +9,23 @@
 }
 
 .removable-label {
-    width: 200px;
+    width: 150px;
 }
 
 .removable-control {
     cursor: pointer;
+}
+
+.data-display {
+    display: flex;
+}
+
+.data-display-key {
+    width: 150px;
+    text-align: right;
+    font-weight: bold;
+    padding-right: 8px;
+}
+
+.data-display-value {
 }

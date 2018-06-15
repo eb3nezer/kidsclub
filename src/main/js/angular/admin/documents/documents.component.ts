@@ -36,7 +36,7 @@ export class DocumentsComponent implements OnInit {
     loadProjectAndDocuments() {
         const projectId = +this.route.snapshot.paramMap.get('id');
         if (projectId) {
-            this.projectService.getProjectObservable(projectId).subscribe(project => {
+            this.projectService.getProject(projectId).subscribe(project => {
                 this.project = project;
                 this.appTitleService.setTitle(`Documents for ${project.name}`)
                 this.appTitleService.setCurrentProject(project);

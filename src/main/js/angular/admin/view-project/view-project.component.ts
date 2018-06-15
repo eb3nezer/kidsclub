@@ -26,7 +26,7 @@ export class ViewProjectComponent implements OnInit {
     loadProjectAndTeams() {
         const projectId = +this.route.snapshot.paramMap.get('id');
         if (projectId) {
-            this.projectService.getProjectObservable(projectId).subscribe(project => {
+            this.projectService.getProject(projectId).subscribe(project => {
                 this.project = project;
                 this.appTitleService.setTitle(`${project.name} Project Administration`)
                 this.appTitleService.setCurrentProject(project);

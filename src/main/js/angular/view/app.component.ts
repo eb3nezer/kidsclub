@@ -8,13 +8,16 @@ import {Project} from "../shared/model/project";
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-    pageTitle = "Hello";
+    pageTitle = "";
     currentProject: Project;
 
     constructor(private appTitleService: AppTitleService) {
-
     }
+
     ngOnInit() {
+        // Clear loading mask
+        document.getElementById("loadingDiv").style.display = "none";
+
         this.appTitleService.getTitleObserver().subscribe(title => {
                 this.pageTitle = title;
                 document.title = title;
@@ -24,5 +27,4 @@ export class AppComponent {
 
         this.appTitleService.getCurrentProjectObserver().subscribe(project => this.currentProject = project);
     }
-
 }

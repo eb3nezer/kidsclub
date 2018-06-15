@@ -25,14 +25,27 @@ a.kctitle {
 }
 
 a:hover:hover {
-    color: green;
+    color: #ff4081;
+}
+
+.kcbodycontainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    background: rgb(34,34,34); /* for IE */
+    background: rgba(34,34,34,0.75);
+    display: flex;
+    /* filter: blur(10px); */
 }
 
 .kcbody {
-    background-color: white;
-    color: black;
+    padding: 20px 0px 20px 20px;
+    color: white;
     font-family: Arial,Helvetica,SansSerif;
-    z-index: 1;
+    width: 100%;
+    z-index: 10;
 }
 
 .kcfooterbox {
@@ -42,6 +55,13 @@ a:hover:hover {
     height:90px;
     background-color: #3f51b5;
     display: flex;
+}
+html {
+    background: url(../home_background.jpg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
 
 .google-button {

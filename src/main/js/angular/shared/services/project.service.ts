@@ -17,7 +17,7 @@ export class ProjectService {
         private errorService: HttpErrorService) {
     }
 
-    getProjectObservable(id: number): Observable<Project> {
+    getProject(id: number): Observable<Project> {
         return this.http.get<Project>(`${this.urlForGet}/${id}`).pipe(
             catchError(this.errorService.handleError('Get project', undefined))
         );
@@ -29,7 +29,7 @@ export class ProjectService {
         );
     }
 
-    getAllProjectsObservable(): Observable<Project[]> {
+    getAllProjects(): Observable<Project[]> {
         return this.http.get<Project[]>(this.urlForGet).pipe(
             catchError(this.errorService.handleError('Get all projects', []))
         );

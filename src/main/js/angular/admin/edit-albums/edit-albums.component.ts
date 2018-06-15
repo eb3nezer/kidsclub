@@ -35,7 +35,7 @@ export class EditAlbumsComponent implements OnInit {
     loadProjectAndDocuments() {
         const projectId = +this.route.snapshot.paramMap.get('id');
         if (projectId) {
-            this.projectService.getProjectObservable(projectId).subscribe(project => {
+            this.projectService.getProject(projectId).subscribe(project => {
                 this.project = project;
                 this.appTitleService.setTitle(`Photo albums for ${project.name}`);
                 this.appTitleService.setCurrentProject(project);

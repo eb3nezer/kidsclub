@@ -28,7 +28,7 @@ export class LeaderComponent implements OnInit {
 
     loadProjects() {
         var projectId = +this.route.snapshot.paramMap.get('id');
-        this.projectService.getProjectObservable(projectId).subscribe(project => {
+        this.projectService.getProject(projectId).subscribe(project => {
             this.project = project;
             this.apptitleService.setCurrentProject(this.project);
         });

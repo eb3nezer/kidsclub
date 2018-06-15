@@ -32,12 +32,12 @@ export class ViewAuditComponent implements OnInit {
   loadAudit() {
       var projectId = +this.route.snapshot.paramMap.get('id');
       if (!projectId) {
-          this.projectService.getAllProjectsObservable().subscribe(projects => {
+          this.projectService.getAllProjects().subscribe(projects => {
               projectId = projects[0].id;
               this.router.navigate([`/audit/${projectId}`]);
           });
       } else {
-          this.projectService.getProjectObservable(projectId).subscribe(project => {
+          this.projectService.getProject(projectId).subscribe(project => {
               this.project = project
           });
           this.auditService.getAuditRecordsForProject(projectId, 50, 0).subscribe(auditRecords => {

@@ -19,7 +19,7 @@ import {
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { AppRoutingModule } from './app-routing.module';
 import { AdminHomeComponent } from './admin-home/admin-home.component';
-import { EditProfileComponent } from './edit-profile/edit-profile.component';
+import { EditProfileComponent } from '../shared/edit-profile/edit-profile.component';
 import { EditProjectComponent } from './edit-project/edit-project.component';
 import { ViewAuditComponent } from './view-audit/view-audit.component';
 import { CreateProjectComponent } from './create-project/create-project.component';
@@ -84,8 +84,8 @@ import { DocumentsComponent } from './documents/documents.component';
         MatDialogModule,
         MatSnackBarModule
   ],
-  providers: [],
-  bootstrap: [AppComponent],
+    providers: [],
+    bootstrap: [AppComponent],
     entryComponents: [ConfirmDialogComponent]
 })
 export class AppModule { }

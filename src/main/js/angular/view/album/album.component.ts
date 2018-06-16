@@ -5,7 +5,7 @@ import { Project } from "../../shared/model/project";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AlbumService} from "../../shared/services/album.service";
 import {Album} from "../../shared/model/album";
-import {ConfirmDialogComponent} from "../../admin/confirm-dialog/confirm-dialog.component";
+import {ConfirmDialogComponent} from "../confirm-dialog/confirm-dialog.component";
 import {MatSnackBar} from "@angular/material";
 import {MatDialog} from '@angular/material';
 import {AlbumItem} from "../../shared/model/albumItem";

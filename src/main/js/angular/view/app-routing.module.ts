@@ -10,7 +10,7 @@ import {TeamComponent} from "./team/team.component";
 import {DocumentsComponent} from "./documents/documents.component";
 import {AlbumsComponent} from "./albums/albums.component";
 import {AlbumComponent} from "./album/album.component";
-import {EditProfileComponent} from "../admin/edit-profile/edit-profile.component";
+import {EditProfileForViewComponent} from "./edit-profile/edit-profile.component";
 import {ProjectWallboardComponent} from "./project/project-wallboard.component";
 
 const routes: Routes = [
@@ -27,8 +27,8 @@ const routes: Routes = [
     { path: 'documents/:projectId', component: DocumentsComponent },
     { path: 'photos/:projectId', component: AlbumsComponent },
     { path: 'album/:projectId/:albumId', component: AlbumComponent },
-    { path: 'profile', component: EditProfileComponent },
-    { path: 'profile/:id', component: EditProfileComponent },
+    { path: 'profile', component: EditProfileForViewComponent },
+    { path: 'profile/:id', component: EditProfileForViewComponent },
 ];
 
 @NgModule({

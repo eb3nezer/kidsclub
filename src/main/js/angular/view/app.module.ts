@@ -27,7 +27,7 @@ import {DocumentsComponent} from "./documents/documents.component";
 import {ConfirmDialogComponent} from "./confirm-dialog/confirm-dialog.component";
 import {AlbumsComponent} from "./albums/albums.component";
 import {AlbumComponent} from "./album/album.component";
-import {EditProfileComponent} from "./edit-profile/edit-profile.component";
+import {EditProfileForViewComponent} from "./edit-profile/edit-profile.component";
 import {ProjectWallboardComponent} from "./project/project-wallboard.component";
 
 @NgModule({
@@ -45,7 +45,7 @@ import {ProjectWallboardComponent} from "./project/project-wallboard.component";
         ConfirmDialogComponent,
         AlbumsComponent,
         AlbumComponent,
-        EditProfileComponent,
+        EditProfileForViewComponent,
         ProjectWallboardComponent
     ],
     imports: [

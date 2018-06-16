@@ -11,7 +11,7 @@ import {Location} from "@angular/common";
     templateUrl: './edit-profile.component.html',
     styleUrls: ['./edit-profile.component.css']
 })
-export class EditProfileComponent implements OnInit {
+export class EditProfileForViewComponent implements OnInit {
     currentUser: User;
     fileToUpload: File;
     newFilename = "";

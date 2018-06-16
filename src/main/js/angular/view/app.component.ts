@@ -10,6 +10,7 @@ import {Project} from "../shared/model/project";
 export class AppComponent {
     pageTitle = "";
     currentProject: Project;
+    showToolbar = true;
 
     constructor(private appTitleService: AppTitleService) {
     }
@@ -21,6 +22,11 @@ export class AppComponent {
         this.appTitleService.getTitleObserver().subscribe(title => {
                 this.pageTitle = title;
                 document.title = title;
+                if (title === "Scoreboard") {
+                    this.showToolbar = false;
+                } else {
+                    this.showToolbar = true;
+                }
             },
             e => console.log('on error %s', e),
             () => console.log('on complete'));

@@ -14,6 +14,8 @@ import {MatSnackBar} from "@angular/material";
 export class EditProjectComponent implements OnInit {
     project: Project;
     mediaPermitted: boolean;
+    sortByScore: boolean;
+    wallboardColumns: number;
 
     constructor(
         private appTitleService: AppTitleService,
@@ -30,6 +32,10 @@ export class EditProjectComponent implements OnInit {
             this.projectService.getProject(projectId).subscribe(project => {
                 this.project = project;
                 this.mediaPermitted = project.properties.studentMediaPermittedDefault === 'true';
+                this.sortByScore = project.properties.sortTeamsByScore === 'true';
+                if (project.properties.wallboardColumns) {
+                    this.wallboardColumns = project.properties.wallboardColumns;
+                }
                 this.appTitleService.setTitle(`Edit details for ${project.name}`);
                 this.appTitleService.setCurrentProject(project);
             });
@@ -42,6 +48,16 @@ export class EditProjectComponent implements OnInit {
                 this.project.properties.studentMediaPermittedDefault = 'true';
             } else {
                 this.project.properties.studentMediaPermittedDefault = 'false';
+            }
+            if (this.sortByScore) {
+                this.project.properties.sortTeamsByScore = 'true';
+            } else {
+                this.project.properties.sortTeamsByScore = 'false';
+            }
+            if (this.wallboardColumns) {
+                this.project.properties.wallboardColumns = this.wallboardColumns.toString();
+            } else {
+                this.project.properties.wallboardColumns = '0';
             }
 
             this.projectService.updateProject(this.project.id, this.project).subscribe(project => {

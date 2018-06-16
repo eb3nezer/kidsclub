@@ -1,11 +1,9 @@
 package kc.ebenezer.service;
 
+import javafx.scene.control.cell.PropertyValueFactory;
 import kc.ebenezer.dao.StudentDao;
 import kc.ebenezer.dao.StudentTeamDao;
-import kc.ebenezer.model.Project;
-import kc.ebenezer.model.Student;
-import kc.ebenezer.model.StudentTeam;
-import kc.ebenezer.model.User;
+import kc.ebenezer.model.*;
 import kc.ebenezer.permissions.ProjectPermission;
 import kc.ebenezer.rest.NoPermissionException;
 import kc.ebenezer.rest.ValidationException;
@@ -13,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.beans.PropertyVetoException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -54,6 +53,16 @@ public class StudentTeamService {
                 List<Long> leaderIDs = studentTeam.getLeaders().stream().map(User::getId).collect(Collectors.toList());
                 if (leaderIDs.contains(currentUser.get().getId())) {
                     result.add(studentTeam);
+                }
+            }
+        }
+
+        if (result.size() > 1) {
+            if (projectService.hasPropertyValue(project.get(), ProjectProperty.SORT_TEAMS_BY_SCORE)) {
+                if (projectService.getPropertyValueAsBoolean(project.get(), ProjectProperty.SORT_TEAMS_BY_SCORE)) {
+                    result.sort(new StudentTeam.StudentTeamScoreComparator());
+                } else {
+                    result.sort(new StudentTeam.StudentTeamComparator());
                 }
             }
         }

@@ -167,6 +167,47 @@ public class ProjectService  {
         return result;
     }
 
+    public boolean hasPropertyValue(Project project, String key) {
+        return project.getProjectProperties()
+            .stream()
+            .filter(pp -> pp.getPropertyKey().equals(key))
+            .findFirst()
+            .isPresent();
+    }
+
+    public Boolean getPropertyValueAsBoolean(Project project, String key) {
+        Boolean result = null;
+        if (project.getProjectProperties() != null) {
+            Optional<String> possibleResult = project.getProjectProperties()
+                .stream()
+                .filter(pp -> pp.getPropertyKey().equals(key))
+                .findFirst()
+                .map(ProjectProperty::getPropertyValue);
+            if (possibleResult.isPresent()) {
+                result = Boolean.valueOf(possibleResult.get());
+            }
+        }
+
+        return result;
+    }
+
+    public Long getPropertyValueAsLong(Project project, String key) {
+        Long result = null;
+        if (project.getProjectProperties() != null) {
+            Optional<String> possibleResult = project.getProjectProperties()
+                .stream()
+                .filter(pp -> pp.getPropertyKey().equals(key))
+                .findFirst()
+                .map(ProjectProperty::getPropertyValue);
+            if (possibleResult.isPresent()) {
+                result = Long.valueOf(possibleResult.get());
+            }
+        }
+
+        return result;
+    }
+
+
     public void setPropertyValue(Project project, String key, String value) {
         if (project.getProjectProperties() == null) {
             project.setProjectProperties(new HashSet<>());

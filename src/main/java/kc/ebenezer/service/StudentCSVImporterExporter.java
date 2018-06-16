@@ -103,14 +103,10 @@ public class StudentCSVImporterExporter {
     }
 
     public List<Student> bulkCreateStudents(Project project, InputStream inputStream) throws IOException {
-        String defaultMediaPermittedValue = projectService.getPropertyValue(project, ProjectProperty.STUDENT_MEDIA_PERMITTED_DEFAULT);
-        boolean defaultMediaPermitted;
-        if (defaultMediaPermittedValue != null) {
-            defaultMediaPermitted = Boolean.valueOf(defaultMediaPermittedValue);
-        } else {
-            defaultMediaPermitted = false;
-        }
-
+        final Boolean defaultMediaPermitted =
+            projectService.hasPropertyValue(project, ProjectProperty.STUDENT_MEDIA_PERMITTED_DEFAULT)?
+                projectService.getPropertyValueAsBoolean(project, ProjectProperty.STUDENT_MEDIA_PERMITTED_DEFAULT):
+                false;
         InputStreamReader isr = new InputStreamReader(inputStream);
         CSVParser parser = new CSVParser(isr, CSVFormat.DEFAULT);
         Iterator<CSVRecord> recordIterator = parser.iterator();

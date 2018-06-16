@@ -343,7 +343,6 @@ public class StudentResource {
             throw new ValidationException("projectId must be supplied");
         }
         List<StudentTeam> teams = studentTeamService.getStudentTeams(projectId, Boolean.valueOf(mine));
-        teams.sort(new StudentTeam.StudentTeamComparator());
         logStats("rest.student.teams.get", projectId.toString());
         return Response.status(Response.Status.OK).entity(studentTeamMapper.toDto(teams)).build();
     }

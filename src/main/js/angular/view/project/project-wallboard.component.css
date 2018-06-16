@@ -1,0 +1,36 @@
+.photo_container {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.row_container {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+}
+
+.team_container {
+    width: auto;
+}
+
+.team_name {
+    width: auto;
+    font-size: 48px;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    text-align: center;
+}
+
+.team_score {
+    width: auto;
+    font-size: 48px;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    text-align: center;
+    height: 50px;
+}
+
+.team_photo {
+    width: 200px;
+    margin-left: auto;
+    margin-right: auto;
+}

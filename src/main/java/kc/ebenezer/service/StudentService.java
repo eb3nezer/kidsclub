@@ -72,9 +72,8 @@ public class StudentService {
         student.setProject(project.get());
 
         if (student.getMediaPermitted() == null) {
-            String defaultMediaPermitted = projectService.getPropertyValue(project.get(), ProjectProperty.STUDENT_MEDIA_PERMITTED_DEFAULT);
-            if (defaultMediaPermitted != null) {
-                student.setMediaPermitted(Boolean.valueOf(defaultMediaPermitted));
+            if (projectService.hasPropertyValue(project.get(), ProjectProperty.STUDENT_MEDIA_PERMITTED_DEFAULT)) {
+                student.setMediaPermitted(projectService.getPropertyValueAsBoolean(project.get(), ProjectProperty.STUDENT_MEDIA_PERMITTED_DEFAULT));
             } else {
                 student.setMediaPermitted(false);
             }

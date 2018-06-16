@@ -1,6 +1,5 @@
 package kc.ebenezer.service;
 
-import javafx.scene.control.cell.PropertyValueFactory;
 import kc.ebenezer.dao.StudentDao;
 import kc.ebenezer.dao.StudentTeamDao;
 import kc.ebenezer.model.*;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.beans.PropertyVetoException;
 import java.util.*;
 import java.util.stream.Collectors;
 

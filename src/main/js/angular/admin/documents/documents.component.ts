@@ -6,7 +6,7 @@ import {AppTitleService} from "../../shared/services/app-title.service";
 import {Project} from "../../shared/model/project";
 import {KcdocumentService} from "../../shared/services/kcdocument.service";
 import {Location} from "@angular/common";
-import {ConfirmDialogComponent} from "../../shared/confirm-dialog/confirm-dialog.component";
+import {ConfirmDialogComponent} from "../confirm-dialog/confirm-dialog.component";
 import {MatSnackBar} from "@angular/material";
 import {MatDialog} from '@angular/material';
 

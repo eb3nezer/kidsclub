@@ -6,7 +6,7 @@ import { TeamService } from "../../shared/services/team.service";
 import { Project } from "../../shared/model/project";
 import {ActivatedRoute, Router} from "@angular/router";
 import {User} from "../../shared/model/user";
-import {ConfirmDialogComponent} from "../../shared/confirm-dialog/confirm-dialog.component";
+import {ConfirmDialogComponent} from "../confirm-dialog/confirm-dialog.component";
 import {InviteService} from "../../shared/services/invite.service";
 import {MatSnackBar} from "@angular/material";
 

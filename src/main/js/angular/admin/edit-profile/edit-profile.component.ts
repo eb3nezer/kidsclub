@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { AppTitleService } from "../services/app-title.service";
-import { User } from "../model/user";
-import { UserProfileService } from "../services/user-profile.service";
+import { AppTitleService } from "../../shared/services/app-title.service";
+import { User } from "../../shared/model/user";
+import { UserProfileService } from "../../shared/services/user-profile.service";
 import {MatSnackBar} from "@angular/material";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Location} from "@angular/common";

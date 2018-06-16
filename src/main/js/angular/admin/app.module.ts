@@ -19,7 +19,7 @@ import {
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { AppRoutingModule } from './app-routing.module';
 import { AdminHomeComponent } from './admin-home/admin-home.component';
-import { EditProfileComponent } from '../shared/edit-profile/edit-profile.component';
+import { EditProfileComponent } from './edit-profile/edit-profile.component';
 import { EditProjectComponent } from './edit-project/edit-project.component';
 import { ViewAuditComponent } from './view-audit/view-audit.component';
 import { CreateProjectComponent } from './create-project/create-project.component';
@@ -29,7 +29,7 @@ import { EditTeamComponent } from './edit-team/edit-team.component';
 import { ViewMembersComponent } from './view-members/view-members.component';
 import { ViewStudentsComponent } from './view-students/view-students.component';
 import { EditStudentComponent } from './edit-add-student/edit-student.component';
-import {ConfirmDialogComponent} from "../shared/confirm-dialog/confirm-dialog.component";
+import {ConfirmDialogComponent} from "./confirm-dialog/confirm-dialog.component";
 import { ImportStudentsComponent } from './import-students/import-students.component';
 import { UserPermissionsComponent } from './user-permissions/user-permissions.component';
 import { CreateTeamComponent } from './create-team/create-team.component';

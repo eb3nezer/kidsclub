@@ -6,7 +6,7 @@ import { ProjectService } from "../../shared/services/project.service";
 import { Project } from "../../shared/model/project";
 import {Student} from "../../shared/model/student";
 import {StudentService} from "../../shared/services/student.service";
-import {ConfirmDialogComponent} from "../../shared/confirm-dialog/confirm-dialog.component";
+import {ConfirmDialogComponent} from "../confirm-dialog/confirm-dialog.component";
 import {MatSnackBar} from "@angular/material";
 
 @Component({

@@ -10,7 +10,7 @@ import {TeamComponent} from "./team/team.component";
 import {DocumentsComponent} from "./documents/documents.component";
 import {AlbumsComponent} from "./albums/albums.component";
 import {AlbumComponent} from "./album/album.component";
-import {EditProfileComponent} from "../shared/edit-profile/edit-profile.component";
+import {EditProfileComponent} from "../admin/edit-profile/edit-profile.component";
 import {ProjectWallboardComponent} from "./project/project-wallboard.component";
 
 const routes: Routes = [

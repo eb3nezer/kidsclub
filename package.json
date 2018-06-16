@@ -5,7 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "buildprod": "ng build --prod --aot admin view",
+    "buildprodview": "ng build --prod --aot view",
+    "buildprodadmin": "ng build --prod --aot admin",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

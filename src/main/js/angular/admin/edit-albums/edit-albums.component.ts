@@ -7,7 +7,7 @@ import {Location} from "@angular/common";
 import {MatSnackBar} from "@angular/material";
 import {Album} from "../../shared/model/album";
 import {AlbumService} from "../../shared/services/album.service";
-import {ConfirmDialogComponent} from "../../shared/confirm-dialog/confirm-dialog.component";
+import {ConfirmDialogComponent} from "../confirm-dialog/confirm-dialog.component";
 import {MatDialog} from '@angular/material';
 
 @Component({

@@ -12,7 +12,7 @@ import {AttendanceService} from "../../shared/services/attendance.service";
 import {FormControl} from "@angular/forms";
 import {StudentService} from "../../shared/services/student.service";
 import {Observable} from "rxjs/index";
-import {ConfirmDialogComponent} from "../../shared/confirm-dialog/confirm-dialog.component";
+import {ConfirmDialogComponent} from "../confirm-dialog/confirm-dialog.component";
 import {MatDialog} from "@angular/material";
 
 @Component({

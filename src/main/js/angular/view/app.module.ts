@@ -24,10 +24,10 @@ import {StudentsComponent} from "./students/students.component";
 import {StudentComponent} from "./student/student.component";
 import {TeamComponent} from "./team/team.component";
 import {DocumentsComponent} from "./documents/documents.component";
-import {ConfirmDialogComponent} from "../shared/confirm-dialog/confirm-dialog.component";
+import {ConfirmDialogComponent} from "./confirm-dialog/confirm-dialog.component";
 import {AlbumsComponent} from "./albums/albums.component";
 import {AlbumComponent} from "./album/album.component";
-import {EditProfileComponent} from "../shared/edit-profile/edit-profile.component";
+import {EditProfileComponent} from "./edit-profile/edit-profile.component";
 import {ProjectWallboardComponent} from "./project/project-wallboard.component";
 
 @NgModule({

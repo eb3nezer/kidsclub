@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -22,9 +23,10 @@ import java.util.Optional;
 public class MediaService {
     @Inject
     private MediaDao mediaDao;
-
     @Inject
     private UserService userService;
+    @Inject
+    private AuditService auditService;
 
     private static Map<String, String> suffixToContenteType;
 
@@ -81,6 +83,7 @@ public class MediaService {
         if (currentUser.isPresent()) {
             Media media = new Media(contentType, currentUser.get(), data, shared, description);
             Media inserted = mediaDao.create(media);
+            auditService.audit(null, "Stored " + data.length + " bytes of media of type " + contentType, new Date());
             return Optional.of(inserted);
         }
 

@@ -1,0 +1,31 @@
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+.removable-container {
+    display: block;
+}
+
+.removable {
+    display: flex;
+}
+
+.removable-label {
+    width: 150px;
+}
+
+.removable-control {
+    cursor: pointer;
+}
+
+.data-display {
+    display: flex;
+}
+
+.data-display-key {
+    width: 150px;
+    text-align: right;
+    font-weight: bold;
+    padding-right: 8px;
+}
+
+.data-display-value {
+}

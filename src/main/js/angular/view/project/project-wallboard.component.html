@@ -1,0 +1,9 @@
+<div class="photo_container">
+    <div class="row_container" *ngFor="let thisRow of wallboardRows">
+        <div *ngFor="let thisTeam of thisRow" class="team_container">
+            <div class="team_name">{{thisTeam.name}}</div>
+            <div class="team_photo"><img src="/rest/data/download/{{thisTeam.mediaDescriptor}}" width="100%"></div>
+            <div class="team_score">{{thisTeam.score}}</div>
+        </div>
+    </div>
+</div>

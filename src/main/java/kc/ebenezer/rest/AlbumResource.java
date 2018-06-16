@@ -71,7 +71,6 @@ public class AlbumResource {
     }
 
     @GET
-    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     public Response getAlbum(@PathParam("id") String id) {
@@ -80,6 +79,22 @@ public class AlbumResource {
         if (album.isPresent()) {
             logStats("rest.album.get", album.get().getProject().getId().toString());
             return Response.status(Response.Status.OK).entity(albumMapper.toDto(album.get())).build();
+        }
+
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    @DELETE
+    @Path("/{albumId}/photo/{photoId}")
+    public Response deletePhoto(@PathParam("albumId") Long albumId,
+                             @PathParam("photoId") Long photoId) {
+        Optional<Album> album = albumService.getAlbumById(albumId);
+        if (album.isPresent()) {
+            Optional<AlbumItem> albumItem = albumService.deletePhotoFromAlbum(albumId, photoId);
+            if (album.isPresent()) {
+                logStats("rest.album.photo.delete", album.get().getProject().getId().toString());
+                return Response.status(Response.Status.OK).entity(albumMapper.toDto(album.get())).build();
+            }
         }
 
         return Response.status(Response.Status.NOT_FOUND).build();

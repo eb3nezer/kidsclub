@@ -123,33 +123,6 @@
             <scope>test</scope>
         </dependency>
 
-
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>jquery</artifactId>
-            <version>2.1.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>bootstrap</artifactId>
-            <version>3.2.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>json</artifactId>
-            <version>RELEASE</version>
-        </dependency>
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>toastr</artifactId>
-            <version>2.1.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.webjars</groupId>
-            <artifactId>webjars-locator</artifactId>
-            <version>0.32</version>
-        </dependency>
-
         <dependency>
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>
@@ -231,15 +204,26 @@
                   </execution>
 
                   <execution>
-                    <id>prod</id>
+                    <id>prodview</id>
                     <goals>
                       <goal>npm</goal>
                     </goals>
                     <configuration>
-                      <arguments>run-script buildprod</arguments>
+                      <arguments>run-script buildprodview</arguments>
                     </configuration>
                     <phase>generate-resources</phase>
                   </execution>
+
+                    <execution>
+                        <id>prodadmin</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run-script buildprodadmin</arguments>
+                        </configuration>
+                        <phase>generate-resources</phase>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>

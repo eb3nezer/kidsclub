@@ -29,29 +29,14 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 
-    @RequestMapping({
-        "/admin",
-        "/admin/admin",
-        "/admin/viewproject/**",
-        "/admin/editproject/**",
-        "/admin/newproject",
-        "/admin/audit",
-        "/admin/profile",
-        "/admin/viewteam/**",
-        "/admin/viewmembers/**",
-        "/admin/viewstudents/**",
-        "/admin/userpermissions/**",
-        "/admin/importstudents/**",
-        "/admin/editstudent/**",
-        "/admin/userpermissions/**",
-        "/admin/createteam/**",
-        "/admin/invitemember/**",
-        "/admin/attendance/**",
-        "/admin/documents/**",
-        "/admin/editalbums/**"
-    })
-    public String index() {
-        return "forward:/admin/index.html";
+    @RequestMapping({"/admin", "/admin/", "/admin/**/{[path:[^\\.]*}"})
+    public String admin() {
+        return "forward:/admin/admin.html";
+    }
+
+    @RequestMapping({"/view", "/view/", "/view/**/{[path:[^\\.]*}"})
+    public String view() {
+        return "forward:/view/view.html";
     }
 
     @Bean

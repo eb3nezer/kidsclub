@@ -11,6 +11,8 @@ import java.util.Objects;
 @Table(name = "project_properties")
 public class ProjectProperty extends ModelObject {
     public static final String STUDENT_MEDIA_PERMITTED_DEFAULT = "studentMediaPermittedDefault";
+    public static final String SORT_TEAMS_BY_SCORE = "sortTeamsByScore";
+    public static final String WALLBOARD_COLUMNS = "wallboardColumns";
 
     @EmbeddedId
     private ProjectPropertyPK key;

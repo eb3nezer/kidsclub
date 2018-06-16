@@ -9,12 +9,18 @@ import java.util.List;
 
 public abstract class BaseMapper<J extends ModelObject, K extends DtoObject> implements Mapper<J, K> {
     public J toModel(K dto) {
+        if (dto == null) {
+            return null;
+        }
         J model = constructModel();
         BeanUtils.copyProperties(dto, model, getIgnoreProperties());
         return model;
     }
 
     public K toDto(J model) {
+        if (model == null) {
+            return null;
+        }
         K dto = constructDto();
         BeanUtils.copyProperties(model, dto, getIgnoreProperties());
         return dto;

@@ -163,4 +163,11 @@ public class StudentTeam extends ModelObject {
             return o1.getSortOrder().compareTo(o2.getSortOrder());
         }
     }
+
+    public static class StudentTeamScoreComparator implements Comparator<StudentTeam> {
+        @Override
+        public int compare(StudentTeam o1, StudentTeam o2) {
+            return o2.getScore().compareTo(o1.getScore());
+        }
+    }
 }

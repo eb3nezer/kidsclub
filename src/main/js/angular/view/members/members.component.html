@@ -1,0 +1,30 @@
+<table mat-table [dataSource]="projectUsers" *ngIf="project">
+    <ng-container matColumnDef="userName">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let user"> {{user.name}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="userPhone">
+        <th mat-header-cell *matHeaderCellDef>Phone</th>
+        <td mat-cell *matCellDef="let user">
+            <a *ngIf="user.mobilePhone" href="tel:{{user.mobilePhone}}}">{{user.mobilePhone}}</a>&nbsp;
+            <a *ngIf="user.homePhone" href="tel:{{user.homePhone}}}">{{user.homePhone}}</a>
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="userEmail">
+        <th mat-header-cell *matHeaderCellDef>E-Mail</th>
+        <td mat-cell *matCellDef="let user"> <a href="mailto:{{user.email}}">{{user.email}}</a> </td>
+    </ng-container>
+
+    <ng-container matColumnDef="userPhoto">
+        <th mat-header-cell *matHeaderCellDef>Photo</th>
+        <td mat-cell *matCellDef="let user">
+            <img *ngIf="user.mediaDescriptor; else elseBlock" src="/rest/data/download/{{user.mediaDescriptor}}" width="50">
+            <ng-template #elseBlock><img *ngIf="user.avatarUrl" src="{{user.avatarUrl}}" width="50"></ng-template>
+        </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>

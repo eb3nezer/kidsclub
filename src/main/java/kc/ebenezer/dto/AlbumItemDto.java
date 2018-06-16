@@ -10,13 +10,13 @@ public class AlbumItemDto extends DtoObject {
     private Integer order;
     private String description;
     private String mediaDescriptor;
-    private Long created;
-    private Long updated;
+    private String created;
+    private String updated;
 
     public AlbumItemDto() {
     }
 
-    public AlbumItemDto(Long id, Integer order, String description, String mediaDescriptor, Long created, Long updated) {
+    public AlbumItemDto(Long id, Integer order, String description, String mediaDescriptor, String created, String updated) {
         this.id = id;
         this.order = order;
         this.description = description;
@@ -41,11 +41,35 @@ public class AlbumItemDto extends DtoObject {
         return mediaDescriptor;
     }
 
-    public Long getCreated() {
+    public String getCreated() {
         return created;
     }
 
-    public Long getUpdated() {
+    public String getUpdated() {
         return updated;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setOrder(Integer order) {
+        this.order = order;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setMediaDescriptor(String mediaDescriptor) {
+        this.mediaDescriptor = mediaDescriptor;
+    }
+
+    public void setCreated(String created) {
+        this.created = created;
+    }
+
+    public void setUpdated(String updated) {
+        this.updated = updated;
     }
 }

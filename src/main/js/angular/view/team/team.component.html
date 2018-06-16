@@ -1,0 +1,24 @@
+<div class="mat-typography" *ngIf="team">
+    <h2>{{team.name}}</h2>
+    <p><img *ngIf="team.mediaDescriptor" src="/rest/data/download/{{team.mediaDescriptor}}" width="200"></p>
+    <h3>Current Points: {{team.score}}</h3>
+    <p><button mat-raised-button (click)="adjustPoints(100)">+100</button> <button mat-raised-button (click)="adjustPoints(-100)">-100</button></p>
+    <h2>Students in this team</h2>
+    <table mat-table [dataSource]="team.students">
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Name</th>
+            <td mat-cell *matCellDef="let student"> <a routerLink="/student/{{project.id}}/{{student.id}}">{{student.name}}</a> </td>
+        </ng-container>
+
+        <ng-container matColumnDef="warnings">
+            <th mat-header-cell *matHeaderCellDef>&nbsp;</th>
+            <td mat-cell *matCellDef="let student">
+                <span *ngIf="student.specialInstructions"><mat-icon color="accent">warning</mat-icon></span>
+                <span *ngIf="!student.mediaPermitted"><mat-icon color="accent">broken_image</mat-icon></span>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+</div>

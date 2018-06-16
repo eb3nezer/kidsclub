@@ -3,21 +3,29 @@
 <head>
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <title>Welcome to KC - Please log in</title>
+    <title>Log in to KC</title>
     <meta name="description" content=""/>
     <meta name="viewport" content="width=device-width"/>
-    <base href="/"/>
-    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
-    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
-    <script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="icon" type="image/png" href="public/sun.png"/>
+    <link rel="stylesheet" type="text/css" href="public/css/kidsclub.css"/>
 </head>
 <body>
+<div class="kctitlebox">
+    <div style="width: 20px;"></div>
+    <div class="kctitle"><h1>KC = Kids Club</h1></div>
+    <span style="flex: 1 1 auto;"></span>
+    <div style="width: 20px"></div>
+</div>
+<div class="kcbodycontainer">
+
+<div class="kcbody">
 <h1>Welcome to KC. Log in using:</h1>
 <form action="/login/google" method="GET" style="display: inline">
-    <button type="submit" class="btn btn-danger">
-        Google <span class="fa fa-google-plus"></span>
+    <button type="submit" class="google-button  ">
+        Google
     </button>
 </form>
-
+</div>
+</div>
 </body>
 </html>

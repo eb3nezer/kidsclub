@@ -1,0 +1,24 @@
+<div *ngIf="showToolbar">
+    <mat-toolbar color="primary">
+        <button mat-icon-button [matMenuTriggerFor]="appMenu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+        <span *ngIf="currentProject">{{currentProject.name}}</span>
+        <span *ngIf="!currentProject">KC</span>
+        <span style="flex: 1 1 auto;"></span>
+        <span *ngIf="pageTitle">{{pageTitle}}</span>
+    </mat-toolbar>
+
+    <mat-menu #appMenu="matMenu" color="primary">
+        <button mat-menu-item routerLink="home">KC Home</button>
+        <button mat-menu-item routerLink="project/{{currentProject.id}}" *ngIf="currentProject">{{currentProject.name}}</button>
+        <button mat-menu-item routerLink="students/{{currentProject.id}}" *ngIf="currentProject">Students</button>
+        <button mat-menu-item routerLink="members/{{currentProject.id}}" *ngIf="currentProject">Members</button>
+        <button mat-menu-item routerLink="photos/{{currentProject.id}}" *ngIf="currentProject">Photos</button>
+        <button mat-menu-item routerLink="documents/{{currentProject.id}}" *ngIf="currentProject">Documents</button>
+        <button mat-menu-item routerLink="profile">Edit your profile</button>
+        <button mat-menu-item><a href="/admin">Admin</a></button>
+        <button mat-menu-item><a href="/logout">Log Out of KC</a></button>
+    </mat-menu>
+</div>
+<router-outlet></router-outlet>

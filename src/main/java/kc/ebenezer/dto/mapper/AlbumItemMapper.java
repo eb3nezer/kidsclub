@@ -9,28 +9,25 @@ import kc.ebenezer.model.Student;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 
 @Component
 public class AlbumItemMapper extends BaseMapper<AlbumItem, AlbumItemDto> implements Mapper<AlbumItem, AlbumItemDto> {
-    @Override
-    public AlbumItem toModel(AlbumItemDto dto) {
-        if (dto == null) {
-            return null;
-        }
-
-        return new AlbumItem(dto.getOrder(), dto.getMediaDescriptor(), dto.getDescription());
-    }
+    private DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
     @Override
     public AlbumItemDto toDto(AlbumItem model) {
         if (model == null) {
             return null;
         }
+        AlbumItemDto dto = super.toDto(model);
+        dto.setUpdated(dateFormat.format(model.getUpdated()));
+        dto.setCreated(dateFormat.format(model.getCreated()));
 
-        return new AlbumItemDto(model.getId(), model.getOrder(), model.getDescription(), model.getMediaDescriptor(),
-                model.getCreated().getTime(), model.getUpdated().getTime());
+        return dto;
     }
 
     @Override
@@ -41,5 +38,10 @@ public class AlbumItemMapper extends BaseMapper<AlbumItem, AlbumItemDto> impleme
     @Override
     protected AlbumItemDto constructDto() {
         return new AlbumItemDto();
+    }
+
+    @Override
+    public String[] getIgnoreProperties() {
+        return new String[]{"created", "updated"};
     }
 }

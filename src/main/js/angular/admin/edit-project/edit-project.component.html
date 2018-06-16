@@ -1,0 +1,19 @@
+<form #editProjectForm="ngForm">
+    <mat-list>
+        <mat-list-item>
+            <mat-form-field appearance="standard"><mat-label>Name</mat-label><input matInput name="name" [(ngModel)]="project.name"></mat-form-field>
+        </mat-list-item>
+        <mat-list-item>
+            <mat-checkbox [(ngModel)]="mediaPermitted" name="mediaPermitted">Media permitted by default</mat-checkbox>
+        </mat-list-item>
+        <mat-list-item>
+            <mat-checkbox [(ngModel)]="sortByScore" name="mediaPermitted">Sort teams by score</mat-checkbox>
+        </mat-list-item>
+        <mat-list-item>
+            <mat-form-field appearance="standard"><mat-label>Columns on Wallboard</mat-label><input matInput name="wallboardColumns" [(ngModel)]="wallboardColumns"></mat-form-field>
+        </mat-list-item>
+    </mat-list>
+
+    <button mat-raised-button color="primary" (click)="onSubmit()">Save</button>&nbsp;
+    <button mat-raised-button (click)="onCancel()">Cancel</button>
+</form>

@@ -3,6 +3,7 @@ package kc.ebenezer.service;
 import kc.ebenezer.dao.AlbumDao;
 import kc.ebenezer.dao.AlbumItemDao;
 import kc.ebenezer.model.*;
+import kc.ebenezer.permissions.ProjectPermission;
 import kc.ebenezer.rest.NoPermissionException;
 import kc.ebenezer.rest.ValidationException;
 import org.springframework.stereotype.Service;
@@ -21,21 +22,18 @@ import java.util.Optional;
 public class AlbumService {
     @Inject
     private AlbumDao albumDao;
-
     @Inject
     private AlbumItemDao albumItemDao;
-
     @Inject
     private UserService userService;
-
     @Inject
     private MediaService mediaService;
-
     @Inject
     private AuditService auditService;
-
     @Inject
     private ProjectService projectService;
+    @Inject
+    private ProjectPermissionService projectPermissionService;
 
     public Optional<Album> createAlbum(Long projectId, String name, String description, boolean shared) {
         Optional<Album> result;
@@ -48,6 +46,10 @@ public class AlbumService {
         Optional<Project> project = projectService.getProjectById(currentUser.get(), projectId);
         if (!project.isPresent()) {
             throw new ValidationException("Could not access project for id=" + projectId);
+        }
+
+        if (!projectPermissionService.userHasPermission(currentUser.get(), project.get(), ProjectPermission.EDIT_ALBUMS)) {
+            throw new NoPermissionException("You do not have permission to edit albums");
         }
 
         if (name == null || name.isEmpty()) {
@@ -94,9 +96,23 @@ public class AlbumService {
     }
 
     public Optional<AlbumItem> addPhotoToAlbum(Long albumId, InputStream inputStream, int maxSize, String filename, boolean shared, String description) throws IOException {
+        Optional<User> currentUser = userService.getCurrentUser();
+        if (!currentUser.isPresent()) {
+            throw new NoPermissionException("Anonymous cannot add photos");
+        }
+
         Optional<AlbumItem> result = Optional.empty();
         Optional<Album> album = albumDao.findById(albumId);
+
         if (album.isPresent()) {
+            if (!album.get().getProject().getUsers().contains(currentUser.get())) {
+                throw new NoPermissionException("You are not a member of this project");
+            }
+
+            if (description == null || description.isEmpty()) {
+                throw new ValidationException("The description cannot be empty.");
+            }
+
             Optional<Media> media = mediaService.storeData(inputStream, maxSize, filename, shared, description);
             if (media.isPresent()) {
                 String contentType = media.get().getContentType();
@@ -120,5 +136,29 @@ public class AlbumService {
         }
 
         return result;
+    }
+
+    public Optional<AlbumItem> deletePhotoFromAlbum(Long albumId, Long photoId)  {
+        Optional<User> currentUser = userService.getCurrentUser();
+        if (!currentUser.isPresent()) {
+            throw new NoPermissionException("Anonymous cannot delete photos");
+        }
+        Optional<AlbumItem> deleted = Optional.empty();
+        Optional<Album> album = albumDao.findById(albumId);
+        if (album.isPresent()) {
+            if (!album.get().getProject().getUsers().contains(currentUser.get())) {
+                throw new NoPermissionException("You are not a member of this project");
+            }
+            deleted = album.get().getItems().stream().filter(i -> i.getId().equals(photoId)).findFirst();
+            if (deleted.isPresent()) {
+                Optional<Media> media = mediaService.getData(deleted.get().getMediaDescriptor());
+                if (media.isPresent()) {
+                    mediaService.deleteData(deleted.get().getMediaDescriptor());
+                }
+                album.get().getItems().remove(deleted.get());
+            }
+        }
+
+        return deleted;
     }
 }

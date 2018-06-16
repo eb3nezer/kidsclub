@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name = "album_items")
@@ -75,5 +76,19 @@ public class AlbumItem extends ModelObject {
 
     public void updated() {
         updated = System.currentTimeMillis();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AlbumItem albumItem = (AlbumItem) o;
+        return Objects.equals(getId(), albumItem.getId());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(getId());
     }
 }

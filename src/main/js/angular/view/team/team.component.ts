@@ -15,6 +15,7 @@ export class TeamComponent implements OnInit {
     project: Project;
     team: StudentTeam;
     displayedColumns = ['name', 'warnings', 'attendance'];
+    buttonsDisabled = false;
 
     constructor(
         private appTitleService: AppTitleService,
@@ -42,10 +43,12 @@ export class TeamComponent implements OnInit {
     }
 
     adjustPoints(points: number) {
+        this.buttonsDisabled = true;
         this.teamService.updatePoints(this.team.id, points).subscribe(team => {
             if (team) {
                 this.team = team;
             }
+            this.buttonsDisabled = false;
         })
     }
 

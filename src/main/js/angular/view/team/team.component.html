@@ -2,7 +2,7 @@
     <h2>{{team.name}}</h2>
     <p><img *ngIf="team.mediaDescriptor" src="/rest/data/download/{{team.mediaDescriptor}}" width="200"></p>
     <h3>Current Points: {{team.score}}</h3>
-    <p><button mat-raised-button (click)="adjustPoints(100)">+100</button> <button mat-raised-button (click)="adjustPoints(-100)">-100</button></p>
+    <p><button mat-raised-button [disabled]="buttonsDisabled" (click)="adjustPoints(100)">+100</button> <button mat-raised-button [disabled]="buttonsDisabled" (click)="adjustPoints(-100)">-100</button></p>
     <h2>Students in this team</h2>
     <table mat-table [dataSource]="team.students">
         <ng-container matColumnDef="name">

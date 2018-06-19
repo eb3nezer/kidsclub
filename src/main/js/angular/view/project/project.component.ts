@@ -6,6 +6,9 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {Location} from "@angular/common";
 import {StudentTeam} from "../../shared/model/studentTeam";
 import {TeamService} from "../../shared/services/team.service";
+import {ConfirmDialogComponent} from "../confirm-dialog/confirm-dialog.component";
+import {MatSnackBar} from "@angular/material";
+import {MatDialog} from '@angular/material';
 
 @Component({
   selector: 'view-project',
@@ -22,7 +25,9 @@ export class ProjectComponent implements OnInit {
         private router: Router,
         private location: Location,
         private projectService: ProjectService,
-        private teamService: TeamService
+        private teamService: TeamService,
+        private dialog: MatDialog,
+        private snackBar: MatSnackBar
     ) {
     }
 
@@ -35,6 +40,31 @@ export class ProjectComponent implements OnInit {
         this.teamService.getTeamsForProject(projectId).subscribe(teams => {
             this.teams = teams;
         })
+    }
+
+    resetPoints() {
+        let dialogRef = this.dialog.open(ConfirmDialogComponent, {
+            width: '250px',
+            data: {
+                title: "Confirm",
+                text: `Are you sure you wish to reset all teams' points? This operation cannot be undone.`,
+                buttons: ["Yes", "Cancel"]
+            }
+        });
+
+        dialogRef.afterClosed().subscribe(result => {
+            if (result === "Yes") {
+                this.teamService.resetPoints(this.project.id).subscribe(next => {
+                    if (next) {
+                        this.teams = next;
+
+                        this.snackBar.open(`All points reset`, 'Dismiss', {
+                            duration: 10000,
+                        })
+                    }
+                });
+            }
+        });
     }
 
     ngOnInit() {

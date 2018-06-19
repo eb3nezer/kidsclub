@@ -374,6 +374,18 @@ public class StudentResource {
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/teams/points/reset")
+    public Response resetPoints(@QueryParam("projectId") Long projectId) {
+        List<StudentTeam> teams = studentTeamService.resetPoints(projectId);
+
+        if (!teams.isEmpty()) {
+            logStats("rest.student.team.points.reset", teams.get(0).getProject().getId().toString());
+        }
+        return Response.status(Response.Status.OK).entity(studentTeamMapper.toDto(teams)).build();
+    }
+
     private void logStats(String key, String projectId) {
         Map<String, String> metadata = new HashMap<>();
         if (projectId != null) {

@@ -33,3 +33,7 @@
     <tr mat-header-row *matHeaderRowDef="['teamName', 'teamIcon', 'teamScore', 'teamStudents']"></tr>
     <tr mat-row *matRowDef="let row; columns: ['teamName', 'teamIcon', 'teamScore', 'teamStudents'];"></tr>
 </table>
+<div style="height: 20px;">
+    &nbsp;
+</div>
+<button mat-raised-button (click)="resetPoints()">Reset Points</button>

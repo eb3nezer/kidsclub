@@ -62,6 +62,12 @@ export class TeamService {
         );
     }
 
+    resetPoints(projectId: number): Observable<StudentTeam[]> {
+        return this.http.put(`${this.teamsUrl}/points/reset?projectId=${projectId}`, undefined).pipe(
+            catchError(this.errorService.handleError('Reset team points', undefined))
+        );
+    }
+
     createTeam(team: StudentTeam, projectId: number, photo?: File): Observable<StudentTeam> {
         const formData: FormData = new FormData();
         const project = new Project(projectId);

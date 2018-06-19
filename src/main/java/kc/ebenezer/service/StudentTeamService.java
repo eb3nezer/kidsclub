@@ -242,5 +242,20 @@ public class StudentTeamService {
         return team;
     }
 
-
+    public List<StudentTeam> resetPoints(Long projectid) {
+        Optional<User> currentUser = userService.getCurrentUser();
+        if (!currentUser.isPresent()) {
+            throw new NoPermissionException("Anonymous cannot reset points");
+        }
+        Optional<Project> project = projectService.getProjectById(currentUser.get(), projectid);
+        if (!project.isPresent()) {
+            throw new ValidationException("Project not found");
+        }
+        List<StudentTeam> teams = studentTeamDao.getStudentTeamsForProject(projectid);
+        for (StudentTeam team : teams) {
+            team.setScore(0);
+            auditService.audit(project.get(), "Reset points for team " + team.getId(), new Date());
+        }
+        return teams;
+    }
 }

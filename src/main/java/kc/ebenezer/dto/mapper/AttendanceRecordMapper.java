@@ -52,6 +52,21 @@ public class AttendanceRecordMapper extends BaseMapper<AttendanceRecord, Attenda
         return dto;
     }
 
+    public AttendanceRecordDto toDtoOmitStudent(AttendanceRecord model) {
+        if (model == null) {
+            return null;
+        }
+
+        AttendanceRecordDto dto = super.toDto(model);
+
+        dto.setAttendanceType(model.getAttendanceType().getName());
+        dto.setAttendanceCode(model.getAttendanceType().getCode());
+        dto.setRecordTime(dateFormat.format(model.getRecordTime()));
+        dto.setVerifier(userMapper.toDto(model.getVerifier()));
+
+        return dto;
+    }
+
     @Override
     public AttendanceRecord toModel(AttendanceRecordDto dto) {
         if (dto == null) {

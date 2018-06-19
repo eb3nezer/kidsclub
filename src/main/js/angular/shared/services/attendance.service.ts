@@ -30,4 +30,10 @@ export class AttendanceService {
             catchError(this.errorService.handleError('Get attendance', []))
         );
     }
+
+    getAllAttendanceForStudent(projectId: number, studentId: number): Observable<AttendanceRecord[]> {
+        return this.http.get<AttendanceRecord[]>(`${this.url}/project/${projectId}/student/${studentId}/all`).pipe(
+            catchError(this.errorService.handleError('Get attendance', []))
+        );
+    }
 }

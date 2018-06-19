@@ -57,7 +57,7 @@ public class AttendanceService {
         }
     }
 
-    private Date getStartOfDay() {
+    public static Date getStartOfDay() {
         GregorianCalendar cal = new GregorianCalendar();
         // Today's date, but midnight
         cal.set(Calendar.HOUR_OF_DAY, 0);
@@ -67,7 +67,7 @@ public class AttendanceService {
         return cal.getTime();
     }
 
-    private Date getEndOfDay() {
+    public static Date getEndOfDay() {
         GregorianCalendar cal = new GregorianCalendar();
         // Today's date, but just before midnight
         cal.set(Calendar.HOUR_OF_DAY, 23);
@@ -140,6 +140,7 @@ public class AttendanceService {
         AttendanceRecord result = attendanceRecordDao.create(attendanceRecord);
         auditService.audit(project.get(), "Added attendance for student id=" + studentId + ", project id=" + projectId +
                 ", type=" + attendanceRecord.getAttendanceType().getName(), now);
+        student.get().setAttendanceSnapshot(result);
 
         return Optional.of(result);
     }

@@ -25,6 +25,7 @@ public class StudentDto extends DtoObject {
     private Boolean mediaPermitted;
     private Long projectId;
     private StudentTeamDto studentTeam;
+    private AttendanceRecordDto attendanceSnapshot;
     private Long created;
     private Long updated;
 
@@ -34,7 +35,6 @@ public class StudentDto extends DtoObject {
     public StudentDto(Long id) {
         this.id = id;
     }
-
 
     public StudentDto(
             Long id,
@@ -227,5 +227,13 @@ public class StudentDto extends DtoObject {
 
     public void setMediaPermitted(Boolean mediaPermitted) {
         this.mediaPermitted = mediaPermitted;
+    }
+
+    public AttendanceRecordDto getAttendanceSnapshot() {
+        return attendanceSnapshot;
+    }
+
+    public void setAttendanceSnapshot(AttendanceRecordDto attendanceSnapshot) {
+        this.attendanceSnapshot = attendanceSnapshot;
     }
 }

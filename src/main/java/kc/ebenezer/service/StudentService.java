@@ -46,6 +46,16 @@ public class StudentService {
     }
 
     public Optional<Student> getStudentById(Long id) {
+        Optional<Student> result = studentDao.findById(id);
+        if (result.isPresent()) {
+            Long startOfDay = AttendanceService.getStartOfDay().getTime();
+
+            // Check for expired attendance snapshot
+            if (result.get().getAttendanceSnapshot() != null && result.get().getAttendanceSnapshot().getRecordTime().getTime() < startOfDay) {
+                // Snapshot is not today - remove
+                result.get().setAttendanceSnapshot(null);
+            }
+        }
         return studentDao.findById(id);
     }
 
@@ -165,16 +175,29 @@ public class StudentService {
             throw new NoPermissionException("You do not have permission to list students for this project");
         }
 
+        List<Student> result;
         try {
             if (nameMatch.isPresent()) {
-                return studentDao.findForProjectMatchingName(projectId, nameMatch.get(), 10);
+                result = studentDao.findForProjectMatchingName(projectId, nameMatch.get(), 10);
             } else {
-                return studentDao.studentsForProject(projectId);
+                result = studentDao.studentsForProject(projectId);
             }
         } catch (Exception e) {
             LOG.error("Failed to get students", e);
             throw e;
         }
+
+        Long startOfDay = AttendanceService.getStartOfDay().getTime();
+
+        // Check for expired attendance snapshot
+        for (Student student: result) {
+            if (student.getAttendanceSnapshot() != null && student.getAttendanceSnapshot().getRecordTime().getTime() < startOfDay) {
+                // Snapshot is not today - remove
+                student.setAttendanceSnapshot(null);
+            }
+        }
+
+        return result;
     }
 
     private boolean valueUpdated(Object o1, Object o2) {

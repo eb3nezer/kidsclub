@@ -5,6 +5,8 @@ import { Project } from "../../shared/model/project";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Student} from "../../shared/model/student";
 import {StudentService} from "../../shared/services/student.service";
+import {AttendanceRecord} from "../../shared/model/attendanceRecord";
+import {AttendanceService} from "../../shared/services/attendance.service";
 
 @Component({
   selector: 'view-student',
@@ -14,13 +16,16 @@ import {StudentService} from "../../shared/services/student.service";
 export class StudentComponent implements OnInit {
     project: Project;
     student: Student;
+    attendance: AttendanceRecord[];
+    displayedColumns = ['time', 'status', 'who'];
 
     constructor(
         private appTitleService: AppTitleService,
         private route: ActivatedRoute,
         private router: Router,
         private projectService: ProjectService,
-        private studentService: StudentService
+        private studentService: StudentService,
+        private attendanceService: AttendanceService
     ) {
     }
 
@@ -37,6 +42,8 @@ export class StudentComponent implements OnInit {
                 this.student = student;
                 Promise.resolve(null).then(() => this.appTitleService.setTitle(student.name));
             });
+
+            this.attendanceService.getAllAttendanceForStudent(projectId, studentId).subscribe(attendance => this.attendance = attendance);
         }
     }
 

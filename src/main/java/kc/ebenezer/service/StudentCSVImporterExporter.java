@@ -237,7 +237,8 @@ public class StudentCSVImporterExporter {
                         specialInstructions,
                         defaultMediaPermitted,
                         project,
-                        team.orElseGet(null)
+                        team.orElseGet(null),
+                    null
                 );
                 student = studentDao.create(student);
                 auditService.audit(project, "Bulk added new student " + student + " from CSV", new Date());

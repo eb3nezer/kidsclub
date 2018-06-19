@@ -14,7 +14,7 @@ import {StudentService} from "../../shared/services/student.service";
 export class StudentsComponent implements OnInit {
     project: Project;
     students: Student[];
-    displayedColumns = ['name', 'warnings', 'team'];
+    displayedColumns = ['name', 'warnings', 'team', 'attendance'];
 
     constructor(
         private appTitleService: AppTitleService,

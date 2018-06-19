@@ -11,10 +11,12 @@ import javax.inject.Inject;
 public class StudentMapper extends BaseMapper<Student, StudentDto> implements Mapper<Student, StudentDto> {
     @Inject
     private StudentTeamMapper studentTeamMapper;
+    @Inject
+    private AttendanceRecordMapper attendanceRecordMapper;
 
     @Override
     protected String[] getIgnoreProperties() {
-        return new String[] {"gender", "studentTeam", "projectId", "project"};
+        return new String[] {"gender", "studentTeam", "projectId", "project", "attendanceSnapshot"};
     }
 
     @Override
@@ -33,6 +35,7 @@ public class StudentMapper extends BaseMapper<Student, StudentDto> implements Ma
             }
         }
         model.setGender(gender);
+        model.setAttendanceSnapshot(attendanceRecordMapper.toModel(dto.getAttendanceSnapshot()));
         return model;
     }
 
@@ -53,6 +56,7 @@ public class StudentMapper extends BaseMapper<Student, StudentDto> implements Ma
         if (model.getProject() != null) {
             dto.setProjectId(model.getProject().getId());
         }
+        dto.setAttendanceSnapshot(attendanceRecordMapper.toDtoOmitStudent(model.getAttendanceSnapshot()));
 
         return dto;
     }
@@ -73,6 +77,7 @@ public class StudentMapper extends BaseMapper<Student, StudentDto> implements Ma
         if (model.getProject() != null) {
             dto.setProjectId(model.getProject().getId());
         }
+        dto.setAttendanceSnapshot(attendanceRecordMapper.toDtoOmitStudent(model.getAttendanceSnapshot()));
 
         return dto;
     }

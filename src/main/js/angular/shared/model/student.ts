@@ -1,4 +1,5 @@
 import {StudentTeam} from "./studentTeam";
+import {AttendanceRecord} from "./attendanceRecord";
 
 export class Student {
     constructor(
@@ -19,6 +20,7 @@ export class Student {
         public mediaPermitted?: boolean,
         public projectId?: number,
         public studentTeam?: StudentTeam,
+        public attendanceSnapshot?: AttendanceRecord,
         public created?: number,
         public updated?: number
     ) {

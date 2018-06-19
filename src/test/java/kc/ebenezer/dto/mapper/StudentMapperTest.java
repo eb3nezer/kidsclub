@@ -19,6 +19,8 @@ import static org.mockito.Mockito.when;
 public class StudentMapperTest {
     @Mock
     private StudentTeamMapper studentTeamMapper;
+    @Mock
+    private AttendanceRecordMapper attendanceRecordMapper;
 
     @InjectMocks
     private StudentMapper studentMapper;
@@ -86,7 +88,8 @@ public class StudentMapperTest {
                 "allergic to food",
                 true,
                 project,
-                studentTeam);
+                studentTeam,
+            null);
         StudentDto dto = studentMapper.toDto(model);
         assertEquals("ID does not match", 243L, model.getId().longValue());
         assertEquals("name does not match", "A Student", dto.getName());

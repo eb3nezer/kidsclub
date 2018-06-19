@@ -71,6 +71,10 @@ public class Student extends ModelObject {
     @Column(name = "media_permitted")
     private Boolean mediaPermitted;
 
+    @ManyToOne
+    @JoinColumn(name = "attendance_snapshot")
+    private AttendanceRecord attendanceSnapshot;
+
     public Student() {
         created = System.currentTimeMillis();
         updated = created;
@@ -93,7 +97,8 @@ public class Student extends ModelObject {
             String specialInstructions,
             Boolean mediaPermitted,
             Project project,
-            StudentTeam studentTeam) {
+            StudentTeam studentTeam,
+            AttendanceRecord attendanceSnapshot) {
         this();
         this.id = id;
         this.name = name;
@@ -114,6 +119,7 @@ public class Student extends ModelObject {
         this.project = project;
         this.studentTeam = studentTeam;
         this.mediaPermitted = mediaPermitted;
+        this.attendanceSnapshot = attendanceSnapshot;
     }
 
     public Long getId() {
@@ -270,6 +276,14 @@ public class Student extends ModelObject {
 
     public void setMediaPermitted(Boolean mediaPermitted) {
         this.mediaPermitted = mediaPermitted;
+    }
+
+    public AttendanceRecord getAttendanceSnapshot() {
+        return attendanceSnapshot;
+    }
+
+    public void setAttendanceSnapshot(AttendanceRecord attendanceSnapshot) {
+        this.attendanceSnapshot = attendanceSnapshot;
     }
 
     @Override

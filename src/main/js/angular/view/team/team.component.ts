@@ -14,7 +14,7 @@ import {TeamService} from "../../shared/services/team.service";
 export class TeamComponent implements OnInit {
     project: Project;
     team: StudentTeam;
-    displayedColumns = ['name', 'warnings'];
+    displayedColumns = ['name', 'warnings', 'attendance'];
 
     constructor(
         private appTitleService: AppTitleService,

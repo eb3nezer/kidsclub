@@ -29,7 +29,7 @@ public class AttendanceRecordDao extends BaseDaoImpl<AttendanceRecord> {
                 "where attend.student.id = :studentId " +
                 "and attend.recordTime >= :earliest " +
                 "and attend.recordTime <= :latest " +
-                "order by attend.recordTime");
+                "order by attend.recordTime desc");
         if (limit.isPresent()) {
             queryText.append(" desc");
         }
@@ -61,7 +61,7 @@ public class AttendanceRecordDao extends BaseDaoImpl<AttendanceRecord> {
     public List<AttendanceRecord> getAttendanceForStudent(Long studentId) {
         TypedQuery<AttendanceRecord> query = getEntityManager().createQuery("select attend from AttendanceRecord attend " +
                 "where attend.student.id = :studentId " +
-                "order by attend.recordTime", AttendanceRecord.class);
+                "order by attend.recordTime desc", AttendanceRecord.class);
         query.setParameter("studentId", studentId);
         return query.getResultList();
     }

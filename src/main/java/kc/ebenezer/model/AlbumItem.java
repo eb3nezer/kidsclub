@@ -22,9 +22,12 @@ public class AlbumItem extends ModelObject {
     @Column(name = "description")
     private String description;
 
-    @NotNull
     @Column(name = "media_descriptor")
     private String mediaDescriptor;
+
+    @ManyToOne
+    @JoinColumn(name = "images_id")
+    private ImageCollection imageCollection;
 
     @NotNull
     @Column(name = "created")
@@ -50,6 +53,10 @@ public class AlbumItem extends ModelObject {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Integer getOrder() {
         return order;
     }
@@ -60,6 +67,14 @@ public class AlbumItem extends ModelObject {
 
     public String getMediaDescriptor() {
         return mediaDescriptor;
+    }
+
+    public void setMediaDescriptor(String mediaDescriptor) {
+        this.mediaDescriptor = mediaDescriptor;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Date getCreated() {
@@ -76,6 +91,14 @@ public class AlbumItem extends ModelObject {
 
     public void updated() {
         updated = System.currentTimeMillis();
+    }
+
+    public ImageCollection getImageCollection() {
+        return imageCollection;
+    }
+
+    public void setImageCollection(ImageCollection imageCollection) {
+        this.imageCollection = imageCollection;
     }
 
     @Override

@@ -46,6 +46,11 @@ export class AlbumComponent implements OnInit {
             this.albumService.getAlbum(albumId).subscribe(album => {
                 this.album = album;
                 this.appTitleService.setTitle(album.name);
+                this.album.items.forEach(function (item: AlbumItem) {
+                    if (item.imageCollection && item.imageCollection.images) {
+                        item.mediaDescriptor = item.imageCollection.images["250x250"];
+                    }
+                });
             });
         }
     }

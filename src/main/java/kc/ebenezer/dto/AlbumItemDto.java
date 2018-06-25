@@ -12,6 +12,7 @@ public class AlbumItemDto extends DtoObject {
     private String mediaDescriptor;
     private String created;
     private String updated;
+    private ImageCollectionDto imageCollection;
 
     public AlbumItemDto() {
     }
@@ -71,5 +72,13 @@ public class AlbumItemDto extends DtoObject {
 
     public void setUpdated(String updated) {
         this.updated = updated;
+    }
+
+    public ImageCollectionDto getImageCollection() {
+        return imageCollection;
+    }
+
+    public void setImageCollection(ImageCollectionDto imageCollection) {
+        this.imageCollection = imageCollection;
     }
 }

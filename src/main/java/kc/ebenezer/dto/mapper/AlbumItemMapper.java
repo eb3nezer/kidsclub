@@ -16,6 +16,9 @@ import java.util.HashSet;
 
 @Component
 public class AlbumItemMapper extends BaseMapper<AlbumItem, AlbumItemDto> implements Mapper<AlbumItem, AlbumItemDto> {
+    @Inject
+    private ImageCollectionMapper imageCollectionMapper;
+
     private DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
     @Override
@@ -26,6 +29,7 @@ public class AlbumItemMapper extends BaseMapper<AlbumItem, AlbumItemDto> impleme
         AlbumItemDto dto = super.toDto(model);
         dto.setUpdated(dateFormat.format(model.getUpdated()));
         dto.setCreated(dateFormat.format(model.getCreated()));
+        dto.setImageCollection(imageCollectionMapper.toDto(model.getImageCollection()));
 
         return dto;
     }
@@ -42,6 +46,6 @@ public class AlbumItemMapper extends BaseMapper<AlbumItem, AlbumItemDto> impleme
 
     @Override
     public String[] getIgnoreProperties() {
-        return new String[]{"created", "updated"};
+        return new String[]{"created", "updated", "imageCollection"};
     }
 }

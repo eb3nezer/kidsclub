@@ -5,6 +5,9 @@ spring:
       url: ${DB_URL}
       username: ${DB_USER}
       password: ${DB_PASSWORD}
+      hikari:
+        maximum-pool-size: 5
+        minimum-idle: 1
   jpa:
       show-sql: true
       properties:
@@ -56,6 +59,9 @@ spring:
       url: ${DB_URL}
       username: ${DB_USER}
       password: ${DB_PASSWORD}
+      hikari:
+        maximum-pool-size: 8
+        minimum-idle: 4
   jpa:
       show-sql: false
       properties:

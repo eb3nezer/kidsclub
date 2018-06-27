@@ -79,7 +79,7 @@ export class AttendanceComponent implements OnInit {
                     this.comment = undefined;
                     this.studentAutocomplete.setValue(undefined);
                     if (this.recentAttendance.length >= 5) {
-                        this.recentAttendance.shift();
+                        this.recentAttendance.pop();
                     }
                     this.recentAttendance.unshift(next);
                     // Make the table update

@@ -103,7 +103,8 @@ public class MediaService {
 
         Optional<Media> media = mediaDao.findByDescriptor(descriptor);
         if (!media.isPresent()) {
-            throw new ValidationException("Could not find media for descriptor=" + descriptor);
+            // OK it's already gone
+            return;
         }
 
         if (media.get().getOwner().getId().equals(currentUser.get().getId()) ||

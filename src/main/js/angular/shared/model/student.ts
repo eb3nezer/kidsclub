@@ -1,5 +1,6 @@
 import {StudentTeam} from "./studentTeam";
 import {AttendanceRecord} from "./attendanceRecord";
+import {ImageCollection} from "./imageCollection";
 
 export class Student {
     constructor(
@@ -21,6 +22,7 @@ export class Student {
         public projectId?: number,
         public studentTeam?: StudentTeam,
         public attendanceSnapshot?: AttendanceRecord,
+        public imageCollection?: ImageCollection,
         public created?: number,
         public updated?: number
     ) {

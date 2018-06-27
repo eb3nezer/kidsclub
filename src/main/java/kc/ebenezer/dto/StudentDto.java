@@ -26,6 +26,7 @@ public class StudentDto extends DtoObject {
     private Long projectId;
     private StudentTeamDto studentTeam;
     private AttendanceRecordDto attendanceSnapshot;
+    private ImageCollectionDto imageCollection;
     private Long created;
     private Long updated;
 
@@ -235,5 +236,13 @@ public class StudentDto extends DtoObject {
 
     public void setAttendanceSnapshot(AttendanceRecordDto attendanceSnapshot) {
         this.attendanceSnapshot = attendanceSnapshot;
+    }
+
+    public ImageCollectionDto getImageCollection() {
+        return imageCollection;
+    }
+
+    public void setImageCollection(ImageCollectionDto imageCollection) {
+        this.imageCollection = imageCollection;
     }
 }

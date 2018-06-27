@@ -16,8 +16,8 @@ public class StudentTeamDto extends DtoObject {
     private Long updated;
     private List<UserDto> leaders;
     private List<StudentDto> students;
-    private String avatarUrl;
     private String mediaDescriptor;
+    private ImageCollectionDto imageCollection;
 
     public StudentTeamDto() {
     }
@@ -29,7 +29,6 @@ public class StudentTeamDto extends DtoObject {
             Integer score,
             List<UserDto> leaders,
             List<StudentDto> students,
-            String avatarUrl,
             String mediaDescriptor,
             Long created,
             Long updated) {
@@ -41,7 +40,6 @@ public class StudentTeamDto extends DtoObject {
         this.updated = updated;
         this.leaders = leaders;
         this.students = students;
-        this.avatarUrl = avatarUrl;
         this.mediaDescriptor = mediaDescriptor;
     }
 
@@ -73,10 +71,6 @@ public class StudentTeamDto extends DtoObject {
         return leaders;
     }
 
-    public String getAvatarUrl() {
-        return avatarUrl;
-    }
-
     public String getMediaDescriptor() {
         return mediaDescriptor;
     }
@@ -85,15 +79,47 @@ public class StudentTeamDto extends DtoObject {
         this.name = name;
     }
 
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
-    }
-
     public void setMediaDescriptor(String mediaDescriptor) {
         this.mediaDescriptor = mediaDescriptor;
     }
 
     public List<StudentDto> getStudents() {
         return students;
+    }
+
+    public ImageCollectionDto getImageCollection() {
+        return imageCollection;
+    }
+
+    public void setImageCollection(ImageCollectionDto imageCollection) {
+        this.imageCollection = imageCollection;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setProject(ProjectDto project) {
+        this.project = project;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
+    }
+
+    public void setCreated(Long created) {
+        this.created = created;
+    }
+
+    public void setUpdated(Long updated) {
+        this.updated = updated;
+    }
+
+    public void setLeaders(List<UserDto> leaders) {
+        this.leaders = leaders;
+    }
+
+    public void setStudents(List<StudentDto> students) {
+        this.students = students;
     }
 }

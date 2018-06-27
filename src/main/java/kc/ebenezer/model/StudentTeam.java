@@ -10,7 +10,7 @@ import java.util.Set;
 @Entity
 @Table(name = "student_teams")
 @SequenceGenerator(name = "steamgen", sequenceName = "student_team_sequence")
-public class StudentTeam extends ModelObject {
+public class StudentTeam extends ModelObject implements PhotoUploadable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "steamgen")
     @Column(name = "id")
@@ -29,11 +29,12 @@ public class StudentTeam extends ModelObject {
     @Column(name = "points")
     private Integer score;
 
-    @Column(name = "avatar_url")
-    private String avatarUrl;
-
     @Column(name = "media_descriptor")
     private String mediaDescriptor;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "images_id")
+    private ImageCollection imageCollection;
 
     @Column(name = "sort_order")
     private Integer sortOrder;
@@ -59,6 +60,7 @@ public class StudentTeam extends ModelObject {
     public StudentTeam() {
         created = System.currentTimeMillis();
         updated = created;
+        imageCollection = new ImageCollection();
     }
 
     public StudentTeam(
@@ -67,7 +69,6 @@ public class StudentTeam extends ModelObject {
             @NotNull Integer score,
             Set<User> leaders,
             Set<Student> students,
-            String avatarUrl,
             String mediaDescriptor,
             Integer sortOrder) {
         this();
@@ -77,13 +78,16 @@ public class StudentTeam extends ModelObject {
         this.score = score;
         this.leaders = leaders;
         this.students = students;
-        this.avatarUrl = avatarUrl;
         this.mediaDescriptor = mediaDescriptor;
         this.sortOrder = sortOrder;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Project getProject() {
@@ -110,16 +114,21 @@ public class StudentTeam extends ModelObject {
         return leaders;
     }
 
-    public String getAvatarUrl() {
-        return avatarUrl;
+    public void setLeaders(Set<User> leaders) {
+        this.leaders = leaders;
     }
 
+    @Override
     public String getMediaDescriptor() {
         return mediaDescriptor;
     }
 
     public Set<Student> getStudents() {
         return students;
+    }
+
+    public void setStudents(Set<Student> students) {
+        this.students = students;
     }
 
     public Integer getSortOrder() {
@@ -149,12 +158,19 @@ public class StudentTeam extends ModelObject {
         this.name = name;
     }
 
-    public void setAvatarUrl(String avatarUrl) {
-        this.avatarUrl = avatarUrl;
-    }
-
+    @Override
     public void setMediaDescriptor(String mediaDescriptor) {
         this.mediaDescriptor = mediaDescriptor;
+    }
+
+    @Override
+    public ImageCollection getImageCollection() {
+        return imageCollection;
+    }
+
+    @Override
+    public void setImageCollection(ImageCollection imageCollection) {
+        this.imageCollection = imageCollection;
     }
 
     public static class StudentTeamComparator implements Comparator<StudentTeam> {

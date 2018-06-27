@@ -25,6 +25,13 @@ server:
     key-store-password: ${KEY_FILE_PASSWORD}
     keyStoreType: PKCS12
     keyAlias: tomcat
+  compression:
+    enabled: true
+    mime-types:
+     - application/javascript
+     - text/html
+     - application/json
+     - text/css
 kidsclub:
   admin: ${ADMIN_EMAIL}
   google:
@@ -69,6 +76,13 @@ server:
     key-store-password: ${KEY_FILE_PASSWORD}
     keyStoreType: PKCS12
     keyAlias: tomcat
+  compression:
+    enabled: true
+    mime-types:
+     - application/javascript
+     - application/json
+     - text/html
+     - text/css
 kidsclub:
   admin: ${ADMIN_EMAIL}
   google:

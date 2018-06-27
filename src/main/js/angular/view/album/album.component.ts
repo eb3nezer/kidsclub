@@ -5,7 +5,7 @@ import { Project } from "../../shared/model/project";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AlbumService} from "../../shared/services/album.service";
 import {Album} from "../../shared/model/album";
-import {ConfirmDialogComponent} from "../confirm-dialog/confirm-dialog.component";
+import {ConfirmDialogComponent} from "../../shared/confirm-dialog/confirm-dialog.component";
 import {MatSnackBar} from "@angular/material";
 import {MatDialog} from '@angular/material';
 import {AlbumItem} from "../../shared/model/albumItem";
@@ -46,11 +46,6 @@ export class AlbumComponent implements OnInit {
             this.albumService.getAlbum(albumId).subscribe(album => {
                 this.album = album;
                 this.appTitleService.setTitle(album.name);
-                this.album.items.forEach(function (item: AlbumItem) {
-                    if (item.imageCollection && item.imageCollection.images) {
-                        item.mediaDescriptor = item.imageCollection.images["250x250"];
-                    }
-                });
             });
         }
     }

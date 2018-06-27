@@ -1,9 +1,6 @@
 package kc.ebenezer.service;
 
 import kc.ebenezer.dao.ProjectDao;
-import kc.ebenezer.dao.UserDao;
-import kc.ebenezer.dto.mapper.ProjectMapper;
-import kc.ebenezer.dto.mapper.UserDetailsMapper;
 import kc.ebenezer.model.Project;
 import kc.ebenezer.model.ProjectProperty;
 import kc.ebenezer.model.User;
@@ -13,16 +10,11 @@ import kc.ebenezer.rest.NoPermissionException;
 import kc.ebenezer.rest.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.PropertyValue;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -37,6 +29,8 @@ public class ProjectService  {
     private AuditService auditService;
     @Inject
     private PermissionsService permissionsService;
+    @Inject
+    private ImageScalingService imageScalingService;
 
     public ProjectService() {
     }
@@ -48,6 +42,11 @@ public class ProjectService  {
         Optional<Project> project = projectDao.findById(id);
         if (project.isPresent()) {
             if (ProjectPermissionService.userIsProjectMember(user, project.get())) {
+                for (User member : project.get().getUsers()) {
+                    if (member.getMediaDescriptor() != null && !member.getMediaDescriptor().isEmpty()) {
+                        imageScalingService.repairOrCreateImageCollection(member, member.getMediaDescriptor());
+                    }
+                }
                 return project;
             }
         }
@@ -170,22 +169,14 @@ public class ProjectService  {
     public boolean hasPropertyValue(Project project, String key) {
         return project.getProjectProperties()
             .stream()
-            .filter(pp -> pp.getPropertyKey().equals(key))
-            .findFirst()
-            .isPresent();
+            .anyMatch(pp -> pp.getPropertyKey().equals(key));
     }
 
     public Boolean getPropertyValueAsBoolean(Project project, String key) {
         Boolean result = null;
-        if (project.getProjectProperties() != null) {
-            Optional<String> possibleResult = project.getProjectProperties()
-                .stream()
-                .filter(pp -> pp.getPropertyKey().equals(key))
-                .findFirst()
-                .map(ProjectProperty::getPropertyValue);
-            if (possibleResult.isPresent()) {
-                result = Boolean.valueOf(possibleResult.get());
-            }
+        String value = getPropertyValue(project, key);
+        if (value != null) {
+            result = Boolean.valueOf(value);
         }
 
         return result;
@@ -193,20 +184,13 @@ public class ProjectService  {
 
     public Long getPropertyValueAsLong(Project project, String key) {
         Long result = null;
-        if (project.getProjectProperties() != null) {
-            Optional<String> possibleResult = project.getProjectProperties()
-                .stream()
-                .filter(pp -> pp.getPropertyKey().equals(key))
-                .findFirst()
-                .map(ProjectProperty::getPropertyValue);
-            if (possibleResult.isPresent()) {
-                result = Long.valueOf(possibleResult.get());
-            }
+        String value = getPropertyValue(project, key);
+        if (value != null) {
+            result = Long.valueOf(value);
         }
 
         return result;
     }
-
 
     public void setPropertyValue(Project project, String key, String value) {
         if (project.getProjectProperties() == null) {

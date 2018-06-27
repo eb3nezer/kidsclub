@@ -12,6 +12,7 @@ import {AlbumsComponent} from "./albums/albums.component";
 import {AlbumComponent} from "./album/album.component";
 import {EditProfileForViewComponent} from "./edit-profile/edit-profile.component";
 import {ProjectWallboardComponent} from "./project/project-wallboard.component";
+import {AttendanceComponent} from "./attendance/attendance.component";
 
 const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -29,6 +30,7 @@ const routes: Routes = [
     { path: 'album/:projectId/:albumId', component: AlbumComponent },
     { path: 'profile', component: EditProfileForViewComponent },
     { path: 'profile/:id', component: EditProfileForViewComponent },
+    { path: 'attendance/:projectId', component: AttendanceComponent },
 ];
 
 @NgModule({

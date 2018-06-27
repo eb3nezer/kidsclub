@@ -7,12 +7,16 @@ import kc.ebenezer.model.UserSitePermission;
 import kc.ebenezer.permissions.SitePermission;
 import org.springframework.stereotype.Component;
 
+import javax.inject.Inject;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
 public class UserMapper extends BaseMapper<User, UserDto> implements Mapper<User, UserDto> {
+    @Inject
+    private ImageCollectionMapper imageCollectionMapper;
+
     @Override
     public User toModel(UserDto dto) {
         if (dto == null) {
@@ -26,6 +30,7 @@ public class UserMapper extends BaseMapper<User, UserDto> implements Mapper<User
                 result.getUserSitePermissions().add(userSitePermission);
             }
         }
+        result.setImageCollection(imageCollectionMapper.toModel(dto.getImageCollection()));
         return result;
     }
 
@@ -42,12 +47,13 @@ public class UserMapper extends BaseMapper<User, UserDto> implements Mapper<User
                         .map(s -> s.getPermissionKey().toString())
                         .collect(Collectors.toList())
         );
+        result.setImageCollection(imageCollectionMapper.toDto(model.getImageCollection()));
         return result;
     }
 
     @Override
     protected String[] getIgnoreProperties() {
-        return new String[]{"userSitePermissions"};
+        return new String[]{"userSitePermissions", "imageCollection"};
     }
 
     @Override

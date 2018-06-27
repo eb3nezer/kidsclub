@@ -30,6 +30,8 @@ public class StudentTeamService {
     private MediaService mediaService;
     @Inject
     private ProjectPermissionService projectPermissionService;
+    @Inject
+    private ImageScalingService imageScalingService;
 
     public List<StudentTeam> getStudentTeams(Long projectId, Boolean myTeams) {
         Optional<User> currentUser = userService.getCurrentUser();
@@ -79,6 +81,20 @@ public class StudentTeamService {
             Optional<Project> tempProject = projectService.getProjectById(currentUser.get(), team.get().getProject().getId());
             if (!tempProject.isPresent()) {
                 throw new NoPermissionException("You do not have permission to view this team");
+            }
+
+            Long startOfDay = AttendanceService.getStartOfDay().getTime();
+            // Check for expired attendance snapshot
+            for (Student student : team.get().getStudents()) {
+                if (student.getAttendanceSnapshot() != null && student.getAttendanceSnapshot().getRecordTime().getTime() < startOfDay) {
+                    // Snapshot is not today - remove
+                    student.setAttendanceSnapshot(null);
+                }
+            }
+
+            if (team.get().getMediaDescriptor() != null) {
+                // If everything is present and scaled, then this is a no-op
+                imageScalingService.repairOrCreateImageCollection(team.get(), team.get().getMediaDescriptor());
             }
         }
 
@@ -161,6 +177,7 @@ public class StudentTeamService {
         }
 
         if (valueUpdated(existingTeam.get().getMediaDescriptor(), valuesToUpdate.getMediaDescriptor())) {
+            imageScalingService.deleteOldImageCollection(existingTeam.get());
             if (existingTeam.get().getMediaDescriptor() != null && !existingTeam.get().getMediaDescriptor().isEmpty()) {
                 mediaService.deleteData(existingTeam.get().getMediaDescriptor());
                 auditService.audit(project.get(), "Deleting media \"" + existingTeam.get().getMediaDescriptor() +
@@ -169,6 +186,7 @@ public class StudentTeamService {
                         now);
             }
             existingTeam.get().setMediaDescriptor(valuesToUpdate.getMediaDescriptor());
+            imageScalingService.repairOrCreateImageCollection(existingTeam.get(), valuesToUpdate.getMediaDescriptor());
             existingTeam.get().updated();
             auditService.audit(project.get(), "Set media descriptor to \"" + valuesToUpdate.getMediaDescriptor() +
                             "\" for team id=" + existingTeam.get().getId(),

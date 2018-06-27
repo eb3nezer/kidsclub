@@ -254,8 +254,6 @@ public class StudentResource {
             if (media.isPresent()) {
                 studentTeamDto.setMediaDescriptor(media.get().getDescriptor());
             }
-        } else {
-            studentTeamDto.setAvatarUrl(avatarUrl);
         }
 
         studentTeamDto.setName(name);
@@ -279,7 +277,6 @@ public class StudentResource {
             @FormDataParam("file") InputStream payload,
             @FormDataParam("file") FormDataContentDisposition payloadDetail,
             @FormDataParam("name") String name,
-            @FormDataParam("avatarUrl") String avatarUrl,
             @FormDataParam("projectId") String projectId,
             @FormDataParam("mediaDescriptor") String mediaDescriptor,
             @FormDataParam("leaderList") String leaderList,
@@ -312,18 +309,12 @@ public class StudentResource {
             students = Arrays.stream(studentIDs).map(id -> new StudentDto(Long.valueOf(id))).collect(Collectors.toList());
         }
 
-        StudentTeamDto updateRequest = new StudentTeamDto(
-                null,
-                project,
-                name,
-                null,
-                leaders,
-                students,
-                avatarUrl,
-                mediaDescriptor,
-                null,
-                null
-        );
+        StudentTeamDto updateRequest = new StudentTeamDto();
+        updateRequest.setProject(project);
+        updateRequest.setName(name);
+        updateRequest.setLeaders(leaders);
+        updateRequest.setStudents(students);
+        updateRequest.setMediaDescriptor(mediaDescriptor);
 
         Optional<StudentTeam> studentTeam = studentTeamService.updateStudentTeam(Long.valueOf(teamId), studentTeamMapper.toModel(updateRequest));
         if (studentTeam.isPresent()) {

@@ -21,6 +21,7 @@ public class UserDto extends DtoObject {
     private String remoteCredential;
     private String remoteCredentialSource;
     private List<String> userSitePermissions;
+    private ImageCollectionDto imageCollection;
 
     public UserDto() {
         userSitePermissions = new ArrayList<>();
@@ -167,5 +168,13 @@ public class UserDto extends DtoObject {
 
     public void setRemoteCredentialSource(String remoteCredentialSource) {
         this.remoteCredentialSource = remoteCredentialSource;
+    }
+
+    public ImageCollectionDto getImageCollection() {
+        return imageCollection;
+    }
+
+    public void setImageCollection(ImageCollectionDto imageCollection) {
+        this.imageCollection = imageCollection;
     }
 }

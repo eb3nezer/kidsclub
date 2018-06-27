@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -21,38 +20,48 @@ public class StudentTeamMapper extends BaseMapper<StudentTeam, StudentTeamDto> i
     private UserMapper userMapper;
     @Inject
     private StudentMapper studentMapper;
+    @Inject
+    private ImageCollectionMapper imageCollectionMapper;
+
+    @Override
+    protected String[] getIgnoreProperties() {
+        return new String[] {"project", "leaders", "students", "imageCollection", "created", "updated"};
+    }
 
     @Override
     public StudentTeam toModel(StudentTeamDto dto) {
-        return new StudentTeam(
-                projectMapper.toModel(dto.getProject()),
-                dto.getName(),
-                dto.getScore(),
-                new HashSet<>(userMapper.toModel(dto.getLeaders())),
-                new HashSet<>(studentMapper.toModel(dto.getStudents())),
-                dto.getAvatarUrl(),
-                dto.getMediaDescriptor(),
-                0);
+        if (dto == null) {
+            return null;
+        }
+        StudentTeam model = super.toModel(dto);
+        model.setProject(projectMapper.toModel(dto.getProject()));
+        model.setLeaders(new HashSet<>(userMapper.toModel(dto.getLeaders())));
+        model.setStudents(new HashSet<>(studentMapper.toModel(dto.getStudents())));
+        model.setImageCollection(imageCollectionMapper.toModel(dto.getImageCollection()));
+
+        return model;
     }
 
     @Override
     public StudentTeamDto toDto(StudentTeam model) {
+        if (model == null) {
+            return null;
+        }
+        StudentTeamDto dto = super.toDto(model);
+
         List<Student> students = new ArrayList<>(model.getStudents());
         students.sort(new Student.StudentComparator());
         List<User> leaders = new ArrayList<>(model.getLeaders());
         leaders.sort(new User.UserComparator());
 
-        return new StudentTeamDto(
-                model.getId(),
-                projectMapper.toDto(model.getProject()),
-                model.getName(),
-                model.getScore(),
-                userMapper.toDto(leaders),
-                studentMapper.toDto(students),
-                model.getAvatarUrl(),
-                model.getMediaDescriptor(),
-                model.getCreated().getTime(),
-                model.getUpdated().getTime());
+        dto.setStudents(studentMapper.toDto(students));
+        dto.setLeaders(userMapper.toDto(leaders));
+        dto.setProject(projectMapper.toDto(model.getProject()));
+        dto.setCreated(model.getCreated().getTime());
+        dto.setUpdated(model.getUpdated().getTime());
+        dto.setImageCollection(imageCollectionMapper.toDto(model.getImageCollection()));
+
+        return dto;
     }
 
     @Override
@@ -69,6 +78,8 @@ public class StudentTeamMapper extends BaseMapper<StudentTeam, StudentTeamDto> i
         if (model == null) {
             return null;
         }
+        StudentTeamDto dto = super.toDto(model);
+
         List<StudentDto> students = new ArrayList<>();
         if (model.getStudents() != null) {
             for (Student student : model.getStudents()) {
@@ -78,33 +89,26 @@ public class StudentTeamMapper extends BaseMapper<StudentTeam, StudentTeamDto> i
                 students.add(studentDto);
             }
         }
-        return new StudentTeamDto(
-                model.getId(),
-                projectMapper.toDto(model.getProject()),
-                model.getName(),
-                model.getScore(),
-                userMapper.toDto(new ArrayList(model.getLeaders())),
-                students,
-                model.getAvatarUrl(),
-                model.getMediaDescriptor(),
-                model.getCreated().getTime(),
-                model.getUpdated().getTime());
+
+        dto.setStudents(students);
+        dto.setProject(projectMapper.toDto(model.getProject()));
+        dto.setImageCollection(imageCollectionMapper.toDto(model.getImageCollection()));
+        dto.setLeaders(userMapper.toDto(new ArrayList<>(model.getLeaders())));
+        dto.setCreated(model.getCreated().getTime());
+        dto.setUpdated(model.getUpdated().getTime());
+
+        return dto;
     }
 
     public StudentTeamDto toDtoShallowNoTeamMembersNoLeaders(StudentTeam model) {
         if (model == null) {
             return null;
         }
-        return new StudentTeamDto(
-                model.getId(),
-                projectMapper.toDtoNoUsers(model.getProject()),
-                model.getName(),
-                model.getScore(),
-                null,
-                null,
-                model.getAvatarUrl(),
-                model.getMediaDescriptor(),
-                model.getCreated().getTime(),
-                model.getUpdated().getTime());
+        StudentTeamDto dto = super.toDto(model);
+        dto.setProject(projectMapper.toDtoNoUsers(model.getProject()));
+        dto.setCreated(model.getCreated().getTime());
+        dto.setUpdated(model.getUpdated().getTime());
+
+        return dto;
     }
 }

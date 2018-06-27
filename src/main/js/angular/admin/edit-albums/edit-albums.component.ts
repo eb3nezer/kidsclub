@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import {ProjectService} from "../../shared/services/project.service";
 import {ActivatedRoute} from "@angular/router";
-import {AppTitleService} from "../../shared/services/app-title.service";
-import {Project} from "../../shared/model/project";
 import {Location} from "@angular/common";
 import {MatSnackBar} from "@angular/material";
+import {MatDialog} from '@angular/material';
+
+import {ProjectService} from "../../shared/services/project.service";
+import {AppTitleService} from "../../shared/services/app-title.service";
+import {Project} from "../../shared/model/project";
 import {Album} from "../../shared/model/album";
 import {AlbumService} from "../../shared/services/album.service";
-import {ConfirmDialogComponent} from "../confirm-dialog/confirm-dialog.component";
-import {MatDialog} from '@angular/material';
+import {ConfirmDialogComponent} from "../../shared/confirm-dialog/confirm-dialog.component";
 
 @Component({
   selector: 'app-edit-albums',

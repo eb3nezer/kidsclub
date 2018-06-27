@@ -10,7 +10,6 @@
             <div><button mat-raised-button routerLink="/viewstudents/{{project.id}}">Students</button></div>&nbsp;
             <div><button mat-raised-button routerLink="/editalbums/{{project.id}}">Albums</button></div>&nbsp;
             <div><button mat-raised-button routerLink="/documents/{{project.id}}">Documents</button></div>&nbsp;
-            <div><button mat-raised-button routerLink="/attendance/{{project.id}}">Attendance</button></div>
         </div>
     </div>
     <p>Project team members: {{((project && project.users) ? project.users.length : "")}}</p>
@@ -22,7 +21,7 @@
 
     <ng-container matColumnDef="teamAvatar">
         <th mat-header-cell *matHeaderCellDef>&nbsp;</th>
-        <td mat-cell *matCellDef="let team"><img src="/rest/data/download/{{team.mediaDescriptor}}" width="50"></td>
+        <td mat-cell *matCellDef="let team"><img *ngIf="team.imageCollection" src="/rest/data/download/{{team.imageCollection.images['50x50']}}" width="50"></td>
     </ng-container>
 
     <ng-container matColumnDef="teamScore">

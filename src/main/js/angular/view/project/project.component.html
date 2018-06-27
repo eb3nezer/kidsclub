@@ -15,8 +15,7 @@
     <ng-container matColumnDef="teamIcon">
         <th mat-header-cell *matHeaderCellDef>&nbsp;</th>
         <td mat-cell *matCellDef="let team">
-            <img *ngIf="team.mediaDescriptor; else elseBlock" src="/rest/data/download/{{team.mediaDescriptor}}" width="50">
-            <ng-template #elseBlock> <img *ngIf="team.avatarUrl" src="{{team.avatarUrl}}" width="50"> </ng-template>
+            <img *ngIf="team.imageCollection" src="/rest/data/download/{{team.imageCollection.images['50x50']}}" width="50">
         </td>
     </ng-container>
 

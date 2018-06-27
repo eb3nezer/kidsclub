@@ -28,7 +28,7 @@
     <ng-container matColumnDef="userPhoto">
         <th mat-header-cell *matHeaderCellDef>Photo</th>
         <td mat-cell *matCellDef="let user">
-            <img *ngIf="user.mediaDescriptor; else elseBlock" src="/rest/data/download/{{user.mediaDescriptor}}" width="50">
+            <img *ngIf="user.imageCollection; else elseBlock" src="/rest/data/download/{{user.imageCollection.images['50x50']}}" width="50">
             <ng-template #elseBlock><img *ngIf="user.avatarUrl" src="{{user.avatarUrl}}" width="50"></ng-template>
         </td>
     </ng-container>

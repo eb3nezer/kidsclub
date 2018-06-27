@@ -1,6 +1,6 @@
 <div class="mat-typography">
     <div *ngIf="permissions">
-        <img *ngIf="permissions.user.mediaDescriptor; else elseBlock" src="/rest/data/download/{{permissions.user.mediaDescriptor}}" width="200">
+        <img *ngIf="permissions.user.imageCollection; else elseBlock" src="/rest/data/download/{{permissions.user.imageCollection.images['250x250']}}" width="200">
         <ng-template #elseBlock><img *ngIf="permissions.user.avatarUrl" src="{{permissions.user.avatarUrl}}" width="200"></ng-template>
         <form #permissionsForm="ngForm">
             <h2 *ngIf="project">Permissions for {{project.name}}</h2>

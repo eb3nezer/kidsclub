@@ -7,7 +7,7 @@ import java.util.*;
 @Entity
 @Table(name = "students")
 @SequenceGenerator(initialValue = 1, name = "studentgen", sequenceName = "student_sequence")
-public class Student extends ModelObject {
+public class Student extends ModelObject implements PhotoUploadable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "studentgen")
     @Column(name = "id")
@@ -25,6 +25,10 @@ public class Student extends ModelObject {
 
     @Column(name = "media_descriptor")
     private String mediaDescriptor;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "images_id")
+    private ImageCollection imageCollection;
 
     @Column(name = "contact_name")
     private String contactName;
@@ -78,6 +82,7 @@ public class Student extends ModelObject {
     public Student() {
         created = System.currentTimeMillis();
         updated = created;
+        imageCollection = new ImageCollection();
     }
 
     public Student(
@@ -206,10 +211,12 @@ public class Student extends ModelObject {
         this.updated = updated.getTime();
     }
 
+    @Override
     public String getMediaDescriptor() {
         return mediaDescriptor;
     }
 
+    @Override
     public void setMediaDescriptor(String mediaDescriptor) {
         this.mediaDescriptor = mediaDescriptor;
     }
@@ -284,6 +291,16 @@ public class Student extends ModelObject {
 
     public void setAttendanceSnapshot(AttendanceRecord attendanceSnapshot) {
         this.attendanceSnapshot = attendanceSnapshot;
+    }
+
+    @Override
+    public ImageCollection getImageCollection() {
+        return imageCollection;
+    }
+
+    @Override
+    public void setImageCollection(ImageCollection imageCollection) {
+        this.imageCollection = imageCollection;
     }
 
     @Override

@@ -143,19 +143,8 @@ public class AlbumService {
                     albumItem.setOrder(newOrderInAlbum++);
                 }
 
-                ImageCollection imageCollection = new ImageCollection();
-                Image image = new Image();
-                image.setMediaDescriptor(media.get().getDescriptor());
-                image.setSize(ImageSize.DEFAULT);
-                imageDao.create(image);
-                imageCollection.getImages().add(image);
-                imageCollectionDao.create(imageCollection);
-                image.setImageCollection(imageCollection);
-
-                imageScalingService.scaleImage(media.get().getDescriptor(), imageCollection);
-
                 AlbumItem newAlbumItem = new AlbumItem(newOrderInAlbum, media.get().getDescriptor(), description);
-                newAlbumItem.setImageCollection(imageCollection);
+                imageScalingService.repairOrCreateImageCollection(newAlbumItem, media.get().getDescriptor());
                 newAlbumItem = albumItemDao.create(newAlbumItem);
                 album.get().getItems().add(newAlbumItem);
                 album.get().updated();
@@ -183,14 +172,7 @@ public class AlbumService {
             }
             deleted = album.get().getItems().stream().filter(i -> i.getId().equals(photoId)).findFirst();
             if (deleted.isPresent()) {
-                if (deleted.get().getImageCollection() != null) {
-                    for (Image image : deleted.get().getImageCollection().getImages()) {
-                        Optional<Media> media = mediaService.getData(image.getMediaDescriptor());
-                        if (media.isPresent()) {
-                            mediaService.deleteData(image.getMediaDescriptor());
-                        }
-                    }
-                }
+                imageScalingService.deleteOldImageCollection(deleted.get());
                 album.get().getItems().remove(deleted.get());
             }
         }

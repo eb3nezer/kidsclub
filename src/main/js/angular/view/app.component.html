@@ -13,6 +13,7 @@
         <button mat-menu-item routerLink="home">KC Home</button>
         <button mat-menu-item routerLink="project/{{currentProject.id}}" *ngIf="currentProject">{{currentProject.name}}</button>
         <button mat-menu-item routerLink="students/{{currentProject.id}}" *ngIf="currentProject">Students</button>
+        <button mat-menu-item routerLink="attendance/{{currentProject.id}}" *ngIf="currentProject">Attendance</button>
         <button mat-menu-item routerLink="members/{{currentProject.id}}" *ngIf="currentProject">Members</button>
         <button mat-menu-item routerLink="photos/{{currentProject.id}}" *ngIf="currentProject">Photos</button>
         <button mat-menu-item routerLink="documents/{{currentProject.id}}" *ngIf="currentProject">Documents</button>

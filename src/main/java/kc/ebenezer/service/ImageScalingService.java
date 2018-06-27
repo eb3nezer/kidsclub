@@ -1,10 +1,9 @@
 package kc.ebenezer.service;
 
+import kc.ebenezer.dao.ImageCollectionDao;
 import kc.ebenezer.dao.ImageDao;
+import kc.ebenezer.model.*;
 import kc.ebenezer.model.Image;
-import kc.ebenezer.model.ImageCollection;
-import kc.ebenezer.model.ImageSize;
-import kc.ebenezer.model.Media;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -29,6 +28,8 @@ public class ImageScalingService {
     private MediaService mediaService;
     @Inject
     private ImageDao imageDao;
+    @Inject
+    private ImageCollectionDao imageCollectionDao;
 
     private static Map<String, String> contentTypeToFormat;
 
@@ -132,5 +133,28 @@ public class ImageScalingService {
             LOG.error("Failed to create image from data", e);
         }
         // end transaction
+    }
+
+    /**
+     * Remove items from an object's image collection, if it has one.
+     * @param photoUploadable The object to have its image collection removed
+     */
+    public void deleteOldImageCollection(PhotoUploadable photoUploadable) {
+        if (photoUploadable.getImageCollection() != null && !photoUploadable.getImageCollection().getImages().isEmpty()) {
+            for (Image image : photoUploadable.getImageCollection().getImages()) {
+                mediaService.deleteData(image.getMediaDescriptor());
+                imageDao.delete(image);
+            }
+            photoUploadable.getImageCollection().getImages().clear();
+        }
+    }
+
+    public void repairOrCreateImageCollection(PhotoUploadable photoUploadable, String newMediaDescriptor) {
+        if (photoUploadable.getImageCollection() == null) {
+            ImageCollection imageCollection = new ImageCollection();
+            imageCollectionDao.create(imageCollection);
+            photoUploadable.setImageCollection(imageCollection);
+        }
+        scaleImage(newMediaDescriptor, photoUploadable.getImageCollection());
     }
 }

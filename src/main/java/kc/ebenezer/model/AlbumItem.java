@@ -9,7 +9,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "album_items")
 @SequenceGenerator(initialValue = 1, name = "itemgen", sequenceName = "album_item_sequence")
-public class AlbumItem extends ModelObject {
+public class AlbumItem extends ModelObject implements PhotoUploadable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "itemgen")
     @Column(name = "id")
@@ -25,7 +25,7 @@ public class AlbumItem extends ModelObject {
     @Column(name = "media_descriptor")
     private String mediaDescriptor;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "images_id")
     private ImageCollection imageCollection;
 
@@ -65,10 +65,12 @@ public class AlbumItem extends ModelObject {
         return description;
     }
 
+    @Override
     public String getMediaDescriptor() {
         return mediaDescriptor;
     }
 
+    @Override
     public void setMediaDescriptor(String mediaDescriptor) {
         this.mediaDescriptor = mediaDescriptor;
     }
@@ -93,10 +95,12 @@ public class AlbumItem extends ModelObject {
         updated = System.currentTimeMillis();
     }
 
+    @Override
     public ImageCollection getImageCollection() {
         return imageCollection;
     }
 
+    @Override
     public void setImageCollection(ImageCollection imageCollection) {
         this.imageCollection = imageCollection;
     }

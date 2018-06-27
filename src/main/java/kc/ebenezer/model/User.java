@@ -7,7 +7,7 @@ import java.util.*;
 @Entity
 @Table(name = "users")
 @SequenceGenerator(name = "usergen", sequenceName = "user_sequence")
-public class User extends ModelObject {
+public class User extends ModelObject implements PhotoUploadable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "usergen")
     @Column(name = "id")
@@ -28,6 +28,10 @@ public class User extends ModelObject {
 
     @Column(name = "media_descriptor")
     private String mediaDescriptor;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "images_id")
+    private ImageCollection imageCollection;
 
     @NotNull
     @Column(name = "email")
@@ -73,6 +77,7 @@ public class User extends ModelObject {
     public User() {
         created = System.currentTimeMillis();
         updated = created;
+        imageCollection = new ImageCollection();
     }
 
     public User(
@@ -237,6 +242,7 @@ public class User extends ModelObject {
         this.avatarUrl = avatarUrl;
     }
 
+    @Override
     public String getMediaDescriptor() {
         return mediaDescriptor;
     }
@@ -257,8 +263,19 @@ public class User extends ModelObject {
         this.mobilePhone = mobilePhone;
     }
 
+    @Override
     public void setMediaDescriptor(String mediaDescriptor) {
         this.mediaDescriptor = mediaDescriptor;
+    }
+
+    @Override
+    public ImageCollection getImageCollection() {
+        return imageCollection;
+    }
+
+    @Override
+    public void setImageCollection(ImageCollection imageCollection) {
+        this.imageCollection = imageCollection;
     }
 
     public static class UserComparator implements Comparator<User> {

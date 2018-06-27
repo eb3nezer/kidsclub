@@ -17,7 +17,7 @@ export class StudentComponent implements OnInit {
     project: Project;
     student: Student;
     attendance: AttendanceRecord[];
-    displayedColumns = ['time', 'status', 'who'];
+    displayedColumns = ['time', 'status', 'who', 'comments'];
 
     constructor(
         private appTitleService: AppTitleService,

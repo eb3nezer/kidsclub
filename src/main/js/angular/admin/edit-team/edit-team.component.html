@@ -42,7 +42,7 @@
                     Upload a new photo
                 </a>
             </label> <span *ngIf="newFilename">File to upload: {{newFilename}}</span>
-            <span id="media_preview" *ngIf="team.mediaDescriptor"><img src="/rest/data/download/{{team.mediaDescriptor}}" width="200"/></span>
+            <span id="media_preview" *ngIf="team.imageCollection"><img src="/rest/data/download/{{team.imageCollection.images['250x250']}}" width="200"/></span>
             <input type="hidden" name="mediaDescriptor" [(ngModel)]="team.mediaDescriptor">
         </mat-list-item>
     </mat-list>

@@ -6,7 +6,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {Location} from "@angular/common";
 import {StudentTeam} from "../../shared/model/studentTeam";
 import {TeamService} from "../../shared/services/team.service";
-import {ConfirmDialogComponent} from "../confirm-dialog/confirm-dialog.component";
+import {ConfirmDialogComponent} from "../../shared/confirm-dialog/confirm-dialog.component";
 import {MatSnackBar} from "@angular/material";
 import {MatDialog} from '@angular/material';
 

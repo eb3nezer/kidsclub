@@ -11,7 +11,6 @@ import kc.ebenezer.permissions.SitePermission;
 import kc.ebenezer.rest.NoPermissionException;
 import kc.ebenezer.rest.ValidationException;
 import org.apache.commons.validator.routines.EmailValidator;
-import org.codehaus.jackson.map.introspect.NopAnnotationIntrospector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -50,6 +49,8 @@ public class UserService implements UserDetailsService {
     private PermissionsService permissionsService;
     @Inject
     private StudentTeamService studentTeamService;
+    @Inject
+    private ImageScalingService imageScalingService;
 
     public UserService() {
     }
@@ -128,7 +129,13 @@ public class UserService implements UserDetailsService {
         if (nameMatch.isPresent()) {
             return userDao.findForProjectMatchingName(projectId, nameMatch.get(), 10);
         } else {
-            return userDao.findForProject(projectId);
+            List<User> users = userDao.findForProject(projectId);
+            for (User user : users) {
+                if (user.getMediaDescriptor() != null && !user.getMediaDescriptor().isEmpty()) {
+                    imageScalingService.repairOrCreateImageCollection(user, user.getMediaDescriptor());
+                }
+            }
+            return users;
         }
     }
 
@@ -206,6 +213,7 @@ public class UserService implements UserDetailsService {
         }
 
         if (valueUpdated(existingUser.get().getMediaDescriptor(), valuesToUpdate.getMediaDescriptor())) {
+            imageScalingService.deleteOldImageCollection(existingUser.get());
             if (existingUser.get().getMediaDescriptor() != null && !existingUser.get().getMediaDescriptor().isEmpty()) {
                 mediaService.deleteData(existingUser.get().getMediaDescriptor());
                 auditService.audit(null, "Deleting media \"" + existingUser.get().getMediaDescriptor() +
@@ -213,6 +221,7 @@ public class UserService implements UserDetailsService {
                         now);
             }
             existingUser.get().setMediaDescriptor(valuesToUpdate.getMediaDescriptor());
+            imageScalingService.repairOrCreateImageCollection(existingUser.get(), valuesToUpdate.getMediaDescriptor());
             existingUser.get().setUpdated(now);
             auditService.audit(null, "Set media descriptor to \"" + valuesToUpdate.getMediaDescriptor() + "\" for user id=" + valuesToUpdate.getId(),
                     now);

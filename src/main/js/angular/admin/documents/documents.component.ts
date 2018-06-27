@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
+import {ActivatedRoute} from "@angular/router";
+import {Location} from "@angular/common";
+import {MatSnackBar} from "@angular/material";
+import {MatDialog} from '@angular/material';
+
 import {KCDocument} from "../../shared/model/kcDocument";
 import {ProjectService} from "../../shared/services/project.service";
-import {ActivatedRoute} from "@angular/router";
 import {AppTitleService} from "../../shared/services/app-title.service";
 import {Project} from "../../shared/model/project";
 import {KcdocumentService} from "../../shared/services/kcdocument.service";
-import {Location} from "@angular/common";
-import {ConfirmDialogComponent} from "../confirm-dialog/confirm-dialog.component";
-import {MatSnackBar} from "@angular/material";
-import {MatDialog} from '@angular/material';
+import {ConfirmDialogComponent} from "../../shared/confirm-dialog/confirm-dialog.component";
 
 @Component({
   selector: 'app-documents',

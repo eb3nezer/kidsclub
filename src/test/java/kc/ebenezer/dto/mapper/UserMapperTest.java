@@ -5,13 +5,22 @@ import kc.ebenezer.model.User;
 import kc.ebenezer.model.UserSitePermission;
 import kc.ebenezer.permissions.SitePermission;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class UserMapperTest {
-    private UserMapper userMapper = new UserMapper();
+    @Mock
+    private ImageCollectionMapper imageCollectionMapper;
+
+    @InjectMocks
+    private UserMapper userMapper;
 
     @Test
     public void toModel() {

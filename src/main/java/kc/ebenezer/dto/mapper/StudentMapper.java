@@ -13,10 +13,12 @@ public class StudentMapper extends BaseMapper<Student, StudentDto> implements Ma
     private StudentTeamMapper studentTeamMapper;
     @Inject
     private AttendanceRecordMapper attendanceRecordMapper;
+    @Inject
+    private ImageCollectionMapper imageCollectionMapper;
 
     @Override
     protected String[] getIgnoreProperties() {
-        return new String[] {"gender", "studentTeam", "projectId", "project", "attendanceSnapshot"};
+        return new String[] {"gender", "studentTeam", "projectId", "project", "attendanceSnapshot", "imageCollection"};
     }
 
     @Override
@@ -36,6 +38,7 @@ public class StudentMapper extends BaseMapper<Student, StudentDto> implements Ma
         }
         model.setGender(gender);
         model.setAttendanceSnapshot(attendanceRecordMapper.toModel(dto.getAttendanceSnapshot()));
+        model.setImageCollection(imageCollectionMapper.toModel(dto.getImageCollection()));
         return model;
     }
 
@@ -57,6 +60,7 @@ public class StudentMapper extends BaseMapper<Student, StudentDto> implements Ma
             dto.setProjectId(model.getProject().getId());
         }
         dto.setAttendanceSnapshot(attendanceRecordMapper.toDtoOmitStudent(model.getAttendanceSnapshot()));
+        dto.setImageCollection(imageCollectionMapper.toDto(model.getImageCollection()));
 
         return dto;
     }
@@ -78,6 +82,7 @@ public class StudentMapper extends BaseMapper<Student, StudentDto> implements Ma
             dto.setProjectId(model.getProject().getId());
         }
         dto.setAttendanceSnapshot(attendanceRecordMapper.toDtoOmitStudent(model.getAttendanceSnapshot()));
+        dto.setImageCollection(imageCollectionMapper.toDto(model.getImageCollection()));
 
         return dto;
     }

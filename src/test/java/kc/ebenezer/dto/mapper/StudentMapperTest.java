@@ -21,6 +21,8 @@ public class StudentMapperTest {
     private StudentTeamMapper studentTeamMapper;
     @Mock
     private AttendanceRecordMapper attendanceRecordMapper;
+    @Mock
+    private ImageCollectionMapper imageCollectionMapper;
 
     @InjectMocks
     private StudentMapper studentMapper;

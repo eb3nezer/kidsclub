@@ -79,10 +79,10 @@
                     Upload a photo
                 </a>
             </label> <span *ngIf="newFilename">File to upload: {{newFilename}}</span>
-            <span id="avatar_preview" *ngIf="currentStudent.mediaDescriptor"><img src="/rest/data/download/{{currentStudent.mediaDescriptor}}" width="200"/></span>
+            <span id="avatar_preview" *ngIf="currentStudent.imageCollection"><img src="/rest/data/download/{{currentStudent.imageCollection.images['100x100']}}" width="100"/></span>
             <input type="hidden" name="mediaDescriptor" [(ngModel)]="currentStudent.mediaDescriptor">
         </mat-list-item>
-        <mat-list-item>
+        <mat-list-item style="height: auto;">
             <mat-form-field>
                 <mat-select name="team" placeholder="Team" [(ngModel)]="currentStudentTeamId">
                     <mat-option *ngFor="let team of allTeams" [value]="team.id">

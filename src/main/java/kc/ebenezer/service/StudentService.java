@@ -1,7 +1,6 @@
 package kc.ebenezer.service;
 
 import kc.ebenezer.dao.StudentDao;
-import kc.ebenezer.dao.StudentTeamDao;
 import kc.ebenezer.model.*;
 import kc.ebenezer.permissions.ProjectPermission;
 import kc.ebenezer.permissions.SitePermission;
@@ -16,9 +15,9 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -41,6 +40,8 @@ public class StudentService {
     private ProjectPermissionService projectPermissionService;
     @Inject
     private StudentCSVImporterExporter studentCSVImporterExporter;
+    @Inject
+    private ImageScalingService imageScalingService;
 
     public StudentService() {
     }
@@ -54,6 +55,11 @@ public class StudentService {
             if (result.get().getAttendanceSnapshot() != null && result.get().getAttendanceSnapshot().getRecordTime().getTime() < startOfDay) {
                 // Snapshot is not today - remove
                 result.get().setAttendanceSnapshot(null);
+            }
+
+            if (result.get().getMediaDescriptor() != null) {
+                // If everything is present and scaled, then this is a no-op
+                imageScalingService.repairOrCreateImageCollection(result.get(), result.get().getMediaDescriptor());
             }
         }
         return studentDao.findById(id);
@@ -331,6 +337,8 @@ public class StudentService {
         }
 
         if (valueUpdated(existingStudent.get().getMediaDescriptor(), valuesToUpdate.getMediaDescriptor())) {
+            // Photo has changed
+            imageScalingService.deleteOldImageCollection(existingStudent.get());
             if (existingStudent.get().getMediaDescriptor() != null && !existingStudent.get().getMediaDescriptor().isEmpty()) {
                 mediaService.deleteData(existingStudent.get().getMediaDescriptor());
                 auditService.audit(existingStudent.get().getProject(), "Deleting media \"" + existingStudent.get().getMediaDescriptor() +
@@ -338,6 +346,7 @@ public class StudentService {
                         now);
             }
             existingStudent.get().setMediaDescriptor(valuesToUpdate.getMediaDescriptor());
+            imageScalingService.repairOrCreateImageCollection(existingStudent.get(), valuesToUpdate.getMediaDescriptor());
             existingStudent.get().setUpdated(now);
             auditService.audit(existingStudent.get().getProject(), "Set media descriptor to \"" + valuesToUpdate.getMediaDescriptor() +
                             "\" for student id=" + studentId,

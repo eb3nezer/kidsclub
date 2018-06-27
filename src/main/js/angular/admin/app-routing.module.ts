@@ -14,7 +14,6 @@ import {ImportStudentsComponent} from "./import-students/import-students.compone
 import {UserPermissionsComponent} from "./user-permissions/user-permissions.component";
 import {CreateTeamComponent} from "./create-team/create-team.component";
 import {InviteMemberComponent} from "./invite-member/invite-member.component";
-import {AttendanceComponent} from "./attendance/attendance.component";
 import {DocumentsComponent} from "./documents/documents.component";
 import {EditAlbumsComponent} from "./edit-albums/edit-albums.component";
 
@@ -37,7 +36,6 @@ const routes: Routes = [
     { path: 'userpermissions/:projectId/user/:userId', component: UserPermissionsComponent },
     { path: 'createteam/:projectId', component: CreateTeamComponent },
     { path: 'invitemember/:projectId/:inviteType', component: InviteMemberComponent },
-    { path: 'attendance/:projectId', component: AttendanceComponent },
     { path: 'documents/:id', component: DocumentsComponent },
     { path: 'editalbums/:id', component: EditAlbumsComponent }
 ];

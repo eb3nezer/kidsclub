@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import {MatDialog} from '@angular/material';
+import {ActivatedRoute} from "@angular/router";
+import {MatSnackBar} from "@angular/material";
+
 import { AppTitleService } from "../../shared/services/app-title.service";
 import { ProjectService } from "../../shared/services/project.service";
 import { TeamService } from "../../shared/services/team.service";
 import { Project } from "../../shared/model/project";
-import {ActivatedRoute, Router} from "@angular/router";
 import {User} from "../../shared/model/user";
-import {ConfirmDialogComponent} from "../confirm-dialog/confirm-dialog.component";
 import {InviteService} from "../../shared/services/invite.service";
-import {MatSnackBar} from "@angular/material";
+import {ConfirmDialogComponent} from "../../shared/confirm-dialog/confirm-dialog.component";
 
 @Component({
   selector: 'app-view-members',

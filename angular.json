@@ -17,7 +17,7 @@
             "index": "src/main/js/angular/admin.html",
             "main": "src/main/js/angular/admin.ts",
             "polyfills": "src/main/js/angular/polyfills.ts",
-            "tsConfig": "src/main/js/angular/tsconfig.app.json",
+            "tsConfig": "src/main/js/angular/tsconfig.admin.json",
             "assets": [
               "src/main/js/angular/assets"
             ],
@@ -134,7 +134,7 @@
             "index": "src/main/js/angular/view.html",
             "main": "src/main/js/angular/view.ts",
             "polyfills": "src/main/js/angular/polyfills.ts",
-            "tsConfig": "src/main/js/angular/tsconfig.app.json",
+            "tsConfig": "src/main/js/angular/tsconfig.view.json",
             "assets": [
               "src/main/js/angular/assets"
             ],

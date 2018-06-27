@@ -27,9 +27,11 @@ export class MembersComponent implements OnInit {
         const projectId = +this.route.snapshot.paramMap.get('id');
         if (projectId) {
             this.projectService.getProject(projectId).subscribe(project => {
-                this.project = project;
-                this.projectUsers = project.users;
-                this.appTitleService.setCurrentProject(project);
+                if (project) {
+                    this.project = project;
+                    this.projectUsers = project.users;
+                    this.appTitleService.setCurrentProject(project);
+                }
             });
         }
     }

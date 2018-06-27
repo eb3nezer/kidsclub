@@ -29,9 +29,9 @@
                 <mat-card-title>{{item.description}}</mat-card-title>
                 <mat-card-subtitle>{{item.updated}}</mat-card-subtitle>
             </mat-card-header>
-            <img mat-card-image src="/rest/data/download/{{item.mediaDescriptor}}">
+            <img mat-card-image src="/rest/data/download/{{item.imageCollection.images['250x250']}}">
             <mat-card-actions>
-                <button mat-raised-button><a href="/rest/data/download/{{item.mediaDescriptor}}">Download</a></button>
+                <button mat-raised-button><a href="/rest/data/download/{{item.imageCollection.images['original']}}">Download</a></button>
                 <button mat-button (click)="deletePhoto(item)">Delete</button>
             </mat-card-actions>
         </mat-card>

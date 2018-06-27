@@ -5,6 +5,12 @@
     "module": "es2015",
     "types": []
   },
+    "include": [
+        "view/**/*.ts",
+        "shared/**/*.ts",
+        "polyfills.ts",
+        "view.ts"
+    ],
   "exclude": [
     "src/test.ts",
     "**/*.spec.ts"

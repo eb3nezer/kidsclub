@@ -2,6 +2,8 @@ package kc.ebenezer.service;
 
 import kc.ebenezer.dao.AlbumDao;
 import kc.ebenezer.dao.AlbumItemDao;
+import kc.ebenezer.dao.ImageCollectionDao;
+import kc.ebenezer.dao.ImageDao;
 import kc.ebenezer.model.*;
 import kc.ebenezer.permissions.ProjectPermission;
 import kc.ebenezer.rest.NoPermissionException;
@@ -12,9 +14,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -34,6 +34,12 @@ public class AlbumService {
     private ProjectService projectService;
     @Inject
     private ProjectPermissionService projectPermissionService;
+    @Inject
+    private ImageDao imageDao;
+    @Inject
+    private ImageCollectionDao imageCollectionDao;
+    @Inject
+    private ImageScalingService imageScalingService;
 
     public Optional<Album> createAlbum(Long projectId, String name, String description, boolean shared) {
         Optional<Album> result;
@@ -90,6 +96,19 @@ public class AlbumService {
             if (!(album.get().isShared() || ProjectPermissionService.userIsProjectMember(currentUser.get(), album.get().getProject()))) {
                 throw new NoPermissionException("User does not have permission to read albums in this project");
             }
+
+            // check for images needing scaling
+            for (AlbumItem item : album.get().getItems()) {
+                if (item.getMediaDescriptor() != null) {
+                    ImageCollection imageCollection = item.getImageCollection();
+                    if (imageCollection == null) {
+                        imageCollection = new ImageCollection();
+                        imageCollectionDao.create(imageCollection);
+                        item.setImageCollection(imageCollection);
+                    }
+                    imageScalingService.scaleImage(item.getMediaDescriptor(), imageCollection);
+                }
+            }
         }
 
         return album;
@@ -123,7 +142,9 @@ public class AlbumService {
                 for (AlbumItem albumItem : album.get().getItems()) {
                     albumItem.setOrder(newOrderInAlbum++);
                 }
+
                 AlbumItem newAlbumItem = new AlbumItem(newOrderInAlbum, media.get().getDescriptor(), description);
+                imageScalingService.repairOrCreateImageCollection(newAlbumItem, media.get().getDescriptor());
                 newAlbumItem = albumItemDao.create(newAlbumItem);
                 album.get().getItems().add(newAlbumItem);
                 album.get().updated();
@@ -151,10 +172,7 @@ public class AlbumService {
             }
             deleted = album.get().getItems().stream().filter(i -> i.getId().equals(photoId)).findFirst();
             if (deleted.isPresent()) {
-                Optional<Media> media = mediaService.getData(deleted.get().getMediaDescriptor());
-                if (media.isPresent()) {
-                    mediaService.deleteData(deleted.get().getMediaDescriptor());
-                }
+                imageScalingService.deleteOldImageCollection(deleted.get());
                 album.get().getItems().remove(deleted.get());
             }
         }

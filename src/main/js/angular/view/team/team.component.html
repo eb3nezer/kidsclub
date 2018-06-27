@@ -1,6 +1,6 @@
 <div class="mat-typography" *ngIf="team">
     <h2>{{team.name}}</h2>
-    <p><img *ngIf="team.mediaDescriptor" src="/rest/data/download/{{team.mediaDescriptor}}" width="200"></p>
+    <p><img *ngIf="team.imageCollection" src="/rest/data/download/{{team.imageCollection.images['250x250']}}" width="250"></p>
     <h3>Current Points: {{team.score}}</h3>
     <p><button mat-raised-button [disabled]="buttonsDisabled" (click)="adjustPoints(100)">+100</button> <button mat-raised-button [disabled]="buttonsDisabled" (click)="adjustPoints(-100)">-100</button></p>
     <h2>Students in this team</h2>

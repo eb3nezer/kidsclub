@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import { Location } from '@angular/common';
 import {MatSnackBar} from "@angular/material";
+import {Observable} from "rxjs/index";
+import {FormControl} from "@angular/forms";
+import {MatDialog} from "@angular/material";
 
 import { AppTitleService } from "../../shared/services/app-title.service";
 import {ProjectService} from "../../shared/services/project.service";
@@ -9,11 +12,8 @@ import {Project} from "../../shared/model/project";
 import {AttendanceRecord} from "../../shared/model/attendanceRecord";
 import {Student} from "../../shared/model/student";
 import {AttendanceService} from "../../shared/services/attendance.service";
-import {FormControl} from "@angular/forms";
 import {StudentService} from "../../shared/services/student.service";
-import {Observable} from "rxjs/index";
-import {ConfirmDialogComponent} from "../confirm-dialog/confirm-dialog.component";
-import {MatDialog} from "@angular/material";
+import {ConfirmDialogComponent} from "../../shared/confirm-dialog/confirm-dialog.component";
 
 @Component({
   selector: 'app-attendance',
@@ -46,11 +46,18 @@ export class AttendanceComponent implements OnInit {
         const projectId = +this.route.snapshot.paramMap.get('projectId');
         if (projectId) {
             this.projectService.getProject(projectId).subscribe(project => {
-                this.project = project;
-                this.appTitleService.setTitle(`${project.name} Attendance`);
-                this.appTitleService.setCurrentProject(project);
+                if (project) {
+                    this.project = project;
+                    this.appTitleService.setTitle(`${project.name} Attendance`);
+                    this.appTitleService.setCurrentProject(project);
+
+                    this.attendanceService.getTodaysAttendanceForProject(projectId).subscribe(recent => {
+                        if (recent) {
+                            this.recentAttendance = recent;
+                        }
+                    });
+                }
             });
-            this.attendanceService.getTodaysAttendanceForProject(projectId).subscribe(recent => this.recentAttendance = recent);
         }
     }
 

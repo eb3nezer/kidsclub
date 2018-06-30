@@ -53,6 +53,15 @@ public class StudentTeamService {
                 List<Long> leaderIDs = studentTeam.getLeaders().stream().map(User::getId).collect(Collectors.toList());
                 if (leaderIDs.contains(currentUser.get().getId())) {
                     result.add(studentTeam);
+                    Long startOfDay = AttendanceService.getStartOfDay().getTime();
+
+                    for (Student student : studentTeam.getStudents()) {
+                        // Check for expired attendance snapshot
+                        if (student.getAttendanceSnapshot() != null && student.getAttendanceSnapshot().getRecordTime().getTime() < startOfDay) {
+                            // Snapshot is not today - remove
+                            student.setAttendanceSnapshot(null);
+                        }
+                    }
                 }
             }
         }
@@ -139,7 +148,7 @@ public class StudentTeamService {
             return false;
         }
 
-        if ((o1 == null && o2 != null) || (o1 != null && o2 == null)) {
+        if (o1 == null || o2 == null) {
             return true;
         }
 

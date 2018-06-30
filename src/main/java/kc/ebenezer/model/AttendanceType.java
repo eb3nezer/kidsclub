@@ -7,6 +7,7 @@ public enum AttendanceType {
     SIGN_IN("I", "Sign In"),
     SIGN_OUT("O", "Sign Out"),
     ABSENT("A", "Absent"),
+    OUTSIDE("S", "Outside"),
     NO_RECORD("N", "No Record");
 
     private String code;

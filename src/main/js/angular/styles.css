@@ -45,3 +45,7 @@
 .attendance_S {
     color: #eb39b9;
 }
+
+table.mat-table {
+    width: 100%;
+}

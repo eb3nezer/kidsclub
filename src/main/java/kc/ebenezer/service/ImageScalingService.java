@@ -41,8 +41,13 @@ public class ImageScalingService {
     }
 
     private Optional<Media> getFullSize(String mediaDescriptorHint, ImageCollection imageCollection) {
+        Optional<Media> result = Optional.empty();
         if (mediaDescriptorHint != null) {
-            return mediaService.getData(mediaDescriptorHint);
+            result = mediaService.getData(mediaDescriptorHint);
+            if (!result.isPresent()) {
+                LOG.warn("Failed to load media for " + mediaDescriptorHint);
+            }
+            return result;
         } else {
             if (imageCollection != null) {
                 Optional<String> fullSizeDescriptor = imageCollection.getImages()
@@ -51,12 +56,17 @@ public class ImageScalingService {
                     .findFirst()
                     .map(Image::getMediaDescriptor);
                 if (fullSizeDescriptor.isPresent()) {
-                    return mediaService.getData(fullSizeDescriptor.get());
+                    result = mediaService.getData(fullSizeDescriptor.get());
+                    if (!result.isPresent()) {
+                        LOG.warn("Failed to load media for " + fullSizeDescriptor.get());
+                    }
+                } else {
+                    LOG.warn("No media descriptor found, and image collection does not contain a full size image.");
                 }
             }
         }
 
-        return Optional.empty();
+        return result;
     }
 
     private Optional<Media> getScaledMedia(BufferedImage fullSizeImage, int width, int height, String contentType, boolean shared, String description) {

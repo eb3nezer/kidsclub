@@ -152,7 +152,7 @@ public abstract class CustomAuthenticationSuccessHandler extends SavedRequestAwa
                 kidsClubRememberMeServices.addCookie(request, response, newAuthentication);
 
                 if (newUser) {
-                    getRedirectStrategy().sendRedirect(request, response, getBaseUrl(request) + "/secure/new_user.html");
+                    getRedirectStrategy().sendRedirect(request, response, getBaseUrl(request) + "/view/profile/5");
                     return;
                 }
             }
@@ -167,7 +167,6 @@ public abstract class CustomAuthenticationSuccessHandler extends SavedRequestAwa
         int port = request.getServerPort();
         String contextPath = request.getContextPath();
 
-        String baseUrl = scheme + "://" + host + ((("http".equals(scheme) && port == 80) || ("https".equals(scheme) && port == 443)) ? "" : ":" + port) + contextPath;
-        return baseUrl;
+        return scheme + "://" + host + ((("http".equals(scheme) && port == 80) || ("https".equals(scheme) && port == 443)) ? "" : ":" + port) + contextPath;
     }
 }

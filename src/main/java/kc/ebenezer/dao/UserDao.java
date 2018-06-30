@@ -25,8 +25,8 @@ public class UserDao extends BaseDaoImpl<User> {
     public Optional<User> findByEmail(String email) {
         User user = null;
         try {
-            TypedQuery<User> query = getEntityManager().createQuery("select user from User user where user.email = :email", User.class);
-            query.setParameter("email", email);
+            TypedQuery<User> query = getEntityManager().createQuery("select user from User user where lower(user.email) = :email", User.class);
+            query.setParameter("email", email.toLowerCase());
             user = query.getSingleResult();
         } catch (NoResultException e) {
         }

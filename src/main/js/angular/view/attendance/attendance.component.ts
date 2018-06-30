@@ -29,6 +29,7 @@ export class AttendanceComponent implements OnInit {
     studentSuggestions: Observable<Student[]>;
     studentAutocomplete = new FormControl();
     displayedColumns = ["name", "team", "status", "time", "who"];
+    saveDisabled = false;
 
     constructor(
         private appTitleService: AppTitleService,
@@ -70,7 +71,9 @@ export class AttendanceComponent implements OnInit {
 
     onSubmit() {
         if (this.student && this.attendanceCode) {
+            this.saveDisabled = true;
             this.attendanceService.updateAttendance(this.project.id, this.student.id, this.attendanceCode, this.comment).subscribe(next => {
+                this.saveDisabled = false;
                 if (next) {
                     this.snackBar.open(`Attendance updated`, 'Dismiss', {
                         duration: 5000,

@@ -27,7 +27,7 @@
         </mat-list-item>
     </mat-list>
 
-    <button mat-raised-button color="primary" (click)="onSubmit()">Save</button>&nbsp;
+    <button mat-raised-button [disabled]="saveDisabled" color="primary" (click)="onSubmit()">Save</button>&nbsp;
     <button mat-raised-button (click)="onCancel()">Cancel</button>
 </form>
 

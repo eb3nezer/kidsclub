@@ -35,6 +35,11 @@ server:
      - text/html
      - application/json
      - text/css
+  tomcat:
+    accesslog:
+      directory: logs
+      enabled: false
+      pattern: common
 kidsclub:
   admin: ${ADMIN_EMAIL}
   google:
@@ -89,6 +94,11 @@ server:
      - application/json
      - text/html
      - text/css
+  tomcat:
+    accesslog:
+      directory: logs
+      enabled: true
+      pattern: common
 kidsclub:
   admin: ${ADMIN_EMAIL}
   google:

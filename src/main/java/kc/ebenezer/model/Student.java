@@ -82,7 +82,6 @@ public class Student extends ModelObject implements PhotoUploadable {
     public Student() {
         created = System.currentTimeMillis();
         updated = created;
-        imageCollection = new ImageCollection();
     }
 
     public Student(

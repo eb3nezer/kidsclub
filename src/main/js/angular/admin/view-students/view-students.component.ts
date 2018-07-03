@@ -55,13 +55,18 @@ export class ViewStudentsComponent implements OnInit {
         dialogRef.afterClosed().subscribe(result => {
             if (result === "Delete") {
                 this.studentService.deleteStudent(student).subscribe(() => {
+                    const tempStudents = this.students;
                     let found = false;
                     for (let i = 0; i < this.students.length && !found; i++) {
-                        if (this.students[i].id == student.id) {
+                        if (tempStudents[i].id == student.id) {
                             found = true;
-                            this.students.splice(i, 1);
+                            tempStudents.splice(i, 1);
                         }
                     }
+                    if (found) {
+                        this.students = tempStudents.slice();
+                    }
+
                     this.snackBar.open(`Student ${student.name} deleted`, 'Dismiss', {
                         duration: 10000,
                     })

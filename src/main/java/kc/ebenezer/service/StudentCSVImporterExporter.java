@@ -143,8 +143,8 @@ public class StudentCSVImporterExporter {
             if (headerMapping.containsKey(FAMILY_NAME_COLUMN)) {
                 familyName = record.get(headerMapping.get(FAMILY_NAME_COLUMN));
             }
-            if (name == null) {
-                if (givenName != null && familyName != null) {
+            if (name == null || name.isEmpty()) {
+                if ((givenName != null && !givenName.isEmpty()) && (familyName != null && !familyName.isEmpty())) {
                     name = givenName + " " + familyName;
                 } else {
                     throw new ValidationException("Unable to determine the name. The file must include either a \"" +
@@ -237,7 +237,7 @@ public class StudentCSVImporterExporter {
                         specialInstructions,
                         defaultMediaPermitted,
                         project,
-                        team.orElseGet(null),
+                        team.orElse(null),
                     null
                 );
                 student = studentDao.create(student);

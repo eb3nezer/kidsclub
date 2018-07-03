@@ -36,6 +36,7 @@ server:
      - application/json
      - text/css
   tomcat:
+    basedir: .
     accesslog:
       directory: logs
       enabled: false
@@ -95,6 +96,7 @@ server:
      - text/html
      - text/css
   tomcat:
+    basedir: .
     accesslog:
       directory: logs
       enabled: true

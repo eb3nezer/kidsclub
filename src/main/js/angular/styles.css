@@ -6,10 +6,12 @@
 
 .removable {
     display: flex;
+    flex-direction: row;
+    width: 200px;
 }
 
 .removable-label {
-    width: 150px;
+    flex-grow: 1;
 }
 
 .removable-control {

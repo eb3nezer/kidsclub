@@ -77,7 +77,6 @@ public class User extends ModelObject implements PhotoUploadable {
     public User() {
         created = System.currentTimeMillis();
         updated = created;
-        imageCollection = new ImageCollection();
     }
 
     public User(

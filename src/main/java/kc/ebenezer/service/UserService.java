@@ -131,9 +131,7 @@ public class UserService implements UserDetailsService {
         } else {
             List<User> users = userDao.findForProject(projectId);
             for (User user : users) {
-                if (user.getMediaDescriptor() != null && !user.getMediaDescriptor().isEmpty()) {
-                    imageScalingService.repairOrCreateImageCollection(user, user.getMediaDescriptor());
-                }
+                imageScalingService.repairOrCreateImageCollection(user, user.getMediaDescriptor());
             }
             return users;
         }

@@ -43,9 +43,7 @@ public class ProjectService  {
         if (project.isPresent()) {
             if (ProjectPermissionService.userIsProjectMember(user, project.get())) {
                 for (User member : project.get().getUsers()) {
-                    if (member.getMediaDescriptor() != null && !member.getMediaDescriptor().isEmpty()) {
-                        imageScalingService.repairOrCreateImageCollection(member, member.getMediaDescriptor());
-                    }
+                    imageScalingService.repairOrCreateImageCollection(member, member.getMediaDescriptor());
                 }
                 return project;
             }

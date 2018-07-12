@@ -160,11 +160,21 @@ public class ImageScalingService {
     }
 
     public void repairOrCreateImageCollection(PhotoUploadable photoUploadable, String newMediaDescriptor) {
-        if (photoUploadable.getImageCollection() == null) {
-            ImageCollection imageCollection = new ImageCollection();
-            imageCollectionDao.create(imageCollection);
-            photoUploadable.setImageCollection(imageCollection);
+        if (newMediaDescriptor == null &&
+            photoUploadable.getImageCollection() != null &&
+            (photoUploadable.getImageCollection().getImages() == null || photoUploadable.getImageCollection().getImages().isEmpty())) {
+            // empty image collection, when it should be a null image collection
+            photoUploadable.setImageCollection(null);
+            return;
         }
-        scaleImage(newMediaDescriptor, photoUploadable.getImageCollection());
+
+        if (newMediaDescriptor != null) {
+            if (photoUploadable.getImageCollection() == null) {
+                ImageCollection imageCollection = new ImageCollection();
+                imageCollectionDao.create(imageCollection);
+                photoUploadable.setImageCollection(imageCollection);
+            }
+            scaleImage(newMediaDescriptor, photoUploadable.getImageCollection());
+        }
     }
 }

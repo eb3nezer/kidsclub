@@ -102,16 +102,25 @@ public class UserResource {
     ) throws IOException {
         // Check for file upload
         if (payload != null && payloadDetail != null && !payloadDetail.getFileName().isEmpty()) {
-            int fileSize = request.getContentLength();
-            if (fileSize > Application.MAX_UPLOAD_SIZE) {
-                throw new ValidationException("File size must be smaller than " + Application.MAX_UPLOAD_SIZE_DESCRIPTION);
-            }
-
-            String filename = payloadDetail.getFileName().toLowerCase();
-            Optional<Media> media = mediaService.storeData(payload, fileSize, filename, true, name);
+            Optional<Media> media = mediaService.storeData(payload, request.getContentLength(), payloadDetail.getFileName(), true, name);
             if (media.isPresent()) {
                 mediaDescriptor = media.get().getDescriptor();
             }
+        }
+        if (mobilePhone != null && mobilePhone.equals("null")) {
+            mobilePhone = null;
+        }
+        if (homePhone != null && homePhone.equals("null")) {
+            homePhone = null;
+        }
+        if (name != null && name.equals("null")) {
+            name = null;
+        }
+        if (givenName != null && givenName.equals("null")) {
+            givenName = null;
+        }
+        if (familyName != null && familyName.equals("null")) {
+            familyName = null;
         }
         UserDto updatedUser = new UserDto(
                 Long.valueOf(userId),

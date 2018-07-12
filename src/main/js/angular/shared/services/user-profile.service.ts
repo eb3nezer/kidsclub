@@ -44,7 +44,7 @@ export class UserProfileService {
             formData.append("file", profilePhoto, profilePhoto.name);
         }
         return this.http.post(this.urlForGetUpdate, formData).pipe(
-            catchError(this.errorService.handleError('Update current user', user))
+            catchError(this.errorService.handleError('Update current user', undefined))
         );
     }
 

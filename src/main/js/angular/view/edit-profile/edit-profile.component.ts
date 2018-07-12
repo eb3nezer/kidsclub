@@ -29,13 +29,15 @@ export class EditProfileForViewComponent implements OnInit {
 
     onSubmit() {
         this.userProfileService.updateCurrentUserObservable(this.currentUser, this.fileToUpload).subscribe(next => {
-            this.currentUser = next;
-            this.newFilename = "";
-            this.snackBar.open(`Profile updated`, 'Dismiss', {
-                duration: 10000,
-            });
-            if (this.newUser) {
-                this.router.navigate([""]);
+            if (next) {
+                this.currentUser = next;
+                this.newFilename = "";
+                this.snackBar.open(`Profile updated`, 'Dismiss', {
+                    duration: 10000,
+                });
+                if (this.newUser) {
+                    this.router.navigate([""]);
+                }
             }
         });
     }

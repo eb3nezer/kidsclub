@@ -162,7 +162,7 @@ public class UserService implements UserDetailsService {
 
         Date now = new Date();
 
-        if (!existingUser.get().getName().equals(valuesToUpdate.getName())) {
+        if (valueUpdated(existingUser.get().getName(), valuesToUpdate.getName())) {
             if (valuesToUpdate.getName() == null || valuesToUpdate.getName().isEmpty()) {
                 throw new ValidationException("Name cannot be empty");
             }

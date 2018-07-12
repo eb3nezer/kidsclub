@@ -1,5 +1,6 @@
 package kc.ebenezer.service;
 
+import kc.ebenezer.Application;
 import kc.ebenezer.dao.MediaDao;
 import kc.ebenezer.model.Album;
 import kc.ebenezer.model.Media;
@@ -51,6 +52,10 @@ public class MediaService {
     }
 
     public Optional<Media> storeData(InputStream inputStream, int maxSize, String filename, boolean shared, String description) throws IOException {
+        if (maxSize > Application.MAX_UPLOAD_SIZE) {
+            throw new ValidationException("File size must be smaller than " + Application.MAX_UPLOAD_SIZE_DESCRIPTION);
+        }
+
         String contentType = getMIMETypeForFileName(filename);
         if (contentType == null) {
             throw new ValidationException("Unrecognised file type");
@@ -74,7 +79,10 @@ public class MediaService {
     }
 
     public String getMIMETypeForFileName(String filename) {
-        String suffix = filename.substring(filename.lastIndexOf('.'), filename.length());
+        if (filename == null) {
+            return null;
+        }
+        String suffix = filename.toLowerCase().substring(filename.lastIndexOf('.'), filename.length());
         return suffixToContenteType.get(suffix);
     }
 

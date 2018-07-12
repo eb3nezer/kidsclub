@@ -202,18 +202,42 @@ public class StudentCSVImporterExporter {
 
             Optional<Student> existing = studentDao.findForProjectAndExactName(project.getId(), name);
             if (existing.isPresent()) {
-                existing.get().setName(name);
-                existing.get().setGivenName(givenName);
-                existing.get().setFamilyName(familyName);
-                existing.get().setContactName(contactName);
-                existing.get().setContactRelationship(contactRelationship);
-                existing.get().setEmail(email);
-                existing.get().setPhone(phone);
-                existing.get().setSchool(school);
-                existing.get().setAge(age);
-                existing.get().setSchoolYear(schoolYear);
-                existing.get().setGender(gender);
-                existing.get().setSpecialInstructions(specialInstructions);
+                if (!name.isEmpty()) {
+                    existing.get().setName(name);
+                }
+                if (!givenName.isEmpty()) {
+                    existing.get().setGivenName(givenName);
+                }
+                if (!familyName.isEmpty()) {
+                    existing.get().setFamilyName(familyName);
+                }
+                if (!contactName.isEmpty()) {
+                    existing.get().setContactName(contactName);
+                }
+                if (!contactRelationship.isEmpty()) {
+                    existing.get().setContactRelationship(contactRelationship);
+                }
+                if (!email.isEmpty()) {
+                    existing.get().setEmail(email);
+                }
+                if (!phone.isEmpty()) {
+                    existing.get().setPhone(phone);
+                }
+                if (!school.isEmpty()) {
+                    existing.get().setSchool(school);
+                }
+                if (age != null) {
+                    existing.get().setAge(age);
+                }
+                if (!schoolYear.isEmpty()) {
+                    existing.get().setSchoolYear(schoolYear);
+                }
+                if (gender != null) {
+                    existing.get().setGender(gender);
+                }
+                if (!specialInstructions.isEmpty()) {
+                    existing.get().setSpecialInstructions(specialInstructions);
+                }
                 if (team.isPresent()) {
                     existing.get().setStudentTeam(team.orElseGet(null));
                 }

@@ -49,7 +49,7 @@ export class AttendanceComponent implements OnInit {
             this.projectService.getProject(projectId).subscribe(project => {
                 if (project) {
                     this.project = project;
-                    this.appTitleService.setTitle(`${project.name} Attendance`);
+                    this.appTitleService.setTitle("Attendance");
                     this.appTitleService.setCurrentProject(project);
 
                     this.attendanceService.getTodaysAttendanceForProject(projectId).subscribe(recent => {
@@ -81,7 +81,7 @@ export class AttendanceComponent implements OnInit {
                     this.student = undefined;
                     this.comment = undefined;
                     this.studentAutocomplete.setValue(undefined);
-                    if (this.recentAttendance.length >= 5) {
+                    if (this.recentAttendance.length >= 10) {
                         this.recentAttendance.pop();
                     }
                     this.recentAttendance.unshift(next);

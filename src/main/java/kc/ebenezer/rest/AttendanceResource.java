@@ -53,7 +53,7 @@ public class AttendanceResource {
             @QueryParam("limit") Integer limit) {
 
         if (limit == null) {
-            limit = 5;
+            limit = 10;
         }
         List<AttendanceRecord> attendanceRecords = attendanceService.getTodaysAttendanceForProject(projectId, limit);
         logStats("rest.attendance.get.project.today", projectId, null);

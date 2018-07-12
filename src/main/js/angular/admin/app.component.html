@@ -10,15 +10,14 @@
 <mat-menu #appMenu="matMenu" color="primary">
     <button mat-menu-item routerLink="admin">KC Administration home</button>
     <button *ngIf="currentProject" mat-menu-item routerLink="viewproject/{{currentProject.id}}">{{currentProject.name}} Administration</button>
-    <button *ngIf="currentProject" mat-menu-item routerLink="viewmembers/{{currentProject.id}}">{{currentProject.name}} Members</button>
-    <button *ngIf="currentProject" mat-menu-item routerLink="viewstudents/{{currentProject.id}}">{{currentProject.name}} Students</button>
-    <button *ngIf="currentProject" mat-menu-item routerLink="attendance/{{currentProject.id}}">{{currentProject.name}} Attendance</button>
-    <button *ngIf="currentProject" mat-menu-item routerLink="documents/{{currentProject.id}}">{{currentProject.name}} Documents</button>
-    <button *ngIf="currentProject" mat-menu-item routerLink="editalbums/{{currentProject.id}}">{{currentProject.name}} Albums</button>
-    <button *ngIf="currentProject" mat-menu-item routerLink="audit/{{currentProject.id}}">Audit log</button>
-    <button *ngIf="!currentProject" mat-menu-item routerLink="audit">Audit log</button>
+    <button [disabled]="membersDisabled" *ngIf="currentProject" mat-menu-item routerLink="viewmembers/{{currentProject.id}}">{{currentProject.name}} Members</button>
+    <button [disabled]="studentsDisabled" *ngIf="currentProject" mat-menu-item routerLink="viewstudents/{{currentProject.id}}">{{currentProject.name}} Students</button>
+    <button [disabled]="documentsDisabled" *ngIf="currentProject" mat-menu-item routerLink="documents/{{currentProject.id}}">{{currentProject.name}} Documents</button>
+    <button [disabled]="albumsDisabled" *ngIf="currentProject" mat-menu-item routerLink="editalbums/{{currentProject.id}}">{{currentProject.name}} Albums</button>
+    <button [disabled]="auditDisabled" *ngIf="currentProject" mat-menu-item routerLink="audit/{{currentProject.id}}">Audit log</button>
+    <button [disabled]="auditDisabled" *ngIf="!currentProject" mat-menu-item routerLink="audit">Audit log</button>
     <button mat-menu-item [routerLink]="['profile']">Edit your profile</button>
-    <button mat-menu-item [routerLink]="['newproject']">Create a new project</button>
+    <button [disabled]="createProjectDisabled" mat-menu-item [routerLink]="['newproject']">Create a new project</button>
     <button mat-menu-item><a href="/logout">Log Out of KC</a></button>
 </mat-menu>
 <router-outlet></router-outlet>

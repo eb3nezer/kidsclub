@@ -30,6 +30,7 @@ export class EditTeamComponent implements OnInit {
     studentAutocomplete = new FormControl();
     leaders: User[];
     students: Student[];
+    saveTeamDisabled = true;
 
     constructor(
         private appTitleService: AppTitleService,
@@ -53,6 +54,12 @@ export class EditTeamComponent implements OnInit {
                 this.project = project;
                 this.appTitleService.setTitle(`Edit team for ${project.name}`);
                 this.appTitleService.setCurrentProject(project);
+            });
+
+            this.userProfileService.getMyPermissionsForProject(projectId).subscribe(permissions => {
+                if (permissions) {
+                    this.saveTeamDisabled = !(UserProfileService.checkProjectPermissionGranted(permissions, "PROJECT_ADMIN"));
+                }
             });
         }
 

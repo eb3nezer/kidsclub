@@ -9,6 +9,7 @@ import {TeamService} from "../../shared/services/team.service";
 import {ConfirmDialogComponent} from "../../shared/confirm-dialog/confirm-dialog.component";
 import {MatSnackBar} from "@angular/material";
 import {MatDialog} from '@angular/material';
+import {UserProfileService} from "../../shared/services/user-profile.service";
 
 @Component({
   selector: 'view-project',
@@ -18,6 +19,8 @@ import {MatDialog} from '@angular/material';
 export class ProjectComponent implements OnInit {
     project: Project;
     teams: StudentTeam[];
+    membersDisabled = true;
+    studentsDisabled = true;
 
     constructor(
         private apptitleService: AppTitleService,
@@ -27,19 +30,28 @@ export class ProjectComponent implements OnInit {
         private projectService: ProjectService,
         private teamService: TeamService,
         private dialog: MatDialog,
-        private snackBar: MatSnackBar
+        private snackBar: MatSnackBar,
+        private userProfileService: UserProfileService
     ) {
     }
 
     loadProjects() {
-        var projectId = +this.route.snapshot.paramMap.get('id');
-        this.projectService.getProject(projectId).subscribe(project => {
-            this.project = project;
-            this.apptitleService.setCurrentProject(this.project);
-        });
-        this.teamService.getTeamsForProject(projectId).subscribe(teams => {
-            this.teams = teams;
-        })
+        const projectId = +this.route.snapshot.paramMap.get('id');
+        if (projectId) {
+            this.projectService.getProject(projectId).subscribe(project => {
+                this.project = project;
+                this.apptitleService.setCurrentProject(this.project);
+            });
+            this.teamService.getTeamsForProject(projectId).subscribe(teams => {
+                this.teams = teams;
+            });
+            this.userProfileService.getMyPermissionsForProject(projectId).subscribe(permissions => {
+                if (permissions) {
+                    this.membersDisabled = !UserProfileService.checkProjectPermissionGranted(permissions, "LIST_USERS");
+                    this.studentsDisabled = !UserProfileService.checkProjectPermissionGranted(permissions, "VIEW_STUDENTS");
+                }
+            })
+        }
     }
 
     resetPoints() {

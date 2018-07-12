@@ -1,5 +1,5 @@
-<button *ngIf="project" mat-raised-button routerLink="/invitemember/{{project.id}}/3">Invite</button>&nbsp;
-<button *ngIf="project" mat-raised-button routerLink="/invitemember/{{project.id}}/5">Bulk Invite</button>
+<button *ngIf="project" [disabled]="inviteDisabled" mat-raised-button routerLink="/invitemember/{{project.id}}/3">Invite</button>&nbsp;
+<button *ngIf="project" [disabled]="inviteDisabled" mat-raised-button routerLink="/invitemember/{{project.id}}/5">Bulk Invite</button>
 
 <table mat-table [dataSource]="projectUsers" *ngIf="project">
     <ng-container matColumnDef="userName">

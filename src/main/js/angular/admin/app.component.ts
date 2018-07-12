@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AppTitleService } from "../shared/services/app-title.service";
 import {Project} from "../shared/model/project";
+import { UserProfileService } from "../shared/services/user-profile.service";
 
 @Component({
     selector: 'app-root',
@@ -12,8 +13,16 @@ export class AppComponent {
     pageTitle: string = "";
     projectId: number;
     currentProject: Project;
+    membersDisabled = true;
+    studentsDisabled = true;
+    documentsDisabled = true;
+    albumsDisabled = true;
+    auditDisabled = true;
+    createProjectDisabled = true;
 
-    constructor(private apptitleService: AppTitleService) {
+    constructor(
+        private apptitleService: AppTitleService,
+        private userProfileService: UserProfileService) {
     }
 
     ngOnInit() {
@@ -23,13 +32,22 @@ export class AppComponent {
         this.apptitleService.getTitleObserver().subscribe(title => {
             this.pageTitle = title;
             document.title = title;
-        },
-            e => console.log('on error %s', e),
-        () => console.log('on complete'));
+        });
 
-        this.apptitleService.getCurrentProjectObserver().subscribe(project => this.currentProject = project);
-    }
-
-    ngAfterViewInit() {
+        this.apptitleService.getCurrentProjectObserver().subscribe(project => {
+            if (!this.currentProject || !(this.currentProject.id == project.id)) {
+                this.userProfileService.getMyPermissionsForProject(project.id).subscribe(permissions => {
+                    if (permissions) {
+                        this.membersDisabled = !UserProfileService.checkProjectPermissionGranted(permissions, "LIST_USERS");
+                        this.studentsDisabled = !UserProfileService.checkProjectPermissionGranted(permissions, "VIEW_STUDENTS");
+                        this.documentsDisabled = !UserProfileService.checkProjectPermissionGranted(permissions, "EDIT_DOCUMENTS");
+                        this.albumsDisabled = !UserProfileService.checkProjectPermissionGranted(permissions, "EDIT_ALBUMS");
+                        this.auditDisabled = !UserProfileService.checkSitePermissionGranted(permissions, "VIEW_AUDIT");
+                        this.createProjectDisabled = !UserProfileService.checkSitePermissionGranted(permissions, "CREATE_PROJECT");
+                    }
+                });
+            }
+            this.currentProject = project;
+        });
     }
 }

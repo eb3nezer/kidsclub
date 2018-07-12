@@ -56,8 +56,38 @@ export class UserProfileService {
 
     getPermissionsForUserAndProject(projectId: number, userId: number): Observable<UserPermissions> {
         return this.http.get<UserPermissions>(`${this.urlForGetUpdate}/${userId}/permissions?projectId=${projectId}`).pipe(
-            catchError(this.errorService.handleError('Find users', undefined))
+            catchError(this.errorService.handleError('Get permissions', undefined))
         );
+    }
+
+    getMyPermissionsForProject(projectId: number): Observable<UserPermissions> {
+        return this.http.get<UserPermissions>(`${this.urlForGetUpdate}/me/permissions?projectId=${projectId}`).pipe(
+            catchError(this.errorService.handleError('Get permissions', undefined))
+        );
+    }
+
+    static checkProjectPermissionGranted(userPermissions: UserPermissions, permissionKey: string): boolean {
+        let result = false;
+
+        for (let userProjectPermission of userPermissions.userProjectPermissions) {
+            if (userProjectPermission.key === permissionKey) {
+                result = userProjectPermission.granted;
+                break;
+            }
+        }
+        return result;
+    }
+
+    static checkSitePermissionGranted(userPermissions: UserPermissions, permissionKey: string): boolean {
+        let result = false;
+
+        for (let userSitePermission of userPermissions.userSitePermissions) {
+            if (userSitePermission.key === permissionKey) {
+                result = userSitePermission.granted;
+                break;
+            }
+        }
+        return result;
     }
 
     setUserSitePermission(userId: number, permissionKey: string, newValue: boolean): Observable<UserPermissions> {

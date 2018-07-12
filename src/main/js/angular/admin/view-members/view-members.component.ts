@@ -10,6 +10,7 @@ import { Project } from "../../shared/model/project";
 import {User} from "../../shared/model/user";
 import {InviteService} from "../../shared/services/invite.service";
 import {ConfirmDialogComponent} from "../../shared/confirm-dialog/confirm-dialog.component";
+import {UserProfileService} from "../../shared/services/user-profile.service";
 
 @Component({
   selector: 'app-view-members',
@@ -20,6 +21,7 @@ export class ViewMembersComponent implements OnInit {
     project: Project;
     projectUsers: User[];
     displayedColumns = ['userName', 'userPhone', 'userEmail', 'userPhoto', 'userNotes'];
+    inviteDisabled = true;
 
     constructor(
         private appTitleService: AppTitleService,
@@ -28,7 +30,8 @@ export class ViewMembersComponent implements OnInit {
         private route: ActivatedRoute,
         private inviteService: InviteService,
         private dialog: MatDialog,
-        private snackBar: MatSnackBar) {
+        private snackBar: MatSnackBar,
+        private userProfileService: UserProfileService) {
     }
 
     loadProject() {
@@ -39,6 +42,12 @@ export class ViewMembersComponent implements OnInit {
                 this.projectUsers = project.users;
                 this.appTitleService.setTitle(`${project.name} Project Members`);
                 this.appTitleService.setCurrentProject(project);
+            });
+
+            this.userProfileService.getMyPermissionsForProject(projectId).subscribe(permissions => {
+                if (permissions) {
+                    this.inviteDisabled = !(UserProfileService.checkSitePermissionGranted(permissions, "INVITE_USERS"));
+                }
             });
         }
     }

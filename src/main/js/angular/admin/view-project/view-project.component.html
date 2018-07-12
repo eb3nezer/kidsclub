@@ -1,15 +1,15 @@
 <div class="mat-typography">
     <div style="display: block" *ngIf="project">
         <div style="display: flex;">
-            <button mat-raised-button routerLink="/editproject/{{project.id}}">Edit Project</button>&nbsp;
+            <button [disabled]="editProjectDisabled" mat-raised-button routerLink="/editproject/{{project.id}}">Edit Project</button>&nbsp;
             <button mat-raised-button><a href="/view/project/{{project.id}}">View Project</a></button>
         </div>
         <div style="height: 20px;"></div>
         <div style="display: flex;">
-            <div><button mat-raised-button routerLink="/viewmembers/{{project.id}}">Members</button></div>&nbsp;
-            <div><button mat-raised-button routerLink="/viewstudents/{{project.id}}">Students</button></div>&nbsp;
-            <div><button mat-raised-button routerLink="/editalbums/{{project.id}}">Albums</button></div>&nbsp;
-            <div><button mat-raised-button routerLink="/documents/{{project.id}}">Documents</button></div>&nbsp;
+            <div><button [disabled]="editMembersDisabled" mat-raised-button routerLink="/viewmembers/{{project.id}}">Members</button></div>&nbsp;
+            <div><button [disabled]="viewStudentsDisabled" mat-raised-button routerLink="/viewstudents/{{project.id}}">Students</button></div>&nbsp;
+            <div><button [disabled]="editAlbumsDisabled" mat-raised-button routerLink="/editalbums/{{project.id}}">Albums</button></div>&nbsp;
+            <div><button [disabled]="editDocumentsDisabled" mat-raised-button routerLink="/documents/{{project.id}}">Documents</button></div>&nbsp;
         </div>
     </div>
     <p>Project team members: {{((project && project.users) ? project.users.length : "")}}</p>

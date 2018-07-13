@@ -14,6 +14,6 @@ export class AuditService {
     }
 
     getAuditRecordsForProject(projectId: number, count: number, start: number): Observable<AuditRecord[]> {
-        return this.http.get<AuditRecord[]>(`${this.urlForGet}?project=${projectId}&count=${count}&start=${start}`);
+        return this.http.get<AuditRecord[]>(`${this.urlForGet}?projectId=${projectId}&count=${count}&start=${start}`);
     }
 }

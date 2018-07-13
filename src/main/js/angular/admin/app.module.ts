@@ -19,7 +19,6 @@ import {
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { AppRoutingModule } from './app-routing.module';
 import { AdminHomeComponent } from './admin-home/admin-home.component';
-import { EditProfileComponent } from './edit-profile/edit-profile.component';
 import { EditProjectComponent } from './edit-project/edit-project.component';
 import { ViewAuditComponent } from './view-audit/view-audit.component';
 import { CreateProjectComponent } from './create-project/create-project.component';
@@ -43,7 +42,6 @@ import { DocumentsComponent } from './documents/documents.component';
     declarations: [
         AppComponent,
         AdminHomeComponent,
-        EditProfileComponent,
         EditProjectComponent,
         ViewAuditComponent,
         CreateProjectComponent,

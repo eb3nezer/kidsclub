@@ -43,7 +43,7 @@ public class AuditRecordDao extends BaseDaoImpl<AuditRecord> {
                 "left join record.user user " +
                 "where record.changeTime >= :startDate " +
                 "and record.changeTime <= :endDate " +
-                "and record.project.id = :projectId " +
+                "and (record.project.id = :projectId or record.project.id is null) " +
                 "order by record.changeTime desc", AuditRecord.class);
         query.setParameter("startDate", startDate.getTime());
         query.setParameter("endDate", endDate.getTime());

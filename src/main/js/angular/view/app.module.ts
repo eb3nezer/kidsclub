@@ -16,8 +16,6 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {HttpClientModule} from "@angular/common/http";
 import {AppRoutingModule} from "./app-routing.module";
-import {LeaderComponent} from "./leader/leader.component";
-import {LeaderTeamComponent} from "./leader/leader-team.component";
 import {ProjectComponent} from "./project/project.component";
 import {MembersComponent} from "./members/members.component";
 import {StudentsComponent} from "./students/students.component";
@@ -35,8 +33,6 @@ import {AttendanceComponent} from "./attendance/attendance.component";
     declarations: [
         AppComponent,
         HomeComponent,
-        LeaderComponent,
-        LeaderTeamComponent,
         ProjectComponent,
         MembersComponent,
         StudentsComponent,

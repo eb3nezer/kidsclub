@@ -45,8 +45,11 @@ export class HomeComponent implements OnInit {
                 this.apptitleService.setCurrentProject(this.project);
                 this.teamService.getMyTeams(projectId).subscribe(teams => {
                     if (teams.length > 0) {
-                        this.router.navigate([`/leader/${projectId}`]);
+                        // Redirect to the first team
+                        const teamId = teams[0].id;
+                        this.router.navigate([`/team/${projectId}/${teamId}`]);
                     } else {
+                        // Redirect to project summary
                         this.router.navigate([`/project/${projectId}`]);
                     }
                 });

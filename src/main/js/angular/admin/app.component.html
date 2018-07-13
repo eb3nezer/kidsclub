@@ -16,7 +16,6 @@
     <button [disabled]="albumsDisabled" *ngIf="currentProject" mat-menu-item routerLink="editalbums/{{currentProject.id}}">{{currentProject.name}} Albums</button>
     <button [disabled]="auditDisabled" *ngIf="currentProject" mat-menu-item routerLink="audit/{{currentProject.id}}">Audit log</button>
     <button [disabled]="auditDisabled" *ngIf="!currentProject" mat-menu-item routerLink="audit">Audit log</button>
-    <button mat-menu-item [routerLink]="['profile']">Edit your profile</button>
     <button [disabled]="createProjectDisabled" mat-menu-item [routerLink]="['newproject']">Create a new project</button>
     <button mat-menu-item><a href="/logout">Log Out of KC</a></button>
 </mat-menu>

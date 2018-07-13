@@ -1,8 +1,10 @@
 package kc.ebenezer.service;
 
+import kc.ebenezer.dao.ImageCollectionDao;
 import kc.ebenezer.dao.UserDao;
 import kc.ebenezer.dto.*;
 import kc.ebenezer.dto.mapper.UserDetailsMapper;
+import kc.ebenezer.model.ImageCollection;
 import kc.ebenezer.model.Project;
 import kc.ebenezer.model.StudentTeam;
 import kc.ebenezer.model.User;
@@ -51,6 +53,8 @@ public class UserService implements UserDetailsService {
     private StudentTeamService studentTeamService;
     @Inject
     private ImageScalingService imageScalingService;
+    @Inject
+    private ImageCollectionDao imageCollectionDao;
 
     public UserService() {
     }

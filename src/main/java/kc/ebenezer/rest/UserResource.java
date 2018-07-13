@@ -107,20 +107,23 @@ public class UserResource {
                 mediaDescriptor = media.get().getDescriptor();
             }
         }
-        if (mobilePhone != null && mobilePhone.equals("null")) {
+        if (mobilePhone != null && (mobilePhone.equals("null") || mobilePhone.trim().isEmpty())) {
             mobilePhone = null;
         }
-        if (homePhone != null && homePhone.equals("null")) {
+        if (homePhone != null && (homePhone.equals("null") || homePhone.trim().isEmpty())) {
             homePhone = null;
         }
-        if (name != null && name.equals("null")) {
+        if (name != null && (name.equals("null") || name.trim().isEmpty())) {
             name = null;
         }
-        if (givenName != null && givenName.equals("null")) {
+        if (givenName != null && (givenName.equals("null") || givenName.trim().isEmpty())) {
             givenName = null;
         }
-        if (familyName != null && familyName.equals("null")) {
+        if (familyName != null && (familyName.equals("null") || familyName.trim().isEmpty())) {
             familyName = null;
+        }
+        if (mediaDescriptor != null && (mediaDescriptor.equals("null") || mediaDescriptor.trim().isEmpty())) {
+            mediaDescriptor = null;
         }
         UserDto updatedUser = new UserDto(
                 Long.valueOf(userId),

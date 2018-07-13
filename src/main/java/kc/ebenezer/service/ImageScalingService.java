@@ -150,12 +150,13 @@ public class ImageScalingService {
      * @param photoUploadable The object to have its image collection removed
      */
     public void deleteOldImageCollection(PhotoUploadable photoUploadable) {
-        if (photoUploadable.getImageCollection() != null && !photoUploadable.getImageCollection().getImages().isEmpty()) {
+        if (photoUploadable.getImageCollection() != null) {
             for (Image image : photoUploadable.getImageCollection().getImages()) {
                 mediaService.deleteData(image.getMediaDescriptor());
-                imageDao.delete(image);
             }
-            photoUploadable.getImageCollection().getImages().clear();
+            ImageCollection imageCollection = photoUploadable.getImageCollection();
+            photoUploadable.setImageCollection(null);
+            imageCollectionDao.delete(imageCollection);
         }
     }
 

@@ -21,19 +21,19 @@ export class AttendanceService {
         const student = new Student(studentId);
         const attendanceRecord = new AttendanceRecord(undefined, student, attendanceCode, attendanceCode, undefined, undefined, comment);
         return this.http.put<AttendanceRecord>(`${this.url}/project/${projectId}/student/${studentId}`, attendanceRecord).pipe(
-            catchError(this.errorService.handleError('Update attendance', undefined))
+            catchError(this.errorService.handleErrorWithDialog('Update attendance', undefined))
         );
     }
 
     getTodaysAttendanceForProject(projectId: number): Observable<AttendanceRecord[]> {
         return this.http.get<AttendanceRecord[]>(`${this.url}/project/${projectId}`).pipe(
-            catchError(this.errorService.handleError('Get attendance', []))
+            catchError(this.errorService.handleErrorWithDialog('Get attendance', []))
         );
     }
 
     getAllAttendanceForStudent(projectId: number, studentId: number): Observable<AttendanceRecord[]> {
         return this.http.get<AttendanceRecord[]>(`${this.url}/project/${projectId}/student/${studentId}/all`).pipe(
-            catchError(this.errorService.handleError('Get attendance', []))
+            catchError(this.errorService.handleErrorWithDialog('Get attendance', []))
         );
     }
 }

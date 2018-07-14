@@ -19,19 +19,19 @@ export class ProjectService {
 
     getProject(id: number): Observable<Project> {
         return this.http.get<Project>(`${this.urlForGet}/${id}`).pipe(
-            catchError(this.errorService.handleError('Get project', undefined))
+            catchError(this.errorService.handleErrorWithDialog('Get project', undefined))
         );
     }
 
     updateProject(projectId: number, project: Project): Observable<Project> {
         return this.http.put<Project>(`${this.urlForUpdate}/${projectId}`, project).pipe(
-            catchError(this.errorService.handleError('Update project', project))
+            catchError(this.errorService.handleErrorWithDialog('Update project', project))
         );
     }
 
     getAllProjects(): Observable<Project[]> {
         return this.http.get<Project[]>(this.urlForGet).pipe(
-            catchError(this.errorService.handleError('Get all projects', []))
+            catchError(this.errorService.handleErrorWithDialog('Get all projects', []))
         );
     }
 
@@ -39,7 +39,7 @@ export class ProjectService {
         const newProject = new Project(undefined, name);
 
         return this.http.put<Project>(this.urlForUpdate, newProject).pipe(
-            catchError(this.errorService.handleError('Create project', undefined))
+            catchError(this.errorService.handleErrorWithDialog('Create project', undefined))
         );
     }
 }

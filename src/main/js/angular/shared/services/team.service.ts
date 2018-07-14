@@ -19,19 +19,33 @@ export class TeamService {
 
     getTeam(id: number): Observable<StudentTeam> {
         return this.http.get<StudentTeam>(`${this.teamsUrl}/${id}`).pipe(
-            catchError(this.errorService.handleError('Get team', undefined))
+            catchError(this.errorService.handleErrorWithDialog('Get team', undefined))
+        );
+    }
+
+    // If there is an error, don't display it, but just return undefined
+    getTeamLogError(id: number): Observable<StudentTeam> {
+        return this.http.get<StudentTeam>(`${this.teamsUrl}/${id}`).pipe(
+            catchError(this.errorService.handleErrorWithConsoleLog('Get team', undefined))
         );
     }
 
     getMyTeams(projectId: number): Observable<StudentTeam[]> {
         return this.http.get<StudentTeam[]>(`${this.teamsUrl}/?projectId=${projectId}&mine=true`).pipe(
-            catchError(this.errorService.handleError('Get my teams', undefined))
+            catchError(this.errorService.handleErrorWithDialog('Get my teams', undefined))
         );
     }
 
     getTeamsForProject(projectId: number): Observable<StudentTeam[]> {
         return this.http.get<StudentTeam[]>(`${this.teamsUrl}?projectId=${projectId}`).pipe(
-            catchError(this.errorService.handleError('Get teams', []))
+            catchError(this.errorService.handleErrorWithDialog('Get teams', []))
+        );
+    }
+
+    // If there is an error, don't display it, but just return undefined
+    getTeamsForProjectLogError(projectId: number): Observable<StudentTeam[]> {
+        return this.http.get<StudentTeam[]>(`${this.teamsUrl}?projectId=${projectId}`).pipe(
+            catchError(this.errorService.handleErrorWithConsoleLog('Get teams', undefined))
         );
     }
 
@@ -52,19 +66,19 @@ export class TeamService {
             formData.append("file", photo, photo.name);
         }
         return this.http.post(`${this.teamsUrl}/${team.id}`, formData).pipe(
-            catchError(this.errorService.handleError('Update teams', team))
+            catchError(this.errorService.handleErrorWithDialog('Update teams', team))
         );
     }
 
     updatePoints(teamId: number, points: number): Observable<StudentTeam> {
         return this.http.put(`${this.teamsUrl}/${teamId}/points/${points}`, undefined).pipe(
-            catchError(this.errorService.handleError('Update team points', undefined))
+            catchError(this.errorService.handleErrorWithDialog('Update team points', undefined))
         );
     }
 
     resetPoints(projectId: number): Observable<StudentTeam[]> {
         return this.http.put(`${this.teamsUrl}/points/reset?projectId=${projectId}`, undefined).pipe(
-            catchError(this.errorService.handleError('Reset team points', undefined))
+            catchError(this.errorService.handleErrorWithDialog('Reset team points', undefined))
         );
     }
 
@@ -80,7 +94,7 @@ export class TeamService {
             formData.append("file", photo, photo.name);
         }
         return this.http.post(this.teamsUrl, formData).pipe(
-            catchError(this.errorService.handleError('Create team', undefined))
+            catchError(this.errorService.handleErrorWithDialog('Create team', undefined))
         );
     }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import { AppTitleService } from "../../shared/services/app-title.service";
 import { ProjectService } from "../../shared/services/project.service";
 import { Project } from "../../shared/model/project";
@@ -16,11 +16,14 @@ import {UserProfileService} from "../../shared/services/user-profile.service";
   templateUrl: './project.component.html',
   styleUrls: ['./project.component.css']
 })
-export class ProjectComponent implements OnInit {
+export class ProjectComponent implements OnInit, OnDestroy, AfterViewInit {
     project: Project;
     teams: StudentTeam[];
     membersDisabled = true;
     studentsDisabled = true;
+    hideTransmit = true;
+    hideTransmitError = true;
+    timer: any;
 
     constructor(
         private apptitleService: AppTitleService,
@@ -39,11 +42,22 @@ export class ProjectComponent implements OnInit {
         const projectId = +this.route.snapshot.paramMap.get('id');
         if (projectId) {
             this.projectService.getProject(projectId).subscribe(project => {
-                this.project = project;
-                this.apptitleService.setCurrentProject(this.project);
+                if (project) {
+                    this.project = project;
+                    this.apptitleService.setCurrentProject(this.project);
+                }
             });
+            this.hideTransmit = false;
+            this.hideTransmitError = true;
             this.teamService.getTeamsForProject(projectId).subscribe(teams => {
-                this.teams = teams;
+                this.hideTransmit = true;
+                if (teams) {
+                    this.teams = teams;
+                    // Refresh every 5 mins
+                    this.timer = setInterval(this.refresh.bind(this), 300000);
+                } else {
+                    this.hideTransmitError = false;
+                }
             });
             this.userProfileService.getMyPermissionsForProject(projectId).subscribe(permissions => {
                 if (permissions) {
@@ -79,11 +93,33 @@ export class ProjectComponent implements OnInit {
         });
     }
 
+    refresh() {
+        console.log("Refresh teams for project");
+        this.hideTransmit = false;
+        this.hideTransmitError = true;
+        if (this.project && this.project.id) {
+            this.teamService.getTeamsForProjectLogError(this.project.id).subscribe(teams => {
+                this.hideTransmit = true;
+                if (teams) {
+                    this.teams = teams;
+                } else {
+                    console.warn("No teams returned. Assuming an error happened. Will retry.")
+                    this.hideTransmitError = false;
+                }
+            });
+        }
+    }
+
     ngOnInit() {
     }
 
     ngAfterViewInit() {
         Promise.resolve(null).then(() => this.loadProjects());
         Promise.resolve(null).then(() => this.apptitleService.setTitle("Home"));
+    }
+
+    ngOnDestroy() {
+        console.log("Remove project page timer");
+        clearInterval(this. timer);
     }
 }

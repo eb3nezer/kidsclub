@@ -23,13 +23,13 @@ export class UserProfileService {
 
     getCurrentUserObservable(): Observable<User> {
         return this.http.get<User>(this.meUrlForGet).pipe(
-            catchError(this.errorService.handleError('Get current user', undefined))
+            catchError(this.errorService.handleErrorWithDialog('Get current user', undefined))
         );
     }
 
     getCurrentUserById(userId: number): Observable<User> {
         return this.http.get<User>(`${this.urlForGetUpdate}`).pipe(
-            catchError(this.errorService.handleError('Get user', undefined))
+            catchError(this.errorService.handleErrorWithDialog('Get user', undefined))
         );
     }
 
@@ -44,25 +44,25 @@ export class UserProfileService {
             formData.append("file", profilePhoto, profilePhoto.name);
         }
         return this.http.post(this.urlForGetUpdate, formData).pipe(
-            catchError(this.errorService.handleError('Update current user', undefined))
+            catchError(this.errorService.handleErrorWithDialog('Update current user', undefined))
         );
     }
 
     loadUserMatchingForProject(projectId: number, query: string): Observable<User[]> {
         return this.http.get<User[]>(`${this.urlForUserSearch}?projectId=${projectId}&name=${query}`).pipe(
-            catchError(this.errorService.handleError('Find users', []))
+            catchError(this.errorService.handleErrorWithDialog('Find users', []))
         );
     }
 
     getPermissionsForUserAndProject(projectId: number, userId: number): Observable<UserPermissions> {
         return this.http.get<UserPermissions>(`${this.urlForGetUpdate}/${userId}/permissions?projectId=${projectId}`).pipe(
-            catchError(this.errorService.handleError('Get permissions', undefined))
+            catchError(this.errorService.handleErrorWithDialog('Get permissions', undefined))
         );
     }
 
     getMyPermissionsForProject(projectId: number): Observable<UserPermissions> {
         return this.http.get<UserPermissions>(`${this.urlForGetUpdate}/me/permissions?projectId=${projectId}`).pipe(
-            catchError(this.errorService.handleError('Get permissions', undefined))
+            catchError(this.errorService.handleErrorWithDialog('Get permissions', undefined))
         );
     }
 
@@ -95,7 +95,7 @@ export class UserProfileService {
         const permission = new PermissionRecord(permissionKey, "", newValue);
         const updated = new UserPermissions(user, undefined, [permission], []);
         return this.http.put<UserPermissions>(`${this.urlForGetUpdate}/${userId}/permissions`, updated).pipe(
-            catchError(this.errorService.handleError('Update site permission', undefined))
+            catchError(this.errorService.handleErrorWithDialog('Update site permission', undefined))
         );
     }
 
@@ -105,7 +105,7 @@ export class UserProfileService {
         const project = new Project(projectId);
         const updated = new UserPermissions(user, project, [], [permission]);
         return this.http.put<UserPermissions>(`${this.urlForGetUpdate}/${userId}/permissions`, updated).pipe(
-            catchError(this.errorService.handleError('Update project permission', undefined))
+            catchError(this.errorService.handleErrorWithDialog('Update project permission', undefined))
         );
     }
 }

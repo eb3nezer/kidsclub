@@ -65,3 +65,5 @@
         <tr mat-row *matRowDef="let row; columns: ['userName', 'userEmail', 'userPhone', 'userPhoto'];"></tr>
     </table>
 </div>
+<div [hidden]="hideTransmit"><mat-icon color="accent">swap_horiz</mat-icon></div>
+<div [hidden]="hideTransmitError"><mat-icon color="accent">error_outline</mat-icon></div>

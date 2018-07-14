@@ -21,20 +21,20 @@ export class InviteService {
     inviteUser(projectId: number, email: string, name: string): Observable<User> {
         const invitation = new UserInvitation(email, name, projectId);
         return this.http.put<User>(this.url, invitation).pipe(
-            catchError(this.errorService.handleError('Invite user', undefined))
+            catchError(this.errorService.handleErrorWithDialog('Invite user', undefined))
         );
     }
 
     unInviteUser(projectId: number, userId: number): Observable<any> {
         return this.http.delete(`${this.url}/${userId}/project/${projectId}`).pipe(
-            catchError(this.errorService.handleError('Uninvite user', undefined))
+            catchError(this.errorService.handleErrorWithDialog('Uninvite user', undefined))
         );
     }
 
     inviteUsers(projectId: number, emails: string): Observable<User[]> {
         const invitation = new BulkUserInvitation(emails, projectId);
         return this.http.put<User[]>(`${this.url}/bulk`, invitation).pipe(
-            catchError(this.errorService.handleError('Invite users', undefined))
+            catchError(this.errorService.handleErrorWithDialog('Invite users', undefined))
         );
     }
 }

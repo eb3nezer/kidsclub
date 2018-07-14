@@ -21,13 +21,13 @@ export class AlbumService {
 
     getAllAlbumsForProject(projectId: number): Observable<Album[]> {
         return this.http.get<Album[]>(`${this.url}?projectId=${projectId}`).pipe(
-            catchError(this.errorService.handleError('Get all albums', []))
+            catchError(this.errorService.handleErrorWithDialog('Get all albums', []))
         );
     }
 
     getAlbum(albumId: number): Observable<Album> {
         return this.http.get<Album>(`${this.url}/${albumId}`).pipe(
-            catchError(this.errorService.handleError('Get Album', undefined))
+            catchError(this.errorService.handleErrorWithDialog('Get Album', undefined))
         );
     }
 
@@ -35,7 +35,7 @@ export class AlbumService {
         const project = new Project(projectId);
         album.project = project;
         return this.http.put(this.url, album).pipe(
-            catchError(this.errorService.handleError('Create album', undefined))
+            catchError(this.errorService.handleErrorWithDialog('Create album', undefined))
         );
     }
 
@@ -47,13 +47,13 @@ export class AlbumService {
             formData.append("file", fileToUpload, fileToUpload.name);
         }
         return this.http.post<AlbumItem>(`${this.url}/upload/${albumId}`, formData).pipe(
-            catchError(this.errorService.handleError('Upload photo', undefined))
+            catchError(this.errorService.handleErrorWithDialog('Upload photo', undefined))
         );
     }
 
     deletePhoto(albumId: number, albumItemId: number): Observable<AlbumItem> {
         return this.http.delete(`${this.url}/${albumId}/photo/${albumItemId}`).pipe(
-            catchError(this.errorService.handleError('Upload photo', undefined))
+            catchError(this.errorService.handleErrorWithDialog('Upload photo', undefined))
         );
     }
 }

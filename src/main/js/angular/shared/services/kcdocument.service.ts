@@ -18,13 +18,13 @@ export class KcdocumentService {
 
     getAllDocumentsForProject(projectId: number): Observable<KCDocument[]> {
         return this.http.get<KCDocument[]>(`${this.url}?projectId=${projectId}`).pipe(
-            catchError(this.errorService.handleError('Get all documents', []))
+            catchError(this.errorService.handleErrorWithDialog('Get all documents', []))
         );
     }
 
     deleteDocument(documentId: number, projectId: number): Observable<any> {
         return this.http.delete(`${this.url}/${documentId}/project/${projectId}`).pipe(
-            catchError(this.errorService.handleError('Delete document', undefined))
+            catchError(this.errorService.handleErrorWithDialog('Delete document', undefined))
         );
     }
 
@@ -35,7 +35,7 @@ export class KcdocumentService {
             formData.append("file", file, file.name);
         }
         return this.http.post(`${this.url}/upload/${projectId}`, formData).pipe(
-            catchError(this.errorService.handleError('Upload document', undefined))
+            catchError(this.errorService.handleErrorWithDialog('Upload document', undefined))
         );
     }
 }

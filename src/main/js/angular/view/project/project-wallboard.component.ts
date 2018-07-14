@@ -1,23 +1,24 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnDestroy, OnInit} from '@angular/core';
 import { AppTitleService } from "../../shared/services/app-title.service";
 import { ProjectService } from "../../shared/services/project.service";
 import { Project } from "../../shared/model/project";
 import {ActivatedRoute} from "@angular/router";
 import {StudentTeam} from "../../shared/model/studentTeam";
 import {TeamService} from "../../shared/services/team.service";
-import {bind} from "@angular/core/src/render3/instructions";
 
 @Component({
   selector: 'view-wallboard',
   templateUrl: './project-wallboard.component.html',
   styleUrls: ['./project-wallboard.component.css']
 })
-export class ProjectWallboardComponent implements OnInit, OnDestroy {
+export class ProjectWallboardComponent implements OnInit, OnDestroy, AfterViewInit {
     project: Project;
     teams: StudentTeam[];
     wallboardRows: StudentTeam[][];
     wallboardColumns: number;
     timer: any;
+    hideTransmit = true;
+    hideTransmitError = true;
 
     constructor(
         private apptitleService: AppTitleService,
@@ -56,17 +57,32 @@ export class ProjectWallboardComponent implements OnInit, OnDestroy {
             } else {
                 this.wallboardColumns = 0;
             }
+            this.hideTransmit = false;
             this.teamService.getTeamsForProject(projectId).subscribe(teams => {
-                this.formatTeams(teams);
-                this.timer = setInterval(this.refresh.bind(this), 10000);
+                this.hideTransmit = true;
+                if (teams) {
+                    this.formatTeams(teams);
+                    // Refresh every 10 seconds
+                    this.timer = setInterval(this.refresh.bind(this), 10000);
+                } else {
+                    this.hideTransmitError = false;
+                }
             })
         });
     }
 
     refresh() {
         console.log("Refresh");
-        this.teamService.getTeamsForProject(this.project.id).subscribe(teams => {
-            this.formatTeams(teams);
+        this.hideTransmit = false;
+        this.hideTransmitError = true;
+        this.teamService.getTeamsForProjectLogError(this.project.id).subscribe(teams => {
+            this.hideTransmit = true;
+            if (teams) {
+                this.formatTeams(teams);
+            } else {
+                this.hideTransmitError = false;
+                console.warn("No teams returned. Assuming an error happened. Will retry.")
+            }
         })
     }
 
@@ -74,12 +90,12 @@ export class ProjectWallboardComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
+        console.log("Remove wallboard timer");
         clearInterval(this. timer);
     }
 
     ngAfterViewInit() {
         Promise.resolve(null).then(() => this.loadProjects());
         Promise.resolve(null).then(() => this.apptitleService.setTitle("Scoreboard"));
-
     }
 }

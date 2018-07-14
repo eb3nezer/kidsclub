@@ -4,7 +4,6 @@
     <button mat-raised-button routerLink="/photos/{{project.id}}">Photos</button>&nbsp;
     <button mat-raised-button routerLink="/documents/{{project.id}}">Documents</button>
     <button mat-raised-button routerLink="/wallboard/{{project.id}}">Wallboard</button>
-</div>
 
 <table mat-table [dataSource]="teams">
     <ng-container matColumnDef="teamName">
@@ -32,7 +31,10 @@
     <tr mat-header-row *matHeaderRowDef="['teamName', 'teamIcon', 'teamScore', 'teamStudents']"></tr>
     <tr mat-row *matRowDef="let row; columns: ['teamName', 'teamIcon', 'teamScore', 'teamStudents'];"></tr>
 </table>
+</div>
 <div style="height: 20px;">
     &nbsp;
 </div>
 <button mat-raised-button (click)="resetPoints()">Reset Points</button>
+<div [hidden]="hideTransmit"><mat-icon color="accent">swap_horiz</mat-icon></div>
+<div [hidden]="hideTransmitError"><mat-icon color="accent">error_outline</mat-icon></div>

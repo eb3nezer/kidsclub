@@ -11,7 +11,7 @@ export class HttpErrorService {
 
     constructor(private dialog: MatDialog) { }
 
-    handleError<T> (operation = 'operation', result?: T) {
+    handleErrorWithDialog<T> (operation = 'operation', result?: T) {
         return (error: any): Observable<T> => {
 
             let message = "";
@@ -31,6 +31,26 @@ export class HttpErrorService {
                     buttons: ["OK"]
                 }
             });
+
+            // Let the app keep running by returning an empty result.
+            return of(result as T);
+        };
+    }
+
+    handleErrorWithConsoleLog<T> (operation = 'operation', result?: T) {
+        return (error: any): Observable<T> => {
+
+            let message = "";
+            if (error && error.status && (error.status == 412)) {
+                message += "Validation failed. ";
+            }
+            if (error && error.error && error.error.error) {
+                message += error.error.error;
+            } else if (error && error.message) {
+                message += error.message;
+            }
+
+            console.error(`Operation ${operation} failed: ${message}`);
 
             // Let the app keep running by returning an empty result.
             return of(result as T);

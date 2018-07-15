@@ -20,8 +20,8 @@ import java.util.Arrays;
 @Controller
 @EnableTransactionManagement
 public class Application {
-    public static final Long MAX_UPLOAD_SIZE = 5000000L;
-    public static final String MAX_UPLOAD_SIZE_DESCRIPTION = "5Mb";
+    public static final Long MAX_UPLOAD_SIZE = 6000000L;
+    public static final String MAX_UPLOAD_SIZE_DESCRIPTION = "6Mb";
 
     private Logger LOG = LoggerFactory.getLogger(Application.class);
 

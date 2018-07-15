@@ -62,4 +62,36 @@ public class AlbumDto extends DtoObject {
     public Long getUpdated() {
         return updated;
     }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setProject(ProjectDto project) {
+        this.project = project;
+    }
+
+    public void setItems(List<AlbumItemDto> items) {
+        this.items = items;
+    }
+
+    public void setShared(Boolean shared) {
+        this.shared = shared;
+    }
+
+    public void setCreated(Long created) {
+        this.created = created;
+    }
+
+    public void setUpdated(Long updated) {
+        this.updated = updated;
+    }
 }

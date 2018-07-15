@@ -44,6 +44,10 @@ public class AlbumResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response createAlbum(AlbumDto albumDto)  {
+        // If the user didn't click on this field, then it will be null
+        if (albumDto.getShared() == null) {
+            albumDto.setShared(false);
+        }
         Optional<Album> album = albumService.createAlbum(
                 albumDto.getProject().getId(),
                 albumDto.getName(),

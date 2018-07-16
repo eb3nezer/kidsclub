@@ -36,15 +36,17 @@ export class TeamService {
         );
     }
 
-    getTeamsForProject(projectId: number): Observable<StudentTeam[]> {
-        return this.http.get<StudentTeam[]>(`${this.teamsUrl}?projectId=${projectId}`).pipe(
+    getTeamsForProject(projectId: number, expand?: string): Observable<StudentTeam[]> {
+        const expandTerm = (expand) ? `&expand=${expand}` : "";
+        return this.http.get<StudentTeam[]>(`${this.teamsUrl}?projectId=${projectId}${expandTerm}`).pipe(
             catchError(this.errorService.handleErrorWithDialog('Get teams', []))
         );
     }
 
     // If there is an error, don't display it, but just return undefined
-    getTeamsForProjectLogError(projectId: number): Observable<StudentTeam[]> {
-        return this.http.get<StudentTeam[]>(`${this.teamsUrl}?projectId=${projectId}`).pipe(
+    getTeamsForProjectLogError(projectId: number, expand?: string): Observable<StudentTeam[]> {
+        const expandTerm = (expand) ? `&expand=${expand}` : "";
+        return this.http.get<StudentTeam[]>(`${this.teamsUrl}?projectId=${projectId}${expandTerm}`).pipe(
             catchError(this.errorService.handleErrorWithConsoleLog('Get teams', undefined))
         );
     }

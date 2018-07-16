@@ -328,14 +328,25 @@ public class StudentResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/teams")
-    public Response getStudentTeams(@QueryParam("projectId") Long projectId,
-                                    @QueryParam("mine") String mine) {
+    public Response getStudentTeams(
+        @QueryParam("projectId") Long projectId,
+        @QueryParam("mine") String mine,
+        @QueryParam("expand") String expand) {
         if (projectId == null) {
             throw new ValidationException("projectId must be supplied");
         }
         List<StudentTeam> teams = studentTeamService.getStudentTeams(projectId, Boolean.valueOf(mine));
         logStats("rest.student.teams.get", projectId.toString());
-        return Response.status(Response.Status.OK).entity(studentTeamMapper.toDto(teams)).build();
+        List<StudentTeamDto> result = studentTeamMapper.toDto(teams);
+        if (expand != null && expand.equalsIgnoreCase("none")) {
+            // Trim out some stuff
+            for (StudentTeamDto team : result) {
+                team.getStudents().clear();
+                team.getLeaders().clear();
+                team.getProject().getUsers().clear();
+            }
+        }
+        return Response.status(Response.Status.OK).entity(result).build();
     }
 
     @GET

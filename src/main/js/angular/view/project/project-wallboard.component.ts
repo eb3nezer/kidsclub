@@ -58,7 +58,7 @@ export class ProjectWallboardComponent implements OnInit, OnDestroy, AfterViewIn
                 this.wallboardColumns = 0;
             }
             this.hideTransmit = false;
-            this.teamService.getTeamsForProject(projectId).subscribe(teams => {
+            this.teamService.getTeamsForProject(projectId, "none").subscribe(teams => {
                 this.hideTransmit = true;
                 if (teams) {
                     this.formatTeams(teams);

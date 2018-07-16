@@ -75,7 +75,7 @@ export class ProjectWallboardComponent implements OnInit, OnDestroy, AfterViewIn
         console.log("Refresh");
         this.hideTransmit = false;
         this.hideTransmitError = true;
-        this.teamService.getTeamsForProjectLogError(this.project.id).subscribe(teams => {
+        this.teamService.getTeamsForProjectLogError(this.project.id, "none").subscribe(teams => {
             this.hideTransmit = true;
             if (teams) {
                 this.formatTeams(teams);

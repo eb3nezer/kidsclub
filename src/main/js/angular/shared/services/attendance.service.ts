@@ -5,6 +5,7 @@ import {HttpErrorService} from "./http-error.service";
 import {catchError} from "rxjs/operators";
 import {AttendanceRecord} from "../model/attendanceRecord";
 import {Student} from "../model/student";
+import {AttendanceDetails} from "../model/attendanceDetails";
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class AttendanceService {
         private errorService: HttpErrorService) {
     }
 
-    updateAttendance(projectId: number, studentId: number, attendanceCode: string, comment: string): Observable<AttendanceRecord> {
+    updateAttendance(projectId: number, studentId: number, attendanceCode: string, comment: string): Observable<AttendanceDetails> {
         const student = new Student(studentId);
         const attendanceRecord = new AttendanceRecord(undefined, student, attendanceCode, attendanceCode, undefined, undefined, comment);
         return this.http.put<AttendanceRecord>(`${this.url}/project/${projectId}/student/${studentId}`, attendanceRecord).pipe(
@@ -25,9 +26,9 @@ export class AttendanceService {
         );
     }
 
-    getTodaysAttendanceForProject(projectId: number): Observable<AttendanceRecord[]> {
+    getTodaysAttendanceForProject(projectId: number): Observable<AttendanceDetails> {
         return this.http.get<AttendanceRecord[]>(`${this.url}/project/${projectId}`).pipe(
-            catchError(this.errorService.handleErrorWithDialog('Get attendance', []))
+            catchError(this.errorService.handleErrorWithDialog('Get attendance', undefined))
         );
     }
 

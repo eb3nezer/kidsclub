@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChildren} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import { Location } from '@angular/common';
 import {MatSnackBar} from "@angular/material";
@@ -14,6 +14,7 @@ import {Student} from "../../shared/model/student";
 import {AttendanceService} from "../../shared/services/attendance.service";
 import {StudentService} from "../../shared/services/student.service";
 import {ConfirmDialogComponent} from "../../shared/confirm-dialog/confirm-dialog.component";
+import {AttendanceCount} from "../../shared/model/attendanceCount";
 
 @Component({
   selector: 'app-attendance',
@@ -30,6 +31,8 @@ export class AttendanceComponent implements OnInit {
     studentAutocomplete = new FormControl();
     displayedColumns = ["name", "team", "status", "time", "who"];
     saveDisabled = false;
+    attendanceCount: AttendanceCount;
+    @ViewChildren('input') inputField;
 
     constructor(
         private appTitleService: AppTitleService,
@@ -52,9 +55,10 @@ export class AttendanceComponent implements OnInit {
                     this.appTitleService.setTitle("Attendance");
                     this.appTitleService.setCurrentProject(project);
 
-                    this.attendanceService.getTodaysAttendanceForProject(projectId).subscribe(recent => {
-                        if (recent) {
-                            this.recentAttendance = recent;
+                    this.attendanceService.getTodaysAttendanceForProject(projectId).subscribe(attendanceDetails => {
+                        if (attendanceDetails) {
+                            this.recentAttendance = attendanceDetails.attendanceRecords;
+                            this.attendanceCount = attendanceDetails.attendanceCount;
                         }
                     });
                 }
@@ -72,19 +76,23 @@ export class AttendanceComponent implements OnInit {
     onSubmit() {
         if (this.student && this.attendanceCode) {
             this.saveDisabled = true;
-            this.attendanceService.updateAttendance(this.project.id, this.student.id, this.attendanceCode, this.comment).subscribe(next => {
+            this.attendanceService.updateAttendance(this.project.id, this.student.id, this.attendanceCode, this.comment).subscribe(attendanceDetails => {
                 this.saveDisabled = false;
-                if (next) {
+                if (attendanceDetails) {
+                    this.attendanceCount = attendanceDetails.attendanceCount;
                     this.snackBar.open(`Attendance updated`, 'Dismiss', {
                         duration: 5000,
                     });
                     this.student = undefined;
                     this.comment = undefined;
                     this.studentAutocomplete.setValue(undefined);
+                    this.studentSuggestions = undefined;
+                    // Focus the input field
+                    this.inputField.first.nativeElement.focus();
                     if (this.recentAttendance.length >= 10) {
                         this.recentAttendance.pop();
                     }
-                    this.recentAttendance.unshift(next);
+                    this.recentAttendance.unshift(attendanceDetails.attendanceRecords[0]);
                     // Make the table update
                     this.recentAttendance = this.recentAttendance.slice();
                 }

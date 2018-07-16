@@ -3,7 +3,7 @@
         <mat-list-item>
             <mat-form-field appearance="standard">
                 <mat-label>Student (type to search)</mat-label>
-                <input matInput name="chooseStudent" id="chooseStudentField" [formControl]="studentAutocomplete" [matAutocomplete]="auto">
+                <input #input matInput name="chooseStudent" id="chooseStudentField" [formControl]="studentAutocomplete" [matAutocomplete]="auto">
             </mat-form-field>
             <mat-autocomplete #auto="matAutocomplete">
                 <mat-option *ngFor="let option of studentSuggestions | async" [value]="option" (click)="studentChosen($event)"><mat-icon
@@ -30,6 +30,14 @@
     <button mat-raised-button [disabled]="saveDisabled" color="primary" (click)="onSubmit()">Save</button>&nbsp;
     <button mat-raised-button (click)="onCancel()">Cancel</button>
 </form>
+<div class="mat-typography" *ngIf="attendanceCount">
+    <h2 class="mat-typography">Totals</h2>
+    <ul>
+        <li>Students: {{attendanceCount.totalStudents}}</li>
+        <li>Not Signed In: {{attendanceCount.totalNotSignedIn}}</li>
+        <li>Signed In: {{attendanceCount.totalSignedIn}}</li>
+    </ul>
+</div>
 
 <h2 class="mat-typography">Recent Attendance Updates</h2>
 <table mat-table [dataSource]="recentAttendance" *ngIf="recentAttendance">

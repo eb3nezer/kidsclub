@@ -1,6 +1,7 @@
 package kc.ebenezer.service;
 
 import kc.ebenezer.dao.StudentDao;
+import kc.ebenezer.dto.AttendanceCountDto;
 import kc.ebenezer.model.*;
 import kc.ebenezer.permissions.ProjectPermission;
 import kc.ebenezer.permissions.SitePermission;
@@ -193,11 +194,9 @@ public class StudentService {
             throw e;
         }
 
-        Long startOfDay = AttendanceService.getStartOfDay().getTime();
-
         // Check for expired attendance snapshot
         for (Student student: result) {
-            if (student.getAttendanceSnapshot() != null && student.getAttendanceSnapshot().getRecordTime().getTime() < startOfDay) {
+            if (student.getAttendanceSnapshot() != null && student.getAttendanceSnapshot().getRecordTime().getTime() < AttendanceService.getStartOfDay().getTime()) {
                 // Snapshot is not today - remove
                 student.setAttendanceSnapshot(null);
             }

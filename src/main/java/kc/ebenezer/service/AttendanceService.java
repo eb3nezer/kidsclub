@@ -1,6 +1,7 @@
 package kc.ebenezer.service;
 
 import kc.ebenezer.dao.AttendanceRecordDao;
+import kc.ebenezer.dto.AttendanceCountDto;
 import kc.ebenezer.model.*;
 import kc.ebenezer.permissions.ProjectPermission;
 import kc.ebenezer.rest.NoPermissionException;
@@ -143,5 +144,28 @@ public class AttendanceService {
         student.get().setAttendanceSnapshot(result);
 
         return Optional.of(result);
+    }
+
+    public AttendanceCountDto getAttendanceCountForProject(long projectId) {
+        Optional<User> currentUser = userService.getCurrentUser();
+
+        if (!currentUser.isPresent()) {
+            throw new NoPermissionException("Anonymous cannot request students");
+        }
+
+        List<Student> students = studentService.getStudentsForProject(projectId, Optional.empty());
+
+        AttendanceCountDto count = new AttendanceCountDto();
+        for (Student student : students) {
+            if (student.getAttendanceSnapshot() == null) {
+                count.setTotalNotSignedIn(count.getTotalNotSignedIn() + 1);
+            } else if (student.getAttendanceSnapshot().getAttendanceType() == AttendanceType.SIGN_IN) {
+                count.setTotalSignedIn(count.getTotalSignedIn() + 1);
+            }
+        }
+
+        count.setTotalStudents(students.size());
+
+        return count;
     }
 }

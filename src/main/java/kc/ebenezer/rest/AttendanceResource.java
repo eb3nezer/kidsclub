@@ -1,5 +1,7 @@
 package kc.ebenezer.rest;
 
+import kc.ebenezer.dto.AttendanceCountDto;
+import kc.ebenezer.dto.AttendanceDetailsDto;
 import kc.ebenezer.dto.AttendanceRecordDto;
 import kc.ebenezer.dto.mapper.AttendanceRecordMapper;
 import kc.ebenezer.model.AttendanceRecord;
@@ -12,10 +14,7 @@ import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 @Path("/attendance")
@@ -38,8 +37,12 @@ public class AttendanceResource {
             AttendanceRecordDto attendanceRecord)  {
         Optional<AttendanceRecord> result = attendanceService.addAttendance(projectId, studentId, attendanceRecordMapper.toModel(attendanceRecord));
         if (result.isPresent()) {
+            AttendanceCountDto count = attendanceService.getAttendanceCountForProject(projectId);
+            AttendanceDetailsDto attendanceDetails = new AttendanceDetailsDto();
+            attendanceDetails.setAttendanceCount(count);
+            attendanceDetails.setAttendanceRecords(Collections.singletonList(attendanceRecordMapper.toDto(result.get())));
             logStats("rest.attendance.add", projectId, studentId);
-            return Response.status(Response.Status.OK).entity(attendanceRecordMapper.toDto(result.get())).build();
+            return Response.status(Response.Status.OK).entity(attendanceDetails).build();
         }
 
         return Response.status(Response.Status.NOT_FOUND).build();
@@ -56,8 +59,13 @@ public class AttendanceResource {
             limit = 10;
         }
         List<AttendanceRecord> attendanceRecords = attendanceService.getTodaysAttendanceForProject(projectId, limit);
+        AttendanceCountDto count = attendanceService.getAttendanceCountForProject(projectId);
+        AttendanceDetailsDto attendanceDetails = new AttendanceDetailsDto();
+        attendanceDetails.setAttendanceCount(count);
+        attendanceDetails.setAttendanceRecords(attendanceRecordMapper.toDto(attendanceRecords));
+
         logStats("rest.attendance.get.project.today", projectId, null);
-        return Response.status(Response.Status.OK).entity(attendanceRecordMapper.toDto(attendanceRecords)).build();
+        return Response.status(Response.Status.OK).entity(attendanceDetails).build();
     }
 
     @GET

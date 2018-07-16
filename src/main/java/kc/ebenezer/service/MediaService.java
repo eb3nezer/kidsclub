@@ -34,6 +34,7 @@ public class MediaService {
     static {
         suffixToContenteType = new HashMap<>();
         suffixToContenteType.put(".jpg", "image/jpeg");
+        suffixToContenteType.put(".jpeg", "image/jpeg");
         suffixToContenteType.put(".gif", "image/gif");
         suffixToContenteType.put(".png", "image/png");
         suffixToContenteType.put(".pdf", "application/pdf");

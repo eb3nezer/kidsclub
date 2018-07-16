@@ -21,6 +21,7 @@ export class AlbumComponent implements OnInit {
     description: string;
     newFilename: string;
     fileToUpload: File;
+    addDisabled = false;
 
     constructor(
         private appTitleService: AppTitleService,
@@ -75,7 +76,9 @@ export class AlbumComponent implements OnInit {
                 }
             });
         } else {
+            this.addDisabled = true;
             this.albumService.uploadPhoto(this.album.id, this.description, this.fileToUpload).subscribe(albumItem => {
+                this.addDisabled = false;
                 if (albumItem) {
                     this.snackBar.open(`Photo added`, 'Dismiss', {
                         duration: 5000,

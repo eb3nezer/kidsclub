@@ -17,7 +17,7 @@
         </mat-list-item>
 
         <mat-list-item>
-            <button mat-raised-button color="primary" (click)="onSubmit()">Add Photo</button>&nbsp;
+            <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="addDisabled">Add Photo</button>&nbsp;
         </mat-list-item>
     </mat-list>
 </form>

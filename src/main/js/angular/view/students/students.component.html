@@ -1,3 +1,16 @@
+<span class="mat-typography">Filter:
+    <mat-button-toggle-group #group="matButtonToggleGroup" (change)="filter($event)">
+        <mat-button-toggle value="all">
+            All
+        </mat-button-toggle>
+        <mat-button-toggle value="none">
+            Not Seen Today
+        </mat-button-toggle>
+        <mat-button-toggle value="signedin">
+            Not Signed Out
+        </mat-button-toggle>
+    </mat-button-toggle-group>
+</span>
 <table mat-table [dataSource]="students" *ngIf="project">
     <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>Name</th>

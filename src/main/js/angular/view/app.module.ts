@@ -9,7 +9,7 @@ import {
     MatIconModule,
     MatInputModule, MatListModule,
     MatMenuModule, MatSelectModule, MatSnackBarModule, MatTableModule,
-    MatToolbarModule
+    MatToolbarModule, MatButtonToggleModule
 } from "@angular/material";
 import {RouterModule} from "@angular/router";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -68,7 +68,8 @@ import {AttendanceComponent} from "./attendance/attendance.component";
         MatSnackBarModule,
         RouterModule,
         AppRoutingModule,
-        MatCardModule
+        MatCardModule,
+        MatButtonToggleModule
     ],
     providers: [],
     bootstrap: [AppComponent],

@@ -5,6 +5,7 @@ import { Project } from "../../shared/model/project";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Student} from "../../shared/model/student";
 import {StudentService} from "../../shared/services/student.service";
+import {MatButtonToggleChange, MatButtonToggleGroup} from "@angular/material";
 
 @Component({
   selector: 'view-students',
@@ -14,7 +15,9 @@ import {StudentService} from "../../shared/services/student.service";
 export class StudentsComponent implements OnInit {
     project: Project;
     students: Student[];
+    allStudents: Student[];
     displayedColumns = ['name', 'warnings', 'team', 'attendance'];
+    matButtonToggleGroup: MatButtonToggleGroup;
 
     constructor(
         private appTitleService: AppTitleService,
@@ -25,6 +28,28 @@ export class StudentsComponent implements OnInit {
     ) {
     }
 
+    public filter(event: MatButtonToggleChange) {
+        if (event && event.value) {
+            if (event.value === "all") {
+                this.students = this.allStudents;
+            } else if (event.value === "none") {
+                this.students = [];
+                for (let i = 0; i < this.allStudents.length; i++) {
+                    if (!this.allStudents[i].attendanceSnapshot) {
+                        this.students.push(this.allStudents[i]);
+                    }
+                }
+            } else if (event.value === "signedin") {
+                this.students = [];
+                for (let i = 0; i < this.allStudents.length; i++) {
+                    if (this.allStudents[i].attendanceSnapshot && this.allStudents[i].attendanceSnapshot.attendanceCode == 'I') {
+                        this.students.push(this.allStudents[i]);
+                    }
+                }
+            }
+        }
+    }
+
     loadProjectAndStudents() {
         const projectId = +this.route.snapshot.paramMap.get('id');
         if (projectId) {
@@ -33,7 +58,12 @@ export class StudentsComponent implements OnInit {
                 this.appTitleService.setCurrentProject(project);
             });
 
-            this.studentService.loadStudentsForProject(projectId).subscribe(students => this.students = students);
+            this.studentService.loadStudentsForProject(projectId).subscribe(students => {
+                if (students) {
+                    this.students = students;
+                    this.allStudents = students;
+                }
+            });
         }
     }
 

@@ -9,6 +9,7 @@ import { Project } from "../../shared/model/project";
 import {Student} from "../../shared/model/student";
 import {StudentService} from "../../shared/services/student.service";
 import {ConfirmDialogComponent} from "../../shared/confirm-dialog/confirm-dialog.component";
+import {UserProfileService} from "../../shared/services/user-profile.service";
 
 @Component({
   selector: 'app-view-students',
@@ -19,6 +20,7 @@ export class ViewStudentsComponent implements OnInit {
     project: Project;
     students: Student[];
     displayedColumns = ['name', 'warnings', 'team'];
+    editStudentsDisabled = true;
 
     constructor(
         private appTitleService: AppTitleService,
@@ -26,7 +28,8 @@ export class ViewStudentsComponent implements OnInit {
         private studentService: StudentService,
         private route: ActivatedRoute,
         public dialog: MatDialog,
-        public snackBar: MatSnackBar) {
+        public snackBar: MatSnackBar,
+        public userProfileService: UserProfileService) {
     }
 
     loadProjectAndStudents() {
@@ -39,6 +42,12 @@ export class ViewStudentsComponent implements OnInit {
             });
 
             this.studentService.loadStudentsForProject(projectId).subscribe(students => this.students = students);
+
+            this.userProfileService.getMyPermissionsForProject(projectId).subscribe(permissions => {
+                if (permissions) {
+                    this.editStudentsDisabled = !UserProfileService.checkProjectPermissionGranted(permissions, "EDIT_STUDENTS");
+                }
+            });
         }
     }
 

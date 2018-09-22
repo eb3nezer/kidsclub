@@ -1,7 +1,6 @@
 package kc.ebenezer.service;
 
 import kc.ebenezer.dao.StudentDao;
-import kc.ebenezer.dto.AttendanceCountDto;
 import kc.ebenezer.model.*;
 import kc.ebenezer.permissions.ProjectPermission;
 import kc.ebenezer.permissions.SitePermission;
@@ -10,9 +9,9 @@ import kc.ebenezer.rest.ValidationException;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,26 +24,36 @@ import java.util.Optional;
 public class StudentService {
     private static final Logger LOG = LoggerFactory.getLogger(StudentService.class);
 
-    @Inject
     private StudentDao studentDao;
-    @Inject
     private StudentTeamService studentTeamService;
-    @Inject
     private AuditService auditService;
-    @Inject
     private ProjectService projectService;
-    @Inject
     private UserService userService;
-    @Inject
     private MediaService mediaService;
-    @Inject
     private ProjectPermissionService projectPermissionService;
-    @Inject
     private StudentCSVImporterExporter studentCSVImporterExporter;
-    @Inject
     private ImageScalingService imageScalingService;
 
-    public StudentService() {
+    @Autowired
+    public StudentService(
+            StudentDao studentDao,
+            StudentTeamService studentTeamService,
+            AuditService auditService,
+            ProjectService projectService,
+            UserService userService,
+            MediaService mediaService,
+            ProjectPermissionService projectPermissionService,
+            StudentCSVImporterExporter studentCSVImporterExporter,
+            ImageScalingService imageScalingService) {
+        this.studentDao = studentDao;
+        this.studentTeamService = studentTeamService;
+        this.auditService = auditService;
+        this.projectService = projectService;
+        this.userService = userService;
+        this.mediaService = mediaService;
+        this.projectPermissionService = projectPermissionService;
+        this.studentCSVImporterExporter = studentCSVImporterExporter;
+        this.imageScalingService = imageScalingService;
     }
 
     public Optional<Student> getStudentById(Long id) {
@@ -84,6 +93,10 @@ public class StudentService {
             if (!emailValidator.isValid(student.getEmail())) {
                 throw new ValidationException("Email is invalid");
             }
+        }
+
+        if (student.getName() == null || student.getName().isEmpty()) {
+            throw new ValidationException("Name cannot be empty");
         }
 
         student.setProject(project.get());
@@ -230,6 +243,10 @@ public class StudentService {
 
         if (!ProjectPermissionService.userIsProjectMember(currentUser.get(), existingStudent.get().getProject())) {
             throw new NoPermissionException("You cannot update students on a project you are not a member of");
+        }
+
+        if (!projectPermissionService.userHasPermission(currentUser.get(), existingStudent.get().getProject(), ProjectPermission.EDIT_STUDENTS)) {
+            throw new NoPermissionException("You do not have permission to create/edit students");
         }
 
         Date now = new Date();

@@ -8,6 +8,7 @@ import {TeamService} from "../../shared/services/team.service";
 import {Student} from "../../shared/model/student";
 import {StudentTeam} from "../../shared/model/studentTeam";
 import {MatSnackBar} from "@angular/material";
+import { UserProfileService } from "../../shared/services/user-profile.service";
 
 @Component({
   selector: 'app-edit-student',
@@ -22,6 +23,7 @@ export class EditStudentComponent implements OnInit {
     allTeams: StudentTeam[];
     currentStudentTeamId: number;
     createMode = false;
+    saveDisabled = true;
 
     constructor(
         private appTitleService: AppTitleService,
@@ -30,7 +32,8 @@ export class EditStudentComponent implements OnInit {
         private router: Router,
         private location: Location,
         private teamService: TeamService,
-        private snackBar: MatSnackBar) {
+        private snackBar: MatSnackBar,
+        private userProfileService: UserProfileService) {
         this.currentStudent = new Student();
     }
 
@@ -45,6 +48,12 @@ export class EditStudentComponent implements OnInit {
         this.projectId = +this.route.snapshot.paramMap.get('projectId');
         if (this.projectId) {
             this.teamService.getTeamsForProject(this.projectId).subscribe(teams => this.allTeams = teams);
+
+            this.userProfileService.getMyPermissionsForProject(this.projectId).subscribe(permissions => {
+                if (permissions) {
+                    this.saveDisabled = !UserProfileService.checkProjectPermissionGranted(permissions, "EDIT_STUDENTS");
+                }
+            });
 
             const studentId: number = +this.route.snapshot.paramMap.get('studentId');
 

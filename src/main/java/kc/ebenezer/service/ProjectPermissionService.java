@@ -19,7 +19,7 @@ public class ProjectPermissionService {
     public boolean userHasPermission(User user, Project project, ProjectPermission permission) {
         List<ProjectPermission> permissions = userProjectPermissionDao.getPermissionsForUserAndProject(user.getId(), project.getId())
                 .stream()
-                .map(upm -> upm.getPermissionKey())
+                .map(UserProjectPermission::getPermissionKey)
                 .collect(Collectors.toList());
         return permissions.contains(permission);
     }

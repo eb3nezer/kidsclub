@@ -1,6 +1,6 @@
 <div *ngIf="project">
-    <button mat-raised-button routerLink="/editstudent/{{project.id}}">Add a student</button>&nbsp;
-    <button mat-raised-button routerLink="/importstudents/{{project.id}}">Import Students</button>&nbsp;
+    <button mat-raised-button [disabled]="editStudentsDisabled" routerLink="/editstudent/{{project.id}}">Add a student</button>&nbsp;
+    <button mat-raised-button [disabled]="editStudentsDisabled" routerLink="/importstudents/{{project.id}}">Import Students</button>&nbsp;
     <button mat-raised-button><a href="/rest/students/export/csv/?projectId={{project.id}}">Export Students</a></button>&nbsp;
     <button mat-raised-button routerLink="/createteam/{{project.id}}">Create a team</button>&nbsp;
 </div>

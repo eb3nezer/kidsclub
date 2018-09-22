@@ -2,7 +2,11 @@ package kc.ebenezer.dto.mapper;
 
 import kc.ebenezer.dto.StudentDto;
 import kc.ebenezer.model.Gender;
+import kc.ebenezer.model.Project;
 import kc.ebenezer.model.Student;
+import kc.ebenezer.permissions.ProjectPermission;
+import kc.ebenezer.service.ProjectPermissionService;
+import kc.ebenezer.service.UserService;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -15,6 +19,10 @@ public class StudentMapper extends BaseMapper<Student, StudentDto> implements Ma
     private AttendanceRecordMapper attendanceRecordMapper;
     @Inject
     private ImageCollectionMapper imageCollectionMapper;
+    @Inject
+    private UserService userService;
+    @Inject
+    private ProjectPermissionService projectPermissionService;
 
     @Override
     protected String[] getIgnoreProperties() {
@@ -42,6 +50,22 @@ public class StudentMapper extends BaseMapper<Student, StudentDto> implements Ma
         return model;
     }
 
+    private void checkAndClearPrivateData(Project project, StudentDto dto) {
+        if (!userService.getCurrentUser().isPresent() ||
+            !projectPermissionService.userHasPermission(userService.getCurrentUser().get(), project, ProjectPermission.VIEW_STUDENTS)) {
+
+            dto.setGender(null);
+            dto.setAge(null);
+            dto.setContactName(null);
+            dto.setContactRelationship(null);
+            dto.setEmail(null);
+            dto.setPhone(null);
+            dto.setSchool(null);
+            dto.setSchoolYear(null);
+            dto.setSpecialInstructions(null);
+        }
+    }
+
     @Override
     public StudentDto toDto(Student model) {
         if (model == null) {
@@ -61,6 +85,8 @@ public class StudentMapper extends BaseMapper<Student, StudentDto> implements Ma
         }
         dto.setAttendanceSnapshot(attendanceRecordMapper.toDtoOmitStudent(model.getAttendanceSnapshot()));
         dto.setImageCollection(imageCollectionMapper.toDto(model.getImageCollection()));
+
+        checkAndClearPrivateData(model.getProject(), dto);
 
         return dto;
     }
@@ -84,9 +110,10 @@ public class StudentMapper extends BaseMapper<Student, StudentDto> implements Ma
         dto.setAttendanceSnapshot(attendanceRecordMapper.toDtoOmitStudent(model.getAttendanceSnapshot()));
         dto.setImageCollection(imageCollectionMapper.toDto(model.getImageCollection()));
 
+        checkAndClearPrivateData(model.getProject(), dto);
+
         return dto;
     }
-
 
     @Override
     protected Student constructModel() {

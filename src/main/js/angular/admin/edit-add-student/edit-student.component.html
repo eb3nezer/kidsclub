@@ -93,7 +93,7 @@
         </mat-list-item>
     </mat-list>
 
-    <button mat-raised-button color="primary" *ngIf="!createMode" (click)="onSubmit()">Save</button>
-    <button mat-raised-button color="primary" *ngIf="createMode" (click)="onSubmit()">Add</button>
+    <button mat-raised-button color="primary" [disabled]="saveDisabled" *ngIf="!createMode" (click)="onSubmit()">Save</button>
+    <button mat-raised-button color="primary" [disabled]="saveDisabled" *ngIf="createMode" (click)="onSubmit()">Add</button>
     &nbsp;<button mat-raised-button (click)="onCancel()">Cancel</button>
 </form>

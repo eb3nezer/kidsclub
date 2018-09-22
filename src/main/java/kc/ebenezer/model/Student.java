@@ -220,6 +220,7 @@ public class Student extends ModelObject implements PhotoUploadable {
         this.mediaDescriptor = mediaDescriptor;
     }
 
+    @NotNull
     public Project getProject() {
         return project;
     }

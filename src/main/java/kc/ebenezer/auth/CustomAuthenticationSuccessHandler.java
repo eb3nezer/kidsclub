@@ -1,7 +1,8 @@
 package kc.ebenezer.auth;
 
 import kc.ebenezer.dao.UserSitePermissionDao;
-import kc.ebenezer.dto.UserDetailsDto;
+import kc.ebenezer.dto.UserDto;
+import kc.ebenezer.dto.mapper.UserMapper;
 import kc.ebenezer.model.AuditLevel;
 import kc.ebenezer.model.User;
 import kc.ebenezer.model.UserSitePermission;
@@ -42,6 +43,9 @@ public abstract class CustomAuthenticationSuccessHandler extends SavedRequestAwa
 
     @Autowired
     private AuditService auditService;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Value(value = "${kidsclub.admin}")
     private String adminEmail;
@@ -120,13 +124,7 @@ public abstract class CustomAuthenticationSuccessHandler extends SavedRequestAwa
 
                 // Put the UserDetailsDto object in the security context. This will be used to find out who
                 // the logged in user is
-                UserDetailsDto userDetails = new UserDetailsDto(
-                        user.getId(),
-                        user.getName(),
-                        user.getEmail(),
-                        user.getRemoteCredential(),
-                        user.getRemoteCredentialSource(),
-                        user.getActive());
+                UserDto userDetails =  userMapper.toDto(user);
                 Authentication newAuthentication = new KidsClubAuthentication(userDetails, null);
                 SecurityContextHolder.getContext().setAuthentication(newAuthentication);
 

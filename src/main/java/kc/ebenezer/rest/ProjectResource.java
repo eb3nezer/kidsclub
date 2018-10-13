@@ -1,25 +1,21 @@
 package kc.ebenezer.rest;
 
 import kc.ebenezer.dto.ProjectDto;
-import kc.ebenezer.dto.UserDetailsDto;
 import kc.ebenezer.dto.mapper.ProjectMapper;
-import kc.ebenezer.dto.mapper.UserMapper;
 import kc.ebenezer.model.Project;
 import kc.ebenezer.model.User;
 import kc.ebenezer.service.ProjectService;
 import kc.ebenezer.service.StatsService;
 import kc.ebenezer.service.UserService;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.SecurityContext;
-import java.security.Principal;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Component
 @Path("/projects")

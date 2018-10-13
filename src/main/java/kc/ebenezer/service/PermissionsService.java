@@ -74,48 +74,54 @@ public class PermissionsService {
         return grantedSitePermissions;
     }
 
-    public UserPermissionsDto getUserPermissions(Long userId) {
+    public UserPermissionsDto getUserPermissions(User user) {
         Optional<User> currentUser = userService.getCurrentUser();
         if (!currentUser.isPresent()) {
             throw new NoPermissionException("Anonymous cannot get user permissions");
         }
-        Optional<User> user = userService.getUserById(userId);
-        if (!user.isPresent()) {
-            throw new ValidationException("User does not exist");
-        }
 
-        List<PermissionRecordDto> grantedSitePermissions = getSitePermissionRecords(user.get());
+        List<PermissionRecordDto> grantedSitePermissions = getSitePermissionRecords(user);
 
-        UserPermissionsDto userPermissions = new UserPermissionsDto(userMapper.toDto(user.get()), null, grantedSitePermissions, null);
-        return userPermissions;
+        return new UserPermissionsDto(userMapper.toDto(user), null, grantedSitePermissions, null);
     }
 
-    public UserPermissionsDto getUserPermissions(Long userId, Long projectId) {
-        Optional<User> currentUser = userService.getCurrentUser();
-        if (!currentUser.isPresent()) {
-            throw new NoPermissionException("Anonymous cannot get user permissions");
-        }
+    public UserPermissionsDto getUserPermissions(Long userId) {
         Optional<User> user = userService.getUserById(userId);
         if (!user.isPresent()) {
             throw new ValidationException("User does not exist");
+        }
+
+        return getUserPermissions(user.get());
+    }
+
+    public UserPermissionsDto getUserPermissions(User user, Long projectId) {
+        Optional<User> currentUser = userService.getCurrentUser();
+        if (!currentUser.isPresent()) {
+            throw new NoPermissionException("Anonymous cannot get user permissions");
         }
 
         List<PermissionRecordDto> grantedProjectPermissions;
-        Optional<Project> project = projectService.getProjectById(user.get(), projectId);
+        Optional<Project> project = projectService.getProjectById(user, projectId);
         if (!project.isPresent()) {
             grantedProjectPermissions = new ArrayList<>();
         } else {
-            grantedProjectPermissions = getProjectPermissionRecords(userId, projectId);
+            grantedProjectPermissions = getProjectPermissionRecords(user.getId(), projectId);
         }
 
-        List<PermissionRecordDto> grantedSitePermissions = getSitePermissionRecords(user.get());
-        UserPermissionsDto userPermissions = new UserPermissionsDto(
-                userMapper.toDto(user.get()),
-                projectMapper.toDtoNoUsers(project.orElse(null)),
-                grantedSitePermissions,
-                grantedProjectPermissions);
+        List<PermissionRecordDto> grantedSitePermissions = getSitePermissionRecords(user);
+        return new UserPermissionsDto(
+            userMapper.toDto(user),
+            projectMapper.toDtoNoUsers(project.orElse(null)),
+            grantedSitePermissions,
+            grantedProjectPermissions);
+    }
 
-        return userPermissions;
+    public UserPermissionsDto getUserPermissions(Long userId, Long projectId) {
+        Optional<User> user = userService.getUserById(userId);
+        if (!user.isPresent()) {
+            throw new ValidationException("User does not exist");
+        }
+        return getUserPermissions(user.get(), projectId);
     }
 
     public UserPermissionsDto setUserPermissionsDto(Long targetUserId, UserPermissionsDto newPermissions) {

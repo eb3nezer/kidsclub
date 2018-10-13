@@ -173,9 +173,9 @@ public class UserResource {
             logStats("rest.user.get.permissions", projectId);
             UserPermissionsDto userPermissions;
             if (projectId != null) {
-                userPermissions = permissionsService.getUserPermissions(currentUser.get().getId(), Long.valueOf(projectId));
+                userPermissions = permissionsService.getUserPermissions(currentUser.get(), Long.valueOf(projectId));
             } else {
-                userPermissions = permissionsService.getUserPermissions(currentUser.get().getId());
+                userPermissions = permissionsService.getUserPermissions(currentUser.get());
             }
 
             return Response.status(Response.Status.OK).entity(userPermissions).build();

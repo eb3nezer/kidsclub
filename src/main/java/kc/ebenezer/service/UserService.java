@@ -3,7 +3,7 @@ package kc.ebenezer.service;
 import kc.ebenezer.dao.ImageCollectionDao;
 import kc.ebenezer.dao.UserDao;
 import kc.ebenezer.dto.*;
-import kc.ebenezer.dto.mapper.UserDetailsMapper;
+import kc.ebenezer.dto.mapper.UserMapper;
 import kc.ebenezer.model.ImageCollection;
 import kc.ebenezer.model.Project;
 import kc.ebenezer.model.StudentTeam;
@@ -46,7 +46,7 @@ public class UserService implements UserDetailsService {
     @Inject
     private MediaService mediaService;
     @Inject
-    private UserDetailsMapper userDetailsMapper;
+    private UserMapper userMapper;
     @Inject
     private PermissionsService permissionsService;
     @Inject
@@ -82,14 +82,14 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException("No user for id=" + s);
         }
 
-        return userDetailsMapper.toDto(userOptional.get());
+        return userMapper.toDto(userOptional.get());
     }
 
     public Optional<User> getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getPrincipal() instanceof UserDetailsDto) {
-            UserDetailsDto userDetailsDto = (UserDetailsDto) authentication.getPrincipal();
-            return getUserById(userDetailsDto.getId());
+        if (authentication.getPrincipal() instanceof UserDto) {
+            UserDto userDetailsDto = (UserDto) authentication.getPrincipal();
+            return Optional.ofNullable(userMapper.toModel(userDetailsDto));
         }
 
         return Optional.empty();

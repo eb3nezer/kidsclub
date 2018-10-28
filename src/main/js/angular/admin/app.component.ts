@@ -13,6 +13,7 @@ export class AppComponent {
     pageTitle: string = "";
     projectId: number;
     currentProject: Project;
+    systemAdmin = false;
     membersDisabled = true;
     studentsDisabled = true;
     documentsDisabled = true;
@@ -38,8 +39,11 @@ export class AppComponent {
             if (!this.currentProject || !(this.currentProject.id == project.id)) {
                 this.userProfileService.getMyPermissionsForProject(project.id).subscribe(permissions => {
                     if (permissions) {
-                        this.membersDisabled = !UserProfileService.checkProjectPermissionGranted(permissions, "LIST_USERS");
-                        this.studentsDisabled = !UserProfileService.checkProjectPermissionGranted(permissions, "VIEW_STUDENTS");
+                        this.systemAdmin = UserProfileService.checkSitePermissionGranted(permissions, "SYSTEM_ADMIN");
+                        this.membersDisabled = !(this.systemAdmin ||
+                            UserProfileService.checkProjectPermissionGranted(permissions, "LIST_USERS"));
+                        this.studentsDisabled = !(this.systemAdmin ||
+                            UserProfileService.checkProjectPermissionGranted(permissions, "VIEW_STUDENTS"));
                         this.documentsDisabled = !UserProfileService.checkProjectPermissionGranted(permissions, "EDIT_DOCUMENTS");
                         this.albumsDisabled = !UserProfileService.checkProjectPermissionGranted(permissions, "EDIT_ALBUMS");
                         this.auditDisabled = !UserProfileService.checkSitePermissionGranted(permissions, "VIEW_AUDIT");

@@ -1,5 +1,6 @@
 package kc.ebenezer.dao;
 
+import kc.ebenezer.model.Project;
 import kc.ebenezer.model.User;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +16,13 @@ public class UserDao extends BaseDaoImpl<User> {
     public Optional<User> findById(Long id) {
         User user = null;
         try {
-            user = getEntityManager().find(User.class, id);
+            TypedQuery<User> query = getEntityManager().createQuery(
+                "select user from User user " +
+                    "join fetch user.userSitePermissions " +
+                    "join fetch user.projects " +
+                    "where user.id = :id", User.class);
+            query.setParameter("id", id);
+            user = query.getSingleResult();
         } catch (NoResultException e) {
         }
 

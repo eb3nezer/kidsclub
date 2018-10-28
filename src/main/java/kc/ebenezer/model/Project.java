@@ -17,7 +17,7 @@ public class Project extends ModelObject {
     @Column(name = "name")
     private String name;
 
-    @ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_projects",
             joinColumns = { @JoinColumn(name = "projectid") },

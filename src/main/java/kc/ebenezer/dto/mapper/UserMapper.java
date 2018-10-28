@@ -1,7 +1,6 @@
 package kc.ebenezer.dto.mapper;
 
 import kc.ebenezer.dto.UserDto;
-import kc.ebenezer.dto.mapper.Mapper;
 import kc.ebenezer.model.User;
 import kc.ebenezer.model.UserSitePermission;
 import kc.ebenezer.permissions.SitePermission;
@@ -10,10 +9,6 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component

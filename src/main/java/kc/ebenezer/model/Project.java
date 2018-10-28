@@ -6,7 +6,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "projects")
-@SequenceGenerator(initialValue = 1, name = "projectgen", sequenceName = "project_sequence")
+@SequenceGenerator(name = "projectgen", sequenceName = "project_sequence")
 public class Project extends ModelObject {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "projectgen")

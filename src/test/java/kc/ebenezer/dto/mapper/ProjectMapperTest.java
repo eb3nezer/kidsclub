@@ -49,7 +49,7 @@ public class ProjectMapperTest {
     }
 
     private UserDto createUserDto() {
-        UserDto userDto = new UserDto(
+        return new UserDto(
             USER_ID,
             USER_NAME,
             "Brooke",
@@ -64,8 +64,6 @@ public class ProjectMapperTest {
             null,
             null,
             Collections.singletonList("VIEW_STATISTICS"));
-
-        return userDto;
     }
 
     private User createUser() {

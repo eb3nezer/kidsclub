@@ -12,10 +12,7 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 @Path("/projects")
@@ -76,10 +73,17 @@ public class ProjectResource {
     @GET
     @Produces("application/json")
     @Path("/{id}")
-    public Response getProject(@PathParam("id") String id) {
+    public Response getProject(
+        @PathParam("id") String id,
+        @QueryParam("expand") String expand) {
         Optional<User> user = userService.getCurrentUser();
         if (user.isPresent()) {
-            Optional<Project> project = projectService.getProjectById(user.get(), Long.valueOf(id));
+            boolean includePermissions = false;
+            if (expand != null) {
+                List<String> expands = Arrays.asList(expand.toLowerCase().split(","));
+                includePermissions = expands.contains("permissions");
+            }
+            Optional<Project> project = projectService.getProjectById(user.get(), Long.valueOf(id), includePermissions);
             if (project.isPresent()) {
                 logStats("rest.project.get", id);
                 return Response.status(Response.Status.OK).entity(projectMapper.toDto(project.get())).build();

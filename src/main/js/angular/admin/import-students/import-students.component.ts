@@ -7,6 +7,8 @@ import {ActivatedRoute} from "@angular/router";
 import { Location } from '@angular/common';
 import {MatSnackBar} from "@angular/material";
 import {Router} from "@angular/router";
+import {MatDialog} from "@angular/material";
+import {ConfirmDialogComponent} from '../../shared/confirm-dialog/confirm-dialog.component';
 
 @Component({
   selector: 'app-import-students',
@@ -17,7 +19,7 @@ export class ImportStudentsComponent implements OnInit {
     project: Project;
     newFilename: string;
     fileToUpload: File;
-
+    importDisabled = false;
 
     constructor(
         private appTitleService: AppTitleService,
@@ -26,7 +28,8 @@ export class ImportStudentsComponent implements OnInit {
         private route: ActivatedRoute,
         private location: Location,
         private snackBar: MatSnackBar,
-        private router: Router) {
+        private router: Router,
+        private dialog: MatDialog) {
     }
 
     setFile(event) {
@@ -41,14 +44,26 @@ export class ImportStudentsComponent implements OnInit {
     }
 
     onSubmit() {
-        this.studentService.importCSVFile(this.project.id, this.fileToUpload).subscribe(result => {
-            this.snackBar.open(`Imported ${result.length} students`, 'Dismiss', {
-                duration: 10000,
+        if (this.fileToUpload) {
+            this.importDisabled = true;
+            this.studentService.importCSVFile(this.project.id, this.fileToUpload).subscribe(result => {
+                this.importDisabled = false;
+                this.snackBar.open(`Imported ${result.length} students`, 'Dismiss', {
+                    duration: 10000,
+                });
+                if (result.length > 0) {
+                    this.router.navigate(["viewstudents", this.project.id]);
+                }
             });
-            if (result.length > 0) {
-                this.router.navigate(["viewstudents", this.project.id]);
-            }
-        });
+        } else {
+            this.dialog.open(ConfirmDialogComponent, {
+                data: {
+                    title: "Error",
+                    text: "Please select a CSV file to upload",
+                    buttons: ["OK"]
+                }
+            });
+        }
     }
 
     loadProject() {

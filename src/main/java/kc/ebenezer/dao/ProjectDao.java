@@ -15,7 +15,28 @@ public class ProjectDao extends BaseDaoImpl<Project> {
     public Optional<Project> findById(Long id) {
         Project project = null;
         try {
-            project = getEntityManager().find(Project.class, id);
+            TypedQuery<Project> query = getEntityManager().createQuery(
+                "select project from Project project " +
+                    "join fetch project.users user " +
+                    "join fetch user.userSitePermissions " +
+                    "where project.id = :id", Project.class);
+            query.setParameter("id", id);
+            project = query.getSingleResult();
+        } catch (NoResultException e) {
+        }
+
+        return Optional.ofNullable(project);
+    }
+
+    public Optional<Project> findByIdWithoutPermissions(Long id) {
+        Project project = null;
+        try {
+            TypedQuery<Project> query = getEntityManager().createQuery(
+                "select project from Project project " +
+                    "join fetch project.users " +
+                    "where project.id = :id", Project.class);
+            query.setParameter("id", id);
+            project = query.getSingleResult();
         } catch (NoResultException e) {
         }
 

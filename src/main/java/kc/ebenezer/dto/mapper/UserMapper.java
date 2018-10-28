@@ -1,21 +1,22 @@
 package kc.ebenezer.dto.mapper;
 
 import kc.ebenezer.dto.UserDto;
-import kc.ebenezer.dto.mapper.Mapper;
 import kc.ebenezer.model.User;
 import kc.ebenezer.model.UserSitePermission;
 import kc.ebenezer.permissions.SitePermission;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import java.util.HashSet;
-import java.util.Set;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.stream.Collectors;
 
 @Component
 public class UserMapper extends BaseMapper<User, UserDto> implements Mapper<User, UserDto> {
     @Inject
     private ImageCollectionMapper imageCollectionMapper;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public User toModel(UserDto dto) {
@@ -24,6 +25,7 @@ public class UserMapper extends BaseMapper<User, UserDto> implements Mapper<User
         }
 
         User result = super.toModel(dto);
+        result.setActive(dto.getActive());
         if (dto.getUserSitePermissions() != null) {
             for (String key : dto.getUserSitePermissions()) {
                 UserSitePermission userSitePermission = new UserSitePermission(result, SitePermission.valueOf(key));
@@ -41,19 +43,22 @@ public class UserMapper extends BaseMapper<User, UserDto> implements Mapper<User
         }
 
         UserDto result = super.toDto(model);
-        result.getUserSitePermissions().addAll(
+        result.setActive(model.getActive());
+        if (entityManager.getEntityManagerFactory().getPersistenceUnitUtil().isLoaded(model, "userSitePermissions")) {
+            result.getUserSitePermissions().addAll(
                 model.getUserSitePermissions()
-                        .stream()
-                        .map(s -> s.getPermissionKey().toString())
-                        .collect(Collectors.toList())
-        );
+                    .stream()
+                    .map(s -> s.getPermissionKey().toString())
+                    .collect(Collectors.toList())
+            );
+        }
         result.setImageCollection(imageCollectionMapper.toDto(model.getImageCollection()));
         return result;
     }
 
     @Override
     protected String[] getIgnoreProperties() {
-        return new String[]{"userSitePermissions", "imageCollection"};
+        return new String[]{"userSitePermissions", "imageCollection", "active", "enabled"};
     }
 
     @Override

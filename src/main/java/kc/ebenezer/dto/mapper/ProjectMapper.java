@@ -7,12 +7,16 @@ import kc.ebenezer.model.User;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.*;
 
 @Component
 public class ProjectMapper extends BaseMapper<Project, ProjectDto> implements Mapper<Project, ProjectDto> {
     @Inject
     private UserMapper userMapper;
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public Project toModel(ProjectDto dto) {
@@ -38,9 +42,13 @@ public class ProjectMapper extends BaseMapper<Project, ProjectDto> implements Ma
             return null;
         }
         ProjectDto dto = super.toDto(model);
-        List<User> users = new ArrayList<>(model.getUsers());
-        users.sort(new User.UserComparator());
-        dto.setUsers(userMapper.toDto(users));
+        if (entityManager.getEntityManagerFactory().getPersistenceUnitUtil().isLoaded(model, "users")) {
+            List<User> users = new ArrayList<>(model.getUsers());
+            users.sort(new User.UserComparator());
+            dto.setUsers(userMapper.toDto(users));
+        } else {
+            dto.setUsers(new ArrayList<>());
+        }
         Map<String, String> properties = new HashMap<>();
         for (ProjectProperty property : model.getProjectProperties()) {
             properties.put(property.getPropertyKey(), property.getPropertyValue());

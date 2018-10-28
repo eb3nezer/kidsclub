@@ -57,7 +57,7 @@ public class User extends ModelObject implements PhotoUploadable {
     @Column(name = "remote_credential")
     private String remoteCredential;
 
-    @ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_projects",
             joinColumns = { @JoinColumn(name = "userid") },
@@ -65,7 +65,7 @@ public class User extends ModelObject implements PhotoUploadable {
     )
     private Set<Project> projects = new HashSet<>();
 
-    @OneToMany(mappedBy = "key.user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "key.user", fetch = FetchType.LAZY)
     private Set<UserSitePermission> userSitePermissions = new HashSet<>();
 
     @Column(name = "created")

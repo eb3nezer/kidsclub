@@ -1,6 +1,7 @@
 package kc.ebenezer.dto;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -10,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 @JsonAutoDetect
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDto extends DtoObject implements UserDetails {
     private Long id;
     private String name;
@@ -29,6 +31,8 @@ public class UserDto extends DtoObject implements UserDetails {
 
     public UserDto() {
         userSitePermissions = new ArrayList<>();
+        loggedIn = Boolean.FALSE;
+        active = Boolean.FALSE;
     }
 
     public UserDto(Long id) {
@@ -64,6 +68,9 @@ public class UserDto extends DtoObject implements UserDetails {
         this.remoteCredential = remoteCredential;
         this.remoteCredentialSource = remoteCredentialSource;
         this.userSitePermissions = userSitePermissions;
+        if (this.active == null) {
+            this.active = Boolean.FALSE;
+        }
     }
 
     public String getName() {

@@ -4,10 +4,10 @@ import kc.ebenezer.dao.ImageCollectionDao;
 import kc.ebenezer.dao.UserDao;
 import kc.ebenezer.dto.*;
 import kc.ebenezer.dto.mapper.UserMapper;
-import kc.ebenezer.model.ImageCollection;
 import kc.ebenezer.model.Project;
 import kc.ebenezer.model.StudentTeam;
 import kc.ebenezer.model.User;
+import kc.ebenezer.model.UserProjectPermissionContext;
 import kc.ebenezer.permissions.ProjectPermission;
 import kc.ebenezer.permissions.SitePermission;
 import kc.ebenezer.rest.NoPermissionException;
@@ -22,8 +22,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.inject.Inject;
+import javax.servlet.ServletRequest;
 import javax.transaction.Transactional;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -400,5 +404,18 @@ public class UserService implements UserDetailsService {
         }
 
         return false;
+    }
+
+    public void setUserProjectPermissionContext(ServletRequest request, UserProjectPermissionContext userProjectPermissionContext) {
+        request.setAttribute(UserProjectPermissionContext.class.getName(), userProjectPermissionContext);
+    }
+
+    public UserProjectPermissionContext getUserProjectPermissionContext() {
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        if (requestAttributes instanceof ServletRequestAttributes) {
+            ServletRequest request = ((ServletRequestAttributes)requestAttributes).getRequest();
+            return (UserProjectPermissionContext) request.getAttribute(UserProjectPermissionContext.class.getName());
+        }
+        return null;
     }
 }

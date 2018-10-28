@@ -36,20 +36,21 @@ public class ProjectService  {
     }
 
     public Optional<Project> getProjectById(User user, Long id) {
+        return getProjectById(user, id, true);
+    }
+
+    public Optional<Project> getProjectById(User user, Long id, boolean includePermissions) {
         if (id == null) {
             throw new ValidationException("Project ID cannot be null");
         }
-        Optional<Project> project = projectDao.findById(id);
-        if (project.isPresent()) {
-            if (ProjectPermissionService.userIsProjectMember(user, project.get())) {
-                for (User member : project.get().getUsers()) {
-                    imageScalingService.repairOrCreateImageCollection(member, member.getMediaDescriptor());
-                }
-                return project;
-            }
+        Optional<Project> project;
+        if (includePermissions) {
+            project = projectDao.findById(id);
+        } else {
+            project = projectDao.findByIdWithoutPermissions(id);
         }
 
-        return Optional.empty();
+        return project;
     }
 
     public List<Project> getProjectsForUser(Long userId) {

@@ -25,6 +25,6 @@
             </a>
         </label> <span *ngIf="newFilename">File to upload: {{newFilename}}</span>
     </form>
-    <button mat-raised-button color="primary" (click)="onSubmit()">Import</button>&nbsp;
+    <button mat-raised-button [disabled]="importDisabled" color="primary" (click)="onSubmit()">Import</button>&nbsp;
     <button mat-raised-button (click)="onCancel()">Cancel</button>
 </div>

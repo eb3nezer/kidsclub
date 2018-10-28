@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceUnitUtil;
 import java.util.*;
 
 @Component
@@ -47,6 +46,8 @@ public class ProjectMapper extends BaseMapper<Project, ProjectDto> implements Ma
             List<User> users = new ArrayList<>(model.getUsers());
             users.sort(new User.UserComparator());
             dto.setUsers(userMapper.toDto(users));
+        } else {
+            dto.setUsers(new ArrayList<>());
         }
         Map<String, String> properties = new HashMap<>();
         for (ProjectProperty property : model.getProjectProperties()) {

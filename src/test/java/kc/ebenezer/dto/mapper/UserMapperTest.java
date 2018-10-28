@@ -30,9 +30,6 @@ public class UserMapperTest {
     @Mock
     private PersistenceUnitUtil persistenceUnitUtil;
 
-    /*
-    (entityManager.getEntityManagerFactory().getPersistenceUnitUtil()
-     */
     @InjectMocks
     private UserMapper userMapper;
 

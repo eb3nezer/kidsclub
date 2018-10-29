@@ -137,10 +137,6 @@ public class ProjectMapperTest {
         User user = createUser();
         project.setUsers(Collections.singleton(user));
 
-        UserDto userDto = createUserDto();
-        List<UserDto> users = Collections.singletonList(userDto);
-        when(userMapper.toDto(isA(List.class))).thenReturn(users);
-
         when(persistenceUnitUtil.isLoaded(project, "users")).thenReturn(false);
 
         ProjectDto dto = projectMapper.toDto(project);
@@ -150,6 +146,7 @@ public class ProjectMapperTest {
         assertEquals(1, dto.getProperties().keySet().size());
         assertEquals("value", dto.getProperties().get("key"));
         assertEquals(0, dto.getUsers().size());
+        verifyZeroInteractions(userMapper);
     }
 
     @Test
@@ -163,18 +160,12 @@ public class ProjectMapperTest {
         User user = createUser();
         project.setUsers(Collections.singleton(user));
 
-        UserDto userDto = createUserDto();
-        List<UserDto> users = Collections.singletonList(userDto);
-        when(userMapper.toDto(isA(List.class))).thenReturn(users);
-
-        when(persistenceUnitUtil.isLoaded(project, "users")).thenReturn(true);
-
         ProjectDto dto = projectMapper.toDtoNoUsers(project);
 
         assertEquals(NAME, dto.getName());
         assertEquals(PROJECT_ID, dto.getId());
         assertEquals(0, dto.getProperties().keySet().size());
         assertEquals(0, dto.getUsers().size());
-        verifyZeroInteractions(persistenceUnitUtil);
+        verifyZeroInteractions(persistenceUnitUtil, userMapper);
     }
 }

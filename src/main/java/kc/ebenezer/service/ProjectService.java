@@ -87,9 +87,16 @@ public class ProjectService  {
                 throw new ValidationException("There is already a project with this name");
         }
 
+        // Get a DB copy
+        Optional<User> dbUser = userService.getUserById(user.get().getId());
+        if (!dbUser.isPresent()) {
+            LOG.error("failed to to look up user by ID " + user.get().getId() + " when this ID should be valid");
+            throw new ValidationException("There was a problem looking up the current user");
+        }
+
         // Projects are enabled by default
         project.setDisabled(false);
-        project.getUsers().add(user.get());
+        project.getUsers().add(dbUser.get());
         Project created = projectDao.create(project);
         if (created == null) {
             LOG.error("Failed to create new project");

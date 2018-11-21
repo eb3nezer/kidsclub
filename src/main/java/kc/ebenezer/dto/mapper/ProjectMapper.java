@@ -54,6 +54,9 @@ public class ProjectMapper extends BaseMapper<Project, ProjectDto> implements Ma
             properties.put(property.getPropertyKey(), property.getPropertyValue());
         }
         dto.setProperties(properties);
+        if (model.getDisabled() == null) {
+            dto.setDisabled(false);
+        }
 
         return dto;
     }

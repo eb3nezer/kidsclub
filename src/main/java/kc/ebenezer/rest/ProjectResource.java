@@ -28,10 +28,14 @@ public class ProjectResource {
 
     @GET
     @Produces("application/json")
-    public Response getProjectsForCurrentUser() {
+    public Response getProjectsForCurrentUser(@QueryParam("includeDisabled") Boolean includeDisabled) {
         Optional<User> user = userService.getCurrentUser();
         if (user.isPresent()) {
-            List<Project> projects = projectService.getProjectsForUser(user.get().getId());
+            boolean disabledRequired = false;
+            if (includeDisabled != null) {
+                disabledRequired = includeDisabled.booleanValue();
+            }
+            List<Project> projects = projectService.getProjectsForUser(user.get().getId(), disabledRequired);
             List<ProjectDto> projectDtos = projectMapper.toDto(projects);
             logStats("rest.projects.get", null);
             return Response.status(Response.Status.OK).entity(projectDtos).build();

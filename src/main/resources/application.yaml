@@ -16,18 +16,11 @@ spring:
       hibernate:
           ddl-auto: update
           naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
-security:
-  require-ssl: true
 server:
-  port: 8444
+  port: 8080
   error:
     whitelabel:
       enabled: false
-  ssl:
-    key-store: ${KEY_FILE}
-    key-store-password: ${KEY_FILE_PASSWORD}
-    keyStoreType: PKCS12
-    keyAlias: tomcat
   compression:
     enabled: true
     mime-types:
@@ -59,6 +52,66 @@ kidsclub:
 
 ---
 spring:
+    profiles: default-ssl
+    datasource:
+        driver-class-name: org.postgresql.Driver
+        url: ${DB_URL}
+        username: ${DB_USER}
+        password: ${DB_PASSWORD}
+        hikari:
+            maximum-pool-size: 5
+            minimum-idle: 1
+    jpa:
+        show-sql: true
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.PostgreSQLDialect
+        hibernate:
+            ddl-auto: update
+            naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+security:
+    require-ssl: true
+server:
+    port: 8444
+    error:
+        whitelabel:
+            enabled: false
+    ssl:
+        key-store: ${KEY_FILE}
+        key-store-password: ${KEY_FILE_PASSWORD}
+        keyStoreType: PKCS12
+        keyAlias: tomcat
+    compression:
+        enabled: true
+        mime-types:
+        - application/javascript
+        - text/html
+        - application/json
+        - text/css
+    tomcat:
+        basedir: .
+        accesslog:
+            directory: logs
+            enabled: false
+            pattern: common
+kidsclub:
+    admin: ${ADMIN_EMAIL}
+    google:
+        client:
+            clientId: ${GOOGLE_CLIENT_ID}
+            clientSecret: ${GOOGLE_CLIENT_SECRET}
+            accessTokenUri: https://www.googleapis.com/oauth2/v3/token
+            userAuthorizationUri: https://accounts.google.com/o/oauth2/auth
+            tokenName: oauth_token
+            authenticationScheme: query
+            clientAuthenticationScheme: form
+            scope: profile email
+        resource:
+            userInfoUri: https://www.googleapis.com/userinfo/v2/me
+            preferTokenInfo: false
+
+---
+spring:
   profiles: prod
   datasource:
       driver-class-name: org.postgresql.Driver
@@ -76,18 +129,11 @@ spring:
       hibernate:
           ddl-auto: update
           naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
-security:
-  require-ssl: true
 server:
-  port: 8443
+  port: 8080
   error:
     whitelabel:
       enabled: false
-  ssl:
-    key-store: ${KEY_FILE}
-    key-store-password: ${KEY_FILE_PASSWORD}
-    keyStoreType: PKCS12
-    keyAlias: tomcat
   compression:
     enabled: true
     mime-types:
@@ -116,5 +162,65 @@ kidsclub:
     resource:
       userInfoUri: https://www.googleapis.com/userinfo/v2/me
       preferTokenInfo: false
+
+---
+spring:
+    profiles: prod_ssl
+    datasource:
+        driver-class-name: org.postgresql.Driver
+        url: ${DB_URL}
+        username: ${DB_USER}
+        password: ${DB_PASSWORD}
+        hikari:
+            maximum-pool-size: 8
+            minimum-idle: 4
+    jpa:
+        show-sql: false
+        properties:
+            hibernate:
+                dialect: org.hibernate.dialect.PostgreSQLDialect
+        hibernate:
+            ddl-auto: update
+            naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+security:
+    require-ssl: true
+server:
+    port: 8443
+    error:
+        whitelabel:
+            enabled: false
+    ssl:
+        key-store: ${KEY_FILE}
+        key-store-password: ${KEY_FILE_PASSWORD}
+        keyStoreType: PKCS12
+        keyAlias: tomcat
+    compression:
+        enabled: true
+        mime-types:
+        - application/javascript
+        - application/json
+        - text/html
+        - text/css
+    tomcat:
+        basedir: .
+        accesslog:
+            directory: logs
+            enabled: true
+            pattern: common
+kidsclub:
+    admin: ${ADMIN_EMAIL}
+    google:
+        client:
+            clientId: ${GOOGLE_CLIENT_ID}
+            clientSecret: ${GOOGLE_CLIENT_SECRET}
+            accessTokenUri: https://www.googleapis.com/oauth2/v3/token
+            userAuthorizationUri: https://accounts.google.com/o/oauth2/auth
+            tokenName: oauth_token
+            authenticationScheme: query
+            clientAuthenticationScheme: form
+            scope: profile email
+        resource:
+            userInfoUri: https://www.googleapis.com/userinfo/v2/me
+            preferTokenInfo: false
 
 ---

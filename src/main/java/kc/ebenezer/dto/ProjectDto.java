@@ -13,15 +13,17 @@ public class ProjectDto extends DtoObject {
     private String name;
     private List<UserDto> users;
     private Map<String, String> properties;
+    private Boolean disabled;
 
     public ProjectDto() {
     }
 
-    public ProjectDto(Long id, String name, List<UserDto> users, Map<String, String> properties) {
+    public ProjectDto(Long id, String name, List<UserDto> users, Map<String, String> properties, Boolean disabled) {
         this.id = id;
         this.name = name;
         this.users = users;
         this.properties = properties;
+        this.disabled = disabled;
     }
 
     public Long getId() {
@@ -54,5 +56,13 @@ public class ProjectDto extends DtoObject {
 
     public void setProperties(Map<String, String> properties) {
         this.properties = properties;
+    }
+
+    public Boolean getDisabled() {
+        return disabled;
+    }
+
+    public void setDisabled(Boolean disabled) {
+        this.disabled = disabled;
     }
 }

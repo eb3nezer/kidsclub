@@ -29,8 +29,8 @@ export class ProjectService {
         );
     }
 
-    getAllProjects(): Observable<Project[]> {
-        return this.http.get<Project[]>(this.urlForGet).pipe(
+    getAllProjects(includeDisabled: boolean): Observable<Project[]> {
+        return this.http.get<Project[]>(`${this.urlForGet}?includeDisabled=${includeDisabled}`).pipe(
             catchError(this.errorService.handleErrorWithDialog('Get all projects', []))
         );
     }

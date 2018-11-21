@@ -297,7 +297,7 @@ public class StudentResource {
             }
         }
 
-        ProjectDto project = new ProjectDto(Long.valueOf(projectId), null, null, null);
+        ProjectDto project = new ProjectDto(Long.valueOf(projectId), null, null, null, false);
         List<UserDto> leaders = new ArrayList<>();
         if (leaderList != null && !leaderList.isEmpty()) {
             String leaderIDs[] = leaderList.split(",");

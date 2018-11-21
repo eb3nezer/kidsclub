@@ -28,7 +28,7 @@ export class HomeComponent implements OnInit {
     loadProjects() {
         var projectId = +this.route.snapshot.paramMap.get('id');
         if (!projectId) {
-            this.projectService.getAllProjects().subscribe(projects => {
+            this.projectService.getAllProjects(false).subscribe(projects => {
                 if (projects.length > 1) {
                     this.projects = projects;
                 } else {

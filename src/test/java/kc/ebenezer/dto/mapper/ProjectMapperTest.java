@@ -19,6 +19,8 @@ import javax.persistence.PersistenceUnitUtil;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
@@ -85,7 +87,8 @@ public class ProjectMapperTest {
             PROJECT_ID,
             NAME,
             Collections.singletonList(userDto),
-            properties
+            properties,
+            false
         );
 
         Project project = projectMapper.toModel(dto);
@@ -97,6 +100,7 @@ public class ProjectMapperTest {
         assertEquals(1, project.getProjectProperties().size());
         assertEquals("key", project.getProjectProperties().iterator().next().getPropertyKey());
         assertEquals("value", project.getProjectProperties().iterator().next().getPropertyValue());
+        assertFalse("Project should not be disabled", project.getDisabled());
     }
 
     @Test
@@ -104,6 +108,7 @@ public class ProjectMapperTest {
         Project project = new Project();
         project.setId(PROJECT_ID);
         project.setName(NAME);
+        project.setDisabled(false);
         ProjectProperty projectProperty = new ProjectProperty(project, "key", "value");
         project.setProjectProperties(Collections.singleton(projectProperty));
 
@@ -124,6 +129,33 @@ public class ProjectMapperTest {
         assertEquals("value", dto.getProperties().get("key"));
         assertEquals(1, dto.getUsers().size());
         assertEquals(userDto, dto.getUsers().get(0));
+        assertFalse("Project should not be disabled", dto.getDisabled());
+    }
+
+    @Test
+    public void toDtoEnabledDisabledCases() {
+        Project project = new Project();
+        project.setId(PROJECT_ID);
+        project.setName(NAME);
+        project.setDisabled(null);
+        ProjectProperty projectProperty = new ProjectProperty(project, "key", "value");
+        project.setProjectProperties(Collections.singleton(projectProperty));
+
+        User user = createUser();
+        project.setUsers(Collections.singleton(user));
+
+        UserDto userDto = createUserDto();
+        List<UserDto> users = Collections.singletonList(userDto);
+        when(userMapper.toDto(isA(List.class))).thenReturn(users);
+        when(persistenceUnitUtil.isLoaded(project, "users")).thenReturn(true);
+
+        ProjectDto dto = projectMapper.toDto(project);
+
+        assertFalse("Project should not be disabled", dto.getDisabled());
+
+        project.setDisabled(true);
+        dto = projectMapper.toDto(project);
+        assertTrue("Project should be disabled", dto.getDisabled());
     }
 
     @Test

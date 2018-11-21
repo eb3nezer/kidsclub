@@ -54,12 +54,20 @@ public class ProjectService  {
     }
 
     public List<Project> getProjectsForUser(Long userId) {
-        Optional<User> user = userService.getUserById(userId);
-        if (user.isPresent()) {
-            return new ArrayList<>(user.get().getProjects());
-        }
+        return getProjectsForUser(userId, true);
+    }
 
-        return Collections.emptyList();
+    public List<Project> getProjectsForUser(Long userId, boolean includeDeleted) {
+        if (!includeDeleted) {
+            return projectDao.getProjectsForUser(userId, includeDeleted);
+        } else {
+            Optional<User> user = userService.getUserById(userId);
+            if (user.isPresent()) {
+                return new ArrayList<>(user.get().getProjects());
+            }
+
+            return Collections.emptyList();
+        }
     }
 
     public Optional<Project> createProject(Project project) {
@@ -79,6 +87,8 @@ public class ProjectService  {
                 throw new ValidationException("There is already a project with this name");
         }
 
+        // Projects are enabled by default
+        project.setDisabled(false);
         project.getUsers().add(user.get());
         Project created = projectDao.create(project);
         if (created == null) {
@@ -123,6 +133,12 @@ public class ProjectService  {
             existingProject.get().setName(projectToUpdate.getName());
             auditService.audit(existingProject.get(), "Changed name for project id=" + projectId + " to \"" + projectToUpdate.getName() + "\"", now);
             existingProject.get().setUpdated(now);
+        }
+
+        if ((existingProject.get().getDisabled() == null && projectToUpdate.getDisabled() != null) ||
+            (existingProject.get().getDisabled() != null && !existingProject.get().getDisabled().equals(projectToUpdate.getDisabled()))) {
+            existingProject.get().setDisabled(projectToUpdate.getDisabled());
+            auditService.audit(existingProject.get(), "Changing disabled state for project id=" + projectId + " to \"" + projectToUpdate.getDisabled() + "\"", now);
         }
 
         for (ProjectProperty projectProperty : projectToUpdate.getProjectProperties()) {

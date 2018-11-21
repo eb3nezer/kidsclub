@@ -1,7 +1,6 @@
 package kc.ebenezer.dao;
 
 import kc.ebenezer.model.Project;
-import kc.ebenezer.model.User;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.NoResultException;
@@ -26,6 +25,18 @@ public class ProjectDao extends BaseDaoImpl<Project> {
         }
 
         return Optional.ofNullable(project);
+    }
+
+    public List<Project> getProjectsForUser(Long userId, boolean includeDisabled) {
+        String hql = "select project from Project project " +
+            "join fetch project.users user " +
+            "where user.id = :userId";
+        if (!includeDisabled) {
+            hql += " and (project.disabled is null or project.disabled = false)";
+        }
+        TypedQuery<Project> query = getEntityManager().createQuery(hql, Project.class);
+        query.setParameter("userId", userId);
+        return query.getResultList();
     }
 
     public Optional<Project> findByIdWithoutPermissions(Long id) {

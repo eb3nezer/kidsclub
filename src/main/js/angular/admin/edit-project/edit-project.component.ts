@@ -1,21 +1,22 @@
-import { Component, OnInit } from '@angular/core';
-import { AppTitleService } from "../../shared/services/app-title.service";
-import { ProjectService } from "../../shared/services/project.service";
-import { Project } from "../../shared/model/project";
-import {ActivatedRoute} from "@angular/router";
-import {Location} from "@angular/common";
-import {MatSnackBar} from "@angular/material";
+import {AfterViewInit, Component, OnInit} from '@angular/core';
+import { AppTitleService } from '../../shared/services/app-title.service';
+import { ProjectService } from '../../shared/services/project.service';
+import { Project } from '../../shared/model/project';
+import {ActivatedRoute} from '@angular/router';
+import {Location} from '@angular/common';
+import {MatSnackBar} from '@angular/material';
 
 @Component({
   selector: 'app-edit-project',
   templateUrl: './edit-project.component.html',
   styleUrls: ['./edit-project.component.css']
 })
-export class EditProjectComponent implements OnInit {
+export class EditProjectComponent implements OnInit, AfterViewInit {
     project: Project;
     mediaPermitted: boolean;
     sortByScore: boolean;
     wallboardColumns: number;
+    disabled: boolean;
 
     constructor(
         private appTitleService: AppTitleService,
@@ -31,6 +32,7 @@ export class EditProjectComponent implements OnInit {
         if (projectId) {
             this.projectService.getProject(projectId).subscribe(project => {
                 this.project = project;
+                this.disabled = project.disabled === true;
                 this.mediaPermitted = project.properties.studentMediaPermittedDefault === 'true';
                 this.sortByScore = project.properties.sortTeamsByScore === 'true';
                 if (project.properties.wallboardColumns) {
@@ -59,6 +61,7 @@ export class EditProjectComponent implements OnInit {
             } else {
                 this.project.properties.wallboardColumns = '0';
             }
+            this.project.disabled = this.disabled;
 
             this.projectService.updateProject(this.project.id, this.project).subscribe(project => {
                 this.project = project;
@@ -67,7 +70,7 @@ export class EditProjectComponent implements OnInit {
                 this.snackBar.open('Project updated', 'Dismiss', {
                     duration: 10000,
                 });
-            })
+            });
         }
     }
 
@@ -81,5 +84,4 @@ export class EditProjectComponent implements OnInit {
     ngAfterViewInit() {
         Promise.resolve(null).then(() => this.loadProject());
     }
-
 }

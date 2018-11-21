@@ -29,6 +29,9 @@ public class Project extends ModelObject {
     @JoinColumn(name = "project_id")
     private Set<ProjectProperty> projectProperties;
 
+    @Column(name = "disabled")
+    private Boolean disabled;
+
     @Column(name = "created")
     private Long created;
 
@@ -38,6 +41,7 @@ public class Project extends ModelObject {
     public Project() {
         created = System.currentTimeMillis();
         updated = created;
+        disabled = false;
     }
 
     public Project(@NotNull String name) {
@@ -100,6 +104,18 @@ public class Project extends ModelObject {
 
     public void setProjectProperties(Set<ProjectProperty> projectProperties) {
         this.projectProperties = projectProperties;
+    }
+
+    public Boolean getDisabled() {
+        if (disabled == null) {
+            return false;
+        }
+
+        return disabled;
+    }
+
+    public void setDisabled(Boolean disabled) {
+        this.disabled = disabled;
     }
 
     @Override

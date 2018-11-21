@@ -26,7 +26,7 @@ export class AdminHomeComponent implements OnInit {
     loadProjects() {
         var projectId = +this.route.snapshot.paramMap.get('id');
         if (!projectId) {
-            this.projectService.getAllProjects().subscribe(projects => {
+            this.projectService.getAllProjects(true).subscribe(projects => {
                 if (projects.length > 1) {
                     this.projects = projects;
                 } else {

@@ -122,28 +122,28 @@ public abstract class CustomAuthenticationSuccessHandler extends SavedRequestAwa
                     newUser = true;
                 }
 
-                // Put the UserDetailsDto object in the security context. This will be used to find out who
-                // the logged in user is
-                UserDto userDetails =  userMapper.toDto(user);
-                Authentication newAuthentication = new KidsClubAuthentication(userDetails, null);
-                SecurityContextHolder.getContext().setAuthentication(newAuthentication);
-
                 if (email.equalsIgnoreCase(adminEmail)) {
                     // Make sure admin has all permissions
                     Set<SitePermission> existingPermissions = user.getUserSitePermissions()
-                            .stream()
-                            .map(UserSitePermission::getPermissionKey)
-                            .collect(Collectors.toSet());
+                        .stream()
+                        .map(UserSitePermission::getPermissionKey)
+                        .collect(Collectors.toSet());
                     for (SitePermission sitePermission : SitePermission.values()) {
                         if (!existingPermissions.contains(sitePermission)) {
                             auditService.audit(null, "Adding new site permission " + sitePermission.toString() +
-                                    " to admin email=\"" + email + "\" at login", new Date());
+                                " to admin email=\"" + email + "\" at login", new Date());
                             UserSitePermission userSitePermission = new UserSitePermission(user, sitePermission);
                             userSitePermission = userSitePermissionDao.create(userSitePermission);
                             user.getUserSitePermissions().add(userSitePermission);
                         }
                     }
                 }
+
+                // Put the UserDetailsDto object in the security context. This will be used to find out who
+                // the logged in user is
+                UserDto userDetails =  userMapper.toDto(user);
+                Authentication newAuthentication = new KidsClubAuthentication(userDetails, null);
+                SecurityContextHolder.getContext().setAuthentication(newAuthentication);
 
                 // Generate a "remember me" cookie so that this user can be logged in again without needing
                 // to type their password again.

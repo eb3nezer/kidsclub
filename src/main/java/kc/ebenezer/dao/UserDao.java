@@ -18,8 +18,8 @@ public class UserDao extends BaseDaoImpl<User> {
         try {
             TypedQuery<User> query = getEntityManager().createQuery(
                 "select user from User user " +
-                    "join fetch user.userSitePermissions " +
-                    "join fetch user.projects " +
+                    "left join fetch user.userSitePermissions " +
+                    "left join fetch user.projects " +
                     "where user.id = :id", User.class);
             query.setParameter("id", id);
             user = query.getSingleResult();
@@ -34,8 +34,8 @@ public class UserDao extends BaseDaoImpl<User> {
         try {
             TypedQuery<User> query = getEntityManager().createQuery(
                 "select user from User user " +
-                    "join fetch user.userSitePermissions " +
-                    "join fetch user.projects " +
+                    "left join fetch user.userSitePermissions " +
+                    "left join fetch user.projects " +
                     "where lower(user.email) = :email", User.class);
             query.setParameter("email", email.toLowerCase());
             user = query.getSingleResult();

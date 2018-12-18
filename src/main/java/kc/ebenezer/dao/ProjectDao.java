@@ -17,7 +17,7 @@ public class ProjectDao extends BaseDaoImpl<Project> {
             TypedQuery<Project> query = getEntityManager().createQuery(
                 "select project from Project project " +
                     "join fetch project.users user " +
-                    "join fetch user.userSitePermissions " +
+                    "left join fetch user.userSitePermissions " +
                     "where project.id = :id", Project.class);
             query.setParameter("id", id);
             project = query.getSingleResult();

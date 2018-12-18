@@ -300,6 +300,7 @@ public class UserService implements UserDetailsService {
         return userToInvite;
     }
 
+    @Transactional(dontRollbackOn = {ValidationException.class, NoPermissionException.class})
     public List<User> bulkInviteNewUsers(BulkUserInvitationDto bulkUserInvitationDto) {
         Optional<User> currentUser = getCurrentUser();
         Optional<Project> project = Optional.empty();
@@ -322,7 +323,7 @@ public class UserService implements UserDetailsService {
                     LOG.warn("Permission error when bulk inviting email address=\"" + emailAddress + "\"", e.getMessage());
                 }
             }
-            if (added.isPresent()) {
+                if (added.isPresent()) {
                 invited.add(added.get());
             }
         }

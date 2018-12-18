@@ -54,6 +54,12 @@ public abstract class CustomAuthenticationSuccessHandler extends SavedRequestAwa
 
     abstract String getCredentialSource();
 
+    abstract String getPictureUrl(Map<String, Object> details);
+
+    abstract String getFirstName(Map<String, Object> details);
+
+    abstract String getLastName(Map<String, Object> details);
+
     public void setKidsClubRememberMeServices(KidsClubRememberMeServices kidsClubRememberMeServices) {
         this.kidsClubRememberMeServices = kidsClubRememberMeServices;
     }
@@ -64,8 +70,8 @@ public abstract class CustomAuthenticationSuccessHandler extends SavedRequestAwa
         if (authentication instanceof OAuth2Authentication) {
             boolean newUser = false;
 
-            Map<String, String> details = (Map<String, String>) ((OAuth2Authentication) authentication).getUserAuthentication().getDetails();
-            String email = details.get("email");
+            Map<String, Object> details = (Map<String, Object>) ((OAuth2Authentication) authentication).getUserAuthentication().getDetails();
+            String email = details.get("email").toString();
             // If we didn't get an email address, then we can't do anything
             if (email != null) {
                 User user = null;
@@ -88,10 +94,10 @@ public abstract class CustomAuthenticationSuccessHandler extends SavedRequestAwa
                 }
 
                 if (user == null || !user.getLoggedIn()) {
-                    String displayName = details.get("name");
-                    String firstName = details.get("given_name");
-                    String lastName = details.get("family_name");
-                    String avatarUrl = details.get("picture");
+                    String displayName = details.get("name").toString();
+                    String firstName = getFirstName(details);
+                    String lastName = getLastName(details);
+                    String avatarUrl = getPictureUrl(details);
                     if (user == null) {
                         user = new User(
                                 null,

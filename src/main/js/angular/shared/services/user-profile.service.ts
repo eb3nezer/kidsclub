@@ -66,6 +66,12 @@ export class UserProfileService {
         );
     }
 
+    getMyPermissions(): Observable<UserPermissions> {
+        return this.http.get<UserPermissions>(`${this.urlForGetUpdate}/me/permissions`).pipe(
+            catchError(this.errorService.handleErrorWithDialog('Get permissions', undefined))
+        );
+    }
+
     static checkProjectPermissionGranted(userPermissions: UserPermissions, permissionKey: string): boolean {
         let result = false;
 

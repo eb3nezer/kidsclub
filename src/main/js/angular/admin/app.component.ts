@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
-import { AppTitleService } from "../shared/services/app-title.service";
-import {Project} from "../shared/model/project";
-import { UserProfileService } from "../shared/services/user-profile.service";
+import {Component, OnInit} from '@angular/core';
+import { AppTitleService } from '../shared/services/app-title.service';
+import {Project} from '../shared/model/project';
+import { UserProfileService } from '../shared/services/user-profile.service';
 
 @Component({
     selector: 'app-root',
@@ -9,8 +9,8 @@ import { UserProfileService } from "../shared/services/user-profile.service";
     styleUrls: ['./app.component.css']
 })
 
-export class AppComponent {
-    pageTitle: string = "";
+export class AppComponent implements OnInit {
+    pageTitle = '';
     projectId: number;
     currentProject: Project;
     systemAdmin = false;
@@ -28,7 +28,7 @@ export class AppComponent {
 
     ngOnInit() {
         // Clear loading mask
-        document.getElementById("loadingDiv").style.display = "none";
+        document.getElementById('loadingDiv').style.display = 'none';
 
         this.apptitleService.getTitleObserver().subscribe(title => {
             this.pageTitle = title;
@@ -36,7 +36,7 @@ export class AppComponent {
         });
 
         this.apptitleService.getCurrentProjectObserver().subscribe(project => {
-            if (!this.currentProject || !(this.currentProject.id == project.id)) {
+            if (!this.currentProject || !(this.currentProject.id === project.id)) {
                 this.userProfileService.getMyPermissionsForProject(project.id).subscribe(permissions => {
                     if (permissions) {
                         this.systemAdmin = UserProfileService.checkSitePermissionGranted(permissions, "SYSTEM_ADMIN");
@@ -52,6 +52,14 @@ export class AppComponent {
                 });
             }
             this.currentProject = project;
+        });
+
+        this.apptitleService.getUserPermissionsObserver().subscribe(permissions => {
+            if (permissions) {
+                this.systemAdmin = UserProfileService.checkSitePermissionGranted(permissions, 'SYSTEM_ADMIN');
+                this.auditDisabled = !UserProfileService.checkSitePermissionGranted(permissions, 'VIEW_AUDIT');
+                this.createProjectDisabled = !UserProfileService.checkSitePermissionGranted(permissions, 'CREATE_PROJECT');
+            }
         });
     }
 }

@@ -23,6 +23,7 @@ public abstract class BaseDaoImpl<T extends ModelObject> implements BaseDao {
         return entityManager;
     }
 
+    @Transactional
     public T create(T newObject) {
         try {
             entityManager.persist(newObject);

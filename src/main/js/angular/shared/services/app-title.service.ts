@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subscriber, of } from 'rxjs';
-import {Project} from "../model/project";
+import {Project} from '../model/project';
+import {UserPermissions} from '../model/userPermissions';
 
 @Injectable({
   providedIn: 'root'
@@ -10,10 +11,13 @@ export class AppTitleService {
   titleObserver: Observable<string>;
   currentProjectSubscriber: Subscriber<Project>;
   currentProjectObserver: Observable<Project>;
+  userPermissionsSubscriber: Subscriber<UserPermissions>;
+  userPermissionsObserver: Observable<UserPermissions>;
 
   constructor() {
     this.titleObserver = Observable.create(observer => this.titleSubscriber = observer);
     this.currentProjectObserver = Observable.create(observer => this.currentProjectSubscriber = observer);
+    this.userPermissionsObserver = Observable.create(observer => this.userPermissionsSubscriber = observer);
   }
 
     getTitleObserver(): Observable<string> {
@@ -30,5 +34,13 @@ export class AppTitleService {
 
     setCurrentProject(project: Project): void {
         this.currentProjectSubscriber.next(project);
+    }
+
+    getUserPermissionsObserver(): Observable<UserPermissions> {
+      return this.userPermissionsObserver;
+    }
+
+    setUserPermissions(permissions: UserPermissions): void {
+      this.userPermissionsSubscriber.next(permissions);
     }
 }

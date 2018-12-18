@@ -4,6 +4,7 @@ import { ProjectService } from "../../shared/services/project.service";
 import { Project } from "../../shared/model/project";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Location} from "@angular/common";
+import {UserProfileService} from '../../shared/services/user-profile.service';
 
 @Component({
   selector: 'app-admin-home',
@@ -19,7 +20,8 @@ export class AdminHomeComponent implements OnInit {
         private route: ActivatedRoute,
         private router: Router,
         private location: Location,
-        private projectService: ProjectService
+        private projectService: ProjectService,
+        private userProfileService: UserProfileService
     ) {
     }
 
@@ -27,7 +29,13 @@ export class AdminHomeComponent implements OnInit {
         var projectId = +this.route.snapshot.paramMap.get('id');
         if (!projectId) {
             this.projectService.getAllProjects(true).subscribe(projects => {
-                if (projects.length > 1) {
+                if (!projects || projects.length <= 0) {
+                    this.userProfileService.getMyPermissions().subscribe(permissions => {
+                        if (permissions) {
+                            this.apptitleService.setUserPermissions(permissions);
+                        }
+                    });
+                } else if (projects.length > 1) {
                     this.projects = projects;
                 } else {
                     // You are a member of only 1 project, so redirect there

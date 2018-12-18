@@ -150,7 +150,7 @@ public class PermissionsService {
                         record.getGranted());
             }
         }
-        return newPermissions;
+            return newPermissions;
     }
 
     public void updateSitePermission(
@@ -195,32 +195,27 @@ public class PermissionsService {
         }
     }
 
-    public void updateProjectPermission(User currentUser, Long targetUserId, Long projectId, ProjectPermission projectPermission, boolean grant) {
-        Optional<User> user = userService.getUserById(targetUserId);
-        if (!user.isPresent()) {
-            throw new ValidationException("User does not exist");
-        }
-
-        Optional<Project> project = projectService.getProjectById(user.get(), projectId);
+    public void updateProjectPermission(User currentUser, User targetUser, Long projectId, ProjectPermission projectPermission, boolean grant) {
+        Optional<Project> project = projectService.getProjectById(targetUser, projectId);
         if (!project.isPresent()) {
-            throw new NoPermissionException("User id=" + user.get().getId() + " is not a member of project id=" + projectId);
+            throw new NoPermissionException("User id=" + targetUser.getId() + " is not a member of project id=" + projectId);
         }
 
         if (!(SitePermissionService.userHasPermission(currentUser, SitePermission.SYSTEM_ADMIN) ||
-                projectPermissionService.userHasPermission(currentUser, project.get(), ProjectPermission.PROJECT_ADMIN))) {
+            projectPermissionService.userHasPermission(currentUser, project.get(), ProjectPermission.PROJECT_ADMIN))) {
             throw new NoPermissionException("You do not have permission to update project permissions");
         }
 
         List<UserProjectPermission> currentProjectPermissions =
-                userProjectPermissionDao.getPermissionsForUserAndProject(user.get().getId(), projectId);
+            userProjectPermissionDao.getPermissionsForUserAndProject(targetUser.getId(), projectId);
 
         UserProjectPermission userProjectPermission =
-                new UserProjectPermission(user.get(), project.get(), projectPermission);
+            new UserProjectPermission(targetUser, project.get(), projectPermission);
         if (grant) {
             if (!currentProjectPermissions.contains(userProjectPermission)) {
                 auditService.audit(
                     project.get(),
-                        "Grant project permission " + projectPermission + " to user id=" + targetUserId +
+                    "Grant project permission " + projectPermission + " to user id=" + targetUser.getId() +
                         " in project id=" + projectId, new Date());
                 userProjectPermissionDao.create(userProjectPermission);
                 currentProjectPermissions.add(userProjectPermission);
@@ -228,13 +223,21 @@ public class PermissionsService {
         } else {
             if (currentProjectPermissions.contains(userProjectPermission)) {
                 auditService.audit(project.get(),
-                    "Revoke project permission " + projectPermission + " from user id=" + targetUserId +
+                    "Revoke project permission " + projectPermission + " from user id=" + targetUser.getId() +
                         " in project id=" + projectId, new Date());
                 UserProjectPermission permissionToRevoke = currentProjectPermissions.remove(
-                        currentProjectPermissions.indexOf(userProjectPermission));
+                    currentProjectPermissions.indexOf(userProjectPermission));
                 userProjectPermissionDao.delete(permissionToRevoke);
             }
         }
     }
 
+    public void updateProjectPermission(User currentUser, Long targetUserId, Long projectId, ProjectPermission projectPermission, boolean grant) {
+        Optional<User> user = userService.getUserById(targetUserId);
+        if (!user.isPresent()) {
+            throw new ValidationException("User does not exist");
+        }
+
+        updateProjectPermission(currentUser, user.get(), projectId, projectPermission, grant);
+    }
 }

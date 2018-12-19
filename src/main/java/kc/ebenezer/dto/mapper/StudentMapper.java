@@ -10,6 +10,8 @@ import kc.ebenezer.service.UserService;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class StudentMapper extends BaseMapper<Student, StudentDto> implements Mapper<Student, StudentDto> {
@@ -48,6 +50,18 @@ public class StudentMapper extends BaseMapper<Student, StudentDto> implements Ma
         model.setAttendanceSnapshot(attendanceRecordMapper.toModel(dto.getAttendanceSnapshot()));
         model.setImageCollection(imageCollectionMapper.toModel(dto.getImageCollection()));
         return model;
+    }
+
+    public List<StudentDto> toDtoShallow(List<Student> modelList) {
+        if (modelList == null) {
+            return new ArrayList<>();
+        }
+
+        List<StudentDto> result = new ArrayList<>(modelList.size());
+        for (Student model : modelList) {
+            result.add(toDtoShallow(model));
+        }
+        return result;
     }
 
     private void checkAndClearPrivateData(Project project, StudentDto dto) {

@@ -51,7 +51,7 @@ public class StudentResource {
     public Response listStudents(@QueryParam("projectId") String project, @QueryParam("name") String name) {
         List<Student> students = studentService.getStudentsForProject(Long.valueOf(project), Optional.ofNullable(name));
 
-        List<StudentDto> studentDtos = studentMapper.toDto(students);
+        List<StudentDto> studentDtos = studentMapper.toDtoShallow(students);
         logStats("rest.students.get", project);
         return Response.status(Response.Status.OK).entity(studentDtos).build();
     }

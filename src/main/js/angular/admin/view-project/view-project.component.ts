@@ -39,7 +39,7 @@ export class ViewProjectComponent implements OnInit {
                 this.appTitleService.setCurrentProject(project);
             });
 
-            this.teamService.getTeamsForProject(projectId, 'leaders').subscribe(teams => {
+            this.teamService.getTeamsForProject(projectId, 'students').subscribe(teams => {
                 this.teams = teams;
             });
 

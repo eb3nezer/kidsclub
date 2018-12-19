@@ -348,11 +348,16 @@ public class StudentResource {
             includeLeaders = expands.contains("leaders");
         }
 
-        if (expand != null && expand.equalsIgnoreCase("none")) {
+        if (expand != null) {
             // Trim out some stuff
             for (StudentTeamDto team : result) {
                 if (!includeStudents) {
                     team.getStudents().clear();
+                } else {
+                    // Don't need recursive student team
+                    for (StudentDto student : team.getStudents()) {
+                        student.setStudentTeam(null);
+                    }
                 }
                 if (!includeLeaders) {
                     team.getLeaders().clear();

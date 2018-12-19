@@ -82,7 +82,11 @@ public class ProjectMapper extends BaseMapper<Project, ProjectDto> implements Ma
         }
         ProjectDto dto = super.toDto(model);
         dto.setUsers(new ArrayList<>());
-        dto.setProperties(new HashMap<>());
+        Map<String, String> properties = new HashMap<>();
+        for (ProjectProperty property : model.getProjectProperties()) {
+            properties.put(property.getPropertyKey(), property.getPropertyValue());
+        }
+        dto.setProperties(properties);
         return dto;
     }
 }

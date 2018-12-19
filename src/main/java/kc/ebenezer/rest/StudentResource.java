@@ -338,12 +338,28 @@ public class StudentResource {
         List<StudentTeam> teams = studentTeamService.getStudentTeams(projectId, Boolean.valueOf(mine));
         logStats("rest.student.teams.get", projectId.toString());
         List<StudentTeamDto> result = studentTeamMapper.toDto(teams);
+        boolean includeUsers = true;
+        boolean includeStudents = true;
+        boolean includeLeaders = true;
+        if (expand != null) {
+            List<String> expands = Arrays.asList(expand.toLowerCase().split(","));
+            includeStudents = expands.contains("students");
+            includeUsers = expands.contains("users");
+            includeLeaders = expands.contains("leaders");
+        }
+
         if (expand != null && expand.equalsIgnoreCase("none")) {
             // Trim out some stuff
             for (StudentTeamDto team : result) {
-                team.getStudents().clear();
-                team.getLeaders().clear();
-                team.getProject().getUsers().clear();
+                if (!includeStudents) {
+                    team.getStudents().clear();
+                }
+                if (!includeLeaders) {
+                    team.getLeaders().clear();
+                }
+                if (!includeUsers) {
+                    team.getProject().getUsers().clear();
+                }
             }
         }
         return Response.status(Response.Status.OK).entity(result).build();

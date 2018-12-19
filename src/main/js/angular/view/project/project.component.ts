@@ -49,7 +49,7 @@ export class ProjectComponent implements OnInit, OnDestroy, AfterViewInit {
             });
             this.hideTransmit = false;
             this.hideTransmitError = true;
-            this.teamService.getTeamsForProject(projectId).subscribe(teams => {
+            this.teamService.getTeamsForProject(projectId, 'leaders').subscribe(teams => {
                 this.hideTransmit = true;
                 if (teams) {
                     this.teams = teams;

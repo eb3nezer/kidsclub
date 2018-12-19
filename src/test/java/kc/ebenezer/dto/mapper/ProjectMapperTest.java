@@ -196,7 +196,8 @@ public class ProjectMapperTest {
 
         assertEquals(NAME, dto.getName());
         assertEquals(PROJECT_ID, dto.getId());
-        assertEquals(0, dto.getProperties().keySet().size());
+        assertEquals(1, dto.getProperties().keySet().size());
+        assertEquals("value", dto.getProperties().get("key"));
         assertEquals(0, dto.getUsers().size());
         verifyZeroInteractions(persistenceUnitUtil, userMapper);
     }

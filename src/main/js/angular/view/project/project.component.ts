@@ -41,7 +41,7 @@ export class ProjectComponent implements OnInit, OnDestroy, AfterViewInit {
     loadProjects() {
         const projectId = +this.route.snapshot.paramMap.get('id');
         if (projectId) {
-            this.projectService.getProject(projectId).subscribe(project => {
+            this.projectService.getProject(projectId, false).subscribe(project => {
                 if (project) {
                     this.project = project;
                     this.apptitleService.setCurrentProject(this.project);

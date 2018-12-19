@@ -44,8 +44,8 @@ export class AdminHomeComponent implements OnInit {
                 }
             });
         } else {
-            this.projectService.getProject(projectId).subscribe(project => {
-                this.project = project
+            this.projectService.getProject(projectId, false).subscribe(project => {
+                this.project = project;
             });
         }
     }

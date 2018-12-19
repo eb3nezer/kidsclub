@@ -40,7 +40,7 @@ export class HomeComponent implements OnInit {
                 }
             });
         } else {
-            this.projectService.getProject(projectId).subscribe(project => {
+            this.projectService.getProject(projectId, false).subscribe(project => {
                 this.project = project;
                 this.apptitleService.setCurrentProject(this.project);
                 this.teamService.getMyTeams(projectId).subscribe(teams => {

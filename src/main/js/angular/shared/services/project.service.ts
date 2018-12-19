@@ -17,8 +17,15 @@ export class ProjectService {
         private errorService: HttpErrorService) {
     }
 
-    getProject(id: number): Observable<Project> {
-        return this.http.get<Project>(`${this.urlForGet}/${id}`).pipe(
+    getProject(id: number, includeUsers?: boolean): Observable<Project> {
+        let params = '';
+        if (includeUsers == undefined) {
+            includeUsers = true;
+        }
+        if (includeUsers) {
+            params = '?expand=users';
+        }
+        return this.http.get<Project>(`${this.urlForGet}/${id}${params}`).pipe(
             catchError(this.errorService.handleErrorWithDialog('Get project', undefined))
         );
     }

@@ -83,14 +83,20 @@ public class ProjectResource {
         Optional<User> user = userService.getCurrentUser();
         if (user.isPresent()) {
             boolean includePermissions = false;
+            boolean includeUsers = false;
             if (expand != null) {
                 List<String> expands = Arrays.asList(expand.toLowerCase().split(","));
                 includePermissions = expands.contains("permissions");
+                includeUsers = expands.contains("users");
             }
             Optional<Project> project = projectService.getProjectById(user.get(), Long.valueOf(id), includePermissions);
             if (project.isPresent()) {
                 logStats("rest.project.get", id);
-                return Response.status(Response.Status.OK).entity(projectMapper.toDto(project.get())).build();
+                if (includeUsers) {
+                    return Response.status(Response.Status.OK).entity(projectMapper.toDto(project.get())).build();
+                } else {
+                    return Response.status(Response.Status.OK).entity(projectMapper.toDtoNoUsers(project.get())).build();
+                }
             }
         }
 

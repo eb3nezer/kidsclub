@@ -49,7 +49,7 @@ export class ProjectWallboardComponent implements OnInit, OnDestroy, AfterViewIn
 
     loadProjects() {
         var projectId = +this.route.snapshot.paramMap.get('id');
-        this.projectService.getProject(projectId).subscribe(project => {
+        this.projectService.getProject(projectId, false).subscribe(project => {
             this.project = project;
             this.apptitleService.setCurrentProject(this.project);
             if (this.project.properties.wallboardColumns) {

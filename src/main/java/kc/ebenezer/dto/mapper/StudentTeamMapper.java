@@ -56,7 +56,7 @@ public class StudentTeamMapper extends BaseMapper<StudentTeam, StudentTeamDto> i
 
         dto.setStudents(studentMapper.toDto(students));
         dto.setLeaders(userMapper.toDto(leaders));
-        dto.setProject(projectMapper.toDto(model.getProject()));
+        dto.setProject(projectMapper.toDtoNoUsers(model.getProject()));
         dto.setCreated(model.getCreated().getTime());
         dto.setUpdated(model.getUpdated().getTime());
         dto.setImageCollection(imageCollectionMapper.toDto(model.getImageCollection()));

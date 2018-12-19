@@ -37,8 +37,8 @@ export class ViewAuditComponent implements OnInit {
               this.router.navigate([`/audit/${projectId}`]);
           });
       } else {
-          this.projectService.getProject(projectId).subscribe(project => {
-              this.project = project
+          this.projectService.getProject(projectId, false).subscribe(project => {
+              this.project = project;
           });
           this.auditService.getAuditRecordsForProject(projectId, 50, 0).subscribe(auditRecords => {
               this.auditRecords = auditRecords;

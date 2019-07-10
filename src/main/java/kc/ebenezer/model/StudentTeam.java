@@ -39,6 +39,9 @@ public class StudentTeam extends ModelObject implements PhotoUploadable {
     @Column(name = "sort_order")
     private Integer sortOrder;
 
+    @Column(name = "scoring")
+    private Boolean scoring;
+
     @Column(name = "created")
     private Long created;
 
@@ -70,7 +73,8 @@ public class StudentTeam extends ModelObject implements PhotoUploadable {
             Set<User> leaders,
             Set<Student> students,
             String mediaDescriptor,
-            Integer sortOrder) {
+            Integer sortOrder,
+            Boolean scoring) {
         this();
 
         this.project = project;
@@ -80,6 +84,7 @@ public class StudentTeam extends ModelObject implements PhotoUploadable {
         this.students = students;
         this.mediaDescriptor = mediaDescriptor;
         this.sortOrder = sortOrder;
+        this.scoring = scoring;
     }
 
     public Long getId() {
@@ -156,6 +161,17 @@ public class StudentTeam extends ModelObject implements PhotoUploadable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Boolean getScoring() {
+        if (scoring == null) {
+            return false;
+        }
+        return scoring;
+    }
+
+    public void setScoring(Boolean scoring) {
+        this.scoring = scoring;
     }
 
     @Override

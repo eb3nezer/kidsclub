@@ -199,7 +199,29 @@ public class StudentTeam extends ModelObject implements PhotoUploadable {
     public static class StudentTeamScoreComparator implements Comparator<StudentTeam> {
         @Override
         public int compare(StudentTeam o1, StudentTeam o2) {
-            return o2.getScore().compareTo(o1.getScore());
+            boolean scoring1 = (o1.scoring == null) ? false : o1.scoring;
+            boolean scoring2 = (o2.scoring == null) ? false : o2.scoring;
+
+            if (scoring1 == scoring2) {
+                if (scoring1) {
+                    // Both have a score - compare by score
+                    if (o1.getScore().equals(o2.getScore())) {
+                        return o1.getName().compareToIgnoreCase(o2.getName());
+                    } else {
+                        return o2.getScore().compareTo(o1.getScore());
+                    }
+                } else {
+                    // Neither have a score - compare by name
+                    return o1.getName().compareToIgnoreCase(o2.getName());
+                }
+            } else {
+                // Teams that have scores go first
+                if (scoring1) {
+                    return -1;
+                } else {
+                    return 1;
+                }
+            }
         }
     }
 }

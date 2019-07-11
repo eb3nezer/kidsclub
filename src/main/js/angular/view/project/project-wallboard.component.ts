@@ -29,16 +29,20 @@ export class ProjectWallboardComponent implements OnInit, OnDestroy, AfterViewIn
     }
 
     formatTeams(teams: StudentTeam[]) {
+        const filteredTeams = teams.filter(team => {
+            return team.scoring === true;
+        });
+
         this.wallboardRows = [[]];
         if (this.wallboardColumns == 0) {
-            this.wallboardRows.push(teams);
+            this.wallboardRows.push(filteredTeams);
         } else {
             let index = 0;
             for (let row = 0; row <= Math.floor(teams.length / this.wallboardColumns); row++) {
                 const thisRow: StudentTeam[] = [];
                 for (let column = 0; column < this.wallboardColumns; column++) {
-                    if (index < teams.length) {
-                        thisRow.push(teams[index]);
+                    if (index < filteredTeams.length) {
+                        thisRow.push(filteredTeams[index]);
                         index++;
                     }
                 }
@@ -83,7 +87,7 @@ export class ProjectWallboardComponent implements OnInit, OnDestroy, AfterViewIn
                 this.hideTransmitError = false;
                 console.warn("No teams returned. Assuming an error happened. Will retry.")
             }
-        })
+        });
     }
 
     ngOnInit() {

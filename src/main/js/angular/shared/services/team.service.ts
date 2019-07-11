@@ -54,7 +54,7 @@ export class TeamService {
     updateTeam(team: StudentTeam, studentList: string, leaderList: string, photo?: File, ): Observable<StudentTeam> {
         const formData: FormData = new FormData();
 
-        const properties = ["id", "name", "projectId", "mediaDescriptor"];
+        const properties = ["id", "name", "projectId", "mediaDescriptor", "scoring"];
         properties.forEach(propname => {
             if (team.hasOwnProperty(propname)) {
                 formData.append(propname, team[propname]);
@@ -91,6 +91,7 @@ export class TeamService {
 
         formData.append("projectId", projectId.toString());
         formData.append("name", team.name);
+        formData.append("scoring", `${team.scoring}`);
 
         if (photo) {
             formData.append("file", photo, photo.name);

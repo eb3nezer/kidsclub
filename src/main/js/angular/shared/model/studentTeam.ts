@@ -14,7 +14,8 @@ export class StudentTeam {
         public leaders?: User[],
         public students?: Student[],
         public mediaDescriptor?: string,
-        public imageCollection?: ImageCollection
+        public imageCollection?: ImageCollection,
+        public scoring?: boolean
     ) {
 
     }

@@ -238,7 +238,8 @@ public class StudentResource {
             @FormDataParam("file") FormDataContentDisposition payloadDetail,
             @FormDataParam("name") String name,
             @FormDataParam("avatarUrl") String avatarUrl,
-            @FormDataParam("projectId") String projectId) throws IOException {
+            @FormDataParam("projectId") String projectId,
+            @FormDataParam("scoring") String scoring) throws IOException {
 
         StudentTeamDto studentTeamDto = new StudentTeamDto();
 
@@ -257,6 +258,11 @@ public class StudentResource {
         }
 
         studentTeamDto.setName(name);
+        if (scoring == null) {
+            studentTeamDto.setScoring(false);
+        } else {
+            studentTeamDto.setScoring(Boolean.valueOf(scoring));
+        }
 
         Optional<StudentTeam> studentTeam = studentTeamService.createStudentTeam(Long.valueOf(projectId), studentTeamMapper.toModel(studentTeamDto));
         if (studentTeam.isPresent()) {
@@ -280,7 +286,8 @@ public class StudentResource {
             @FormDataParam("projectId") String projectId,
             @FormDataParam("mediaDescriptor") String mediaDescriptor,
             @FormDataParam("leaderList") String leaderList,
-            @FormDataParam("studentList") String studentList
+            @FormDataParam("studentList") String studentList,
+            @FormDataParam("scoring") String scoring
             ) throws IOException {
 
         // Check for file upload
@@ -315,6 +322,11 @@ public class StudentResource {
         updateRequest.setLeaders(leaders);
         updateRequest.setStudents(students);
         updateRequest.setMediaDescriptor(mediaDescriptor);
+        if (scoring == null) {
+            updateRequest.setScoring(false);
+        } else {
+            updateRequest.setScoring(Boolean.valueOf(scoring));
+        }
 
         Optional<StudentTeam> studentTeam = studentTeamService.updateStudentTeam(Long.valueOf(teamId), studentTeamMapper.toModel(updateRequest));
         if (studentTeam.isPresent()) {

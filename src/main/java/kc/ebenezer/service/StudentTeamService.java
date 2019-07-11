@@ -185,6 +185,17 @@ public class StudentTeamService {
                     now);
         }
 
+        if (valueUpdated(existingTeam.get().getScoring(), valuesToUpdate.getScoring())) {
+            if (valuesToUpdate.getScoring() == null) {
+                existingTeam.get().setScoring(false);
+            } else {
+                existingTeam.get().setScoring(valuesToUpdate.getScoring());
+            }
+            existingTeam.get().updated();
+            auditService.audit(project.get(), "Set scoring to \"" + existingTeam.get().getScoring() + "\" for team id=" + existingTeam.get().getId(),
+                now);
+        }
+
         if (valueUpdated(existingTeam.get().getMediaDescriptor(), valuesToUpdate.getMediaDescriptor())) {
             imageScalingService.deleteOldImageCollection(existingTeam.get());
             if (existingTeam.get().getMediaDescriptor() != null && !existingTeam.get().getMediaDescriptor().isEmpty()) {

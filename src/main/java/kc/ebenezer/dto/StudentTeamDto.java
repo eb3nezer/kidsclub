@@ -18,6 +18,7 @@ public class StudentTeamDto extends DtoObject {
     private List<StudentDto> students;
     private String mediaDescriptor;
     private ImageCollectionDto imageCollection;
+    private Boolean scoring;
 
     public StudentTeamDto() {
     }
@@ -30,6 +31,7 @@ public class StudentTeamDto extends DtoObject {
             List<UserDto> leaders,
             List<StudentDto> students,
             String mediaDescriptor,
+            Boolean scoring,
             Long created,
             Long updated) {
         this.id = id;
@@ -41,6 +43,7 @@ public class StudentTeamDto extends DtoObject {
         this.leaders = leaders;
         this.students = students;
         this.mediaDescriptor = mediaDescriptor;
+        this.scoring = scoring;
     }
 
     public Long getId() {
@@ -121,5 +124,13 @@ public class StudentTeamDto extends DtoObject {
 
     public void setStudents(List<StudentDto> students) {
         this.students = students;
+    }
+
+    public Boolean getScoring() {
+        return scoring;
+    }
+
+    public void setScoring(Boolean scoring) {
+        this.scoring = scoring;
     }
 }

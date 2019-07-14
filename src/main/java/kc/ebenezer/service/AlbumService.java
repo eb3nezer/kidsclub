@@ -8,6 +8,8 @@ import kc.ebenezer.model.*;
 import kc.ebenezer.permissions.ProjectPermission;
 import kc.ebenezer.rest.NoPermissionException;
 import kc.ebenezer.rest.ValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -20,6 +22,8 @@ import java.util.Optional;
 @Service
 @Transactional
 public class AlbumService {
+    private static final Logger LOG = LoggerFactory.getLogger(AlbumService.class);
+
     @Inject
     private AlbumDao albumDao;
     @Inject
@@ -35,8 +39,6 @@ public class AlbumService {
     @Inject
     private ProjectPermissionService projectPermissionService;
     @Inject
-    private ImageDao imageDao;
-    @Inject
     private ImageCollectionDao imageCollectionDao;
     @Inject
     private ImageScalingService imageScalingService;
@@ -46,6 +48,7 @@ public class AlbumService {
 
         Optional<User> currentUser = userService.getCurrentUser();
         if (!currentUser.isPresent()) {
+            LOG.error("Anonymous cannot create albums");
             throw new NoPermissionException("Anonymous cannot create albums");
         }
 
@@ -55,6 +58,7 @@ public class AlbumService {
         }
 
         if (!projectPermissionService.userHasPermission(currentUser.get(), project.get(), ProjectPermission.EDIT_ALBUMS)) {
+            LOG.error("User " + currentUser.get().getId() + " does not have the permission " + ProjectPermission.EDIT_ALBUMS + " in createAlbum()");
             throw new NoPermissionException("You do not have permission to edit albums");
         }
 
@@ -72,6 +76,7 @@ public class AlbumService {
     public List<Album> getAlbumsForProject(Long projectId) {
         Optional<User> currentUser = userService.getCurrentUser();
         if (!currentUser.isPresent()) {
+            LOG.error("Anonymous cannot retrieve albums");
             throw new NoPermissionException("Anonymous cannot retrieve albums");
         }
 
@@ -88,12 +93,15 @@ public class AlbumService {
     public Optional<Album> getAlbumById(Long albumId) {
         Optional<User> currentUser = userService.getCurrentUser();
         if (!currentUser.isPresent()) {
+            LOG.error("Anonymous cannot retrieve albums");
             throw new NoPermissionException("Anonymous cannot retrieve albums");
         }
 
         Optional<Album> album = albumDao.findById(albumId);
         if (album.isPresent()) {
             if (!(album.get().isShared() || ProjectPermissionService.userIsProjectMember(currentUser.get(), album.get().getProject()))) {
+                LOG.error("Either the album is not shared, or else user " + currentUser.get().getId() +
+                    " is not a member of project " + album.get().getProject().getId() + " in getAlbumById()");
                 throw new NoPermissionException("User does not have permission to read albums in this project");
             }
 
@@ -117,6 +125,7 @@ public class AlbumService {
     public Optional<AlbumItem> addPhotoToAlbum(Long albumId, InputStream inputStream, int maxSize, String filename, boolean shared, String description) throws IOException {
         Optional<User> currentUser = userService.getCurrentUser();
         if (!currentUser.isPresent()) {
+            LOG.error("Anonymous cannot add photos");
             throw new NoPermissionException("Anonymous cannot add photos");
         }
 
@@ -125,6 +134,7 @@ public class AlbumService {
 
         if (album.isPresent()) {
             if (!album.get().getProject().getUsers().contains(currentUser.get())) {
+                LOG.error("User " + currentUser.get().getId() + " is not a member of project " + album.get().getProject().getId() + " in addPhotoToAlbum()");
                 throw new NoPermissionException("You are not a member of this project");
             }
 
@@ -162,12 +172,14 @@ public class AlbumService {
     public Optional<AlbumItem> deletePhotoFromAlbum(Long albumId, Long photoId)  {
         Optional<User> currentUser = userService.getCurrentUser();
         if (!currentUser.isPresent()) {
+            LOG.error("Anonymous cannot delete photos");
             throw new NoPermissionException("Anonymous cannot delete photos");
         }
         Optional<AlbumItem> deleted = Optional.empty();
         Optional<Album> album = albumDao.findById(albumId);
         if (album.isPresent()) {
             if (!album.get().getProject().getUsers().contains(currentUser.get())) {
+                LOG.error("User " + currentUser.get().getId() + " is not a member of project " + album.get().getProject().getId() + " in deletePhotoFromAlbum()");
                 throw new NoPermissionException("You are not a member of this project");
             }
             deleted = album.get().getItems().stream().filter(i -> i.getId().equals(photoId)).findFirst();

@@ -8,6 +8,8 @@ import kc.ebenezer.model.User;
 import kc.ebenezer.permissions.SitePermission;
 import kc.ebenezer.rest.NoPermissionException;
 import kc.ebenezer.rest.ValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -22,6 +24,8 @@ import java.util.Optional;
 @Service
 @Transactional
 public class MediaService {
+    private static final Logger LOG = LoggerFactory.getLogger(MediaService.class);
+
     @Inject
     private MediaDao mediaDao;
     @Inject
@@ -107,6 +111,7 @@ public class MediaService {
     public void deleteData(String descriptor) {
         Optional<User> currentUser = userService.getCurrentUser();
         if (!currentUser.isPresent()) {
+            LOG.error("Anonymous cannot delete media");
             throw new NoPermissionException("Anonymous cannot delete media");
         }
 
@@ -120,6 +125,9 @@ public class MediaService {
                 SitePermissionService.userHasPermission(currentUser.get(), SitePermission.SYSTEM_ADMIN)) {
             mediaDao.delete(media.get());
         } else {
+            LOG.error("Media " + media.get().getDescriptor() + " is owned by " + media.get().getOwner().getId() +
+                " and user " + currentUser.get().getId() + " does not have the permission " + SitePermission.SYSTEM_ADMIN +
+                " in deleteData()");
             throw new NoPermissionException("You do not have permission to delete this media");
         }
     }

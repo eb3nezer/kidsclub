@@ -78,6 +78,7 @@ public class StudentService {
     public Student createStudent(Student student, Long projectId) {
         Optional<User> currentUser = userService.getCurrentUser();
         if (!currentUser.isPresent()) {
+            LOG.error("Anonymous cannot create students");
             throw new NoPermissionException("Anonymous cannot create students");
         }
         Optional<Project> project = projectService.getProjectById(currentUser.get(), projectId);
@@ -85,6 +86,7 @@ public class StudentService {
             throw new ValidationException("Invalid project");
         }
         if (!projectPermissionService.userHasPermission(currentUser.get(), project.get(), ProjectPermission.EDIT_STUDENTS)) {
+            LOG.error("User " + currentUser.get().getId() + " does not have the permission " + ProjectPermission.EDIT_STUDENTS + " in createStudent()");
             throw new NoPermissionException("You do not have permission to create/edit students");
         }
 

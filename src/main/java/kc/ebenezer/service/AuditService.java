@@ -64,6 +64,12 @@ public class AuditService {
             }
         }
 
+        if (!currentUser.isPresent()) {
+            LOG.error("Anonymous may not view audit records.");
+        } else {
+            LOG.error("User " + currentUser.get().getId() + " does not have the permission " + SitePermission.VIEW_AUDIT + " in getAuditRecords()");
+        }
+
         throw new NoPermissionException("You do not have permission to view audit records");
     }
 

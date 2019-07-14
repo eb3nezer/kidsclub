@@ -1,14 +1,11 @@
 package kc.ebenezer.rest;
 
-import kc.ebenezer.dto.ErrorMessage;
-
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
 /**
  * The user tried to do something for which they have no permission.
  */
-public class ValidationException extends WebApplicationException {
+public class ValidationException extends KCException {
     private static final Response.Status status = Response.Status.PRECONDITION_FAILED;
 
     public ValidationException() {
@@ -28,18 +25,7 @@ public class ValidationException extends WebApplicationException {
     }
 
     @Override
-    public Response getResponse() {
-        StringBuilder message = new StringBuilder();
-        if (getMessage() != null) {
-            message.append(getMessage());
-        }
-
-        if (getCause() != null) {
-            message.append(" :");
-            message.append(getCause().getMessage());
-        }
-
-        ErrorMessage errorMessage = new ErrorMessage(message.toString());
-        return Response.status(status).entity(errorMessage).build();
+    protected Response.Status getStatus() {
+        return status;
     }
 }

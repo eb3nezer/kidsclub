@@ -6,6 +6,8 @@ import kc.ebenezer.model.*;
 import kc.ebenezer.permissions.ProjectPermission;
 import kc.ebenezer.rest.NoPermissionException;
 import kc.ebenezer.rest.ValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -13,6 +15,8 @@ import java.util.*;
 
 @Component
 public class AttendanceService {
+    private static final Logger LOG = LoggerFactory.getLogger(AttendanceService.class);
+
     @Inject
     private UserService userService;
     @Inject
@@ -28,6 +32,7 @@ public class AttendanceService {
 
     private void validateForGet(Optional<User> currentUser, Optional<Project> project) {
         if (!currentUser.isPresent()) {
+            LOG.error("Anonymous may not request attendance");
             throw new NoPermissionException("Anonymous may not request attendance");
         }
 
@@ -54,6 +59,7 @@ public class AttendanceService {
 
         if (!(projectPermissionService.userHasPermission(currentUser.get(), project.get(), ProjectPermission.EDIT_ATTENDANCE) ||
             projectPermissionService.userHasPermission(currentUser.get(), project.get(), ProjectPermission.VIEW_STUDENTS))) {
+            LOG.error("User " + currentUser.get().getId() + " does not have permission " + ProjectPermission.VIEW_STUDENTS + " in validateForUpdate()");
             throw new NoPermissionException("You do not have permission to edit attendance");
         }
     }
@@ -150,7 +156,8 @@ public class AttendanceService {
         Optional<User> currentUser = userService.getCurrentUser();
 
         if (!currentUser.isPresent()) {
-            throw new NoPermissionException("Anonymous cannot request students");
+            LOG.error("Anonymous cannot request attendance");
+            throw new NoPermissionException("Anonymous cannot request attendance");
         }
 
         List<Student> students = studentService.getStudentsForProject(projectId, Optional.empty());

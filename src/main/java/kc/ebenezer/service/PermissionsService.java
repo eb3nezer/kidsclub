@@ -11,6 +11,8 @@ import kc.ebenezer.permissions.ProjectPermission;
 import kc.ebenezer.permissions.SitePermission;
 import kc.ebenezer.rest.NoPermissionException;
 import kc.ebenezer.rest.ValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -21,6 +23,8 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class PermissionsService {
+    private static final Logger LOG = LoggerFactory.getLogger(PermissionsService.class);
+
     @Inject
     private UserService userService;
     @Inject
@@ -77,6 +81,7 @@ public class PermissionsService {
     public UserPermissionsDto getUserPermissions(User user) {
         Optional<User> currentUser = userService.getCurrentUser();
         if (!currentUser.isPresent()) {
+            LOG.error("Anonymous cannot get user permissions in getUserPermissions(User)");
             throw new NoPermissionException("Anonymous cannot get user permissions");
         }
 
@@ -97,6 +102,7 @@ public class PermissionsService {
     public UserPermissionsDto getUserPermissions(User user, Long projectId) {
         Optional<User> currentUser = userService.getCurrentUser();
         if (!currentUser.isPresent()) {
+            LOG.error("Anonymous cannot get user permissions in getUserPermissions(User, Long)");
             throw new NoPermissionException("Anonymous cannot get user permissions");
         }
 
@@ -127,7 +133,8 @@ public class PermissionsService {
     public UserPermissionsDto setUserPermissionsDto(Long targetUserId, UserPermissionsDto newPermissions) {
         Optional<User> currentUser = userService.getCurrentUser();
         if (!currentUser.isPresent()) {
-            throw new NoPermissionException("Anonymous cannot get user permissions");
+            LOG.error("Anonymous cannot set user permissions in setUserPermissionsDto()");
+            throw new NoPermissionException("Anonymous cannot set user permissions");
         }
 
         if (newPermissions.getUserSitePermissions() != null) {
@@ -168,6 +175,7 @@ public class PermissionsService {
             auditService.audit(null, "Overriding access to change user permissions for user id=" + currentUser.getId(),
                     new Date(), AuditLevel.WARN);
         } else if (!SitePermissionService.userHasPermission(currentUser, SitePermission.SYSTEM_ADMIN)) {
+            LOG.error("User " + currentUser.getId() + " does not have permission " + SitePermission.SYSTEM_ADMIN + " in updateSitePermission()");
             throw new NoPermissionException("You do not have permission to update site permissions");
         }
 
@@ -198,11 +206,14 @@ public class PermissionsService {
     public void updateProjectPermission(User currentUser, User targetUser, Long projectId, ProjectPermission projectPermission, boolean grant) {
         Optional<Project> project = projectService.getProjectById(targetUser, projectId);
         if (!project.isPresent()) {
+            LOG.error("User id=" + targetUser.getId() + " is not a member of project id=" + projectId);
             throw new NoPermissionException("User id=" + targetUser.getId() + " is not a member of project id=" + projectId);
         }
 
         if (!(SitePermissionService.userHasPermission(currentUser, SitePermission.SYSTEM_ADMIN) ||
             projectPermissionService.userHasPermission(currentUser, project.get(), ProjectPermission.PROJECT_ADMIN))) {
+            LOG.error("User " + currentUser.getId() + " does not have the permission " + SitePermission.SYSTEM_ADMIN +
+                " or " + ProjectPermission.PROJECT_ADMIN + " for project " + project.get().getId());
             throw new NoPermissionException("You do not have permission to update project permissions");
         }
 

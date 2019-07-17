@@ -2,9 +2,8 @@ package kc.ebenezer.service;
 
 import kc.ebenezer.dao.StudentDao;
 import kc.ebenezer.dao.StudentTeamDao;
-import kc.ebenezer.dto.StudentTeamDto;
 import kc.ebenezer.model.*;
-import kc.ebenezer.rest.ValidationException;
+import kc.ebenezer.exception.ValidationException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;

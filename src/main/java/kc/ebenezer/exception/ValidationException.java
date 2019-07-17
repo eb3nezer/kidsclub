@@ -1,4 +1,4 @@
-package kc.ebenezer.rest;
+package kc.ebenezer.exception;
 
 import javax.ws.rs.core.Response;
 

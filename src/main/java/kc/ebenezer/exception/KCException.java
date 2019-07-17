@@ -1,4 +1,4 @@
-package kc.ebenezer.rest;
+package kc.ebenezer.exception;
 
 import kc.ebenezer.dto.ErrorMessage;
 

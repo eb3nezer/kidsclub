@@ -4,6 +4,7 @@ import kc.ebenezer.Application;
 import kc.ebenezer.dto.AlbumDto;
 import kc.ebenezer.dto.mapper.AlbumItemMapper;
 import kc.ebenezer.dto.mapper.AlbumMapper;
+import kc.ebenezer.exception.ValidationException;
 import kc.ebenezer.model.Album;
 import kc.ebenezer.model.AlbumItem;
 import kc.ebenezer.service.AlbumService;

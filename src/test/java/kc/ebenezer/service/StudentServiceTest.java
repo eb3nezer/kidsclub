@@ -3,8 +3,8 @@ package kc.ebenezer.service;
 import kc.ebenezer.dao.StudentDao;
 import kc.ebenezer.model.*;
 import kc.ebenezer.permissions.ProjectPermission;
-import kc.ebenezer.rest.NoPermissionException;
-import kc.ebenezer.rest.ValidationException;
+import kc.ebenezer.exception.NoPermissionException;
+import kc.ebenezer.exception.ValidationException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -17,7 +17,6 @@ import java.util.Optional;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockingDetails;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)

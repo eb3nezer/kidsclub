@@ -3,11 +3,14 @@ package kc.ebenezer.rest;
 import kc.ebenezer.Application;
 import kc.ebenezer.dto.MediaDto;
 import kc.ebenezer.dto.mapper.UserMapper;
+import kc.ebenezer.exception.ValidationException;
 import kc.ebenezer.model.Media;
 import kc.ebenezer.service.MediaService;
 import kc.ebenezer.service.StatsService;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;
 import org.glassfish.jersey.media.multipart.FormDataParam;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -30,6 +33,8 @@ import java.util.Optional;
 @Path("/data")
 @Transactional
 public class DataResource {
+    private static final Logger LOG = LoggerFactory.getLogger(DataResource.class);
+
     private static final long MEDIA_EXPIRY_TIME = 30L * 24L * 60L * 60L * 1000L;
 
     @Inject
@@ -85,12 +90,13 @@ public class DataResource {
             return Response.status(Response.Status.OK).entity(mediaDto).build();
         }
 
+        LOG.error("Failed to store data");
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
     @GET
     @Path("/download/{descriptor}")
-    public Response listUsers(@PathParam("descriptor") String descriptor) {
+    public Response downloadFile(@PathParam("descriptor") String descriptor) {
         Optional<Media> media = mediaService.getData(descriptor);
         if (media.isPresent()) {
             statsService.logStats("rest.media.download", new HashMap<>());
@@ -109,6 +115,7 @@ public class DataResource {
                     .build();
         }
 
+        LOG.error("No media present for descriptor " + descriptor);
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 }

@@ -6,7 +6,7 @@ import kc.ebenezer.model.StatsMetadata;
 import kc.ebenezer.model.StatsRecord;
 import kc.ebenezer.model.User;
 import kc.ebenezer.permissions.SitePermission;
-import kc.ebenezer.rest.NoPermissionException;
+import kc.ebenezer.exception.NoPermissionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -56,6 +56,7 @@ public class StatsService {
             return statsRecordDao.findByDateRange(startDate, endDate);
         }
 
+        LOG.error("User " + currentUser.get().getId() + " does not have the site permission " + SitePermission.VIEW_STATISTICS);
         throw new NoPermissionException("You do not have permission to view statistics records");
     }
 

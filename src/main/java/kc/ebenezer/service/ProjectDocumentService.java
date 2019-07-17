@@ -6,8 +6,10 @@ import kc.ebenezer.model.Project;
 import kc.ebenezer.model.ProjectDocument;
 import kc.ebenezer.model.User;
 import kc.ebenezer.permissions.ProjectPermission;
-import kc.ebenezer.rest.NoPermissionException;
-import kc.ebenezer.rest.ValidationException;
+import kc.ebenezer.exception.NoPermissionException;
+import kc.ebenezer.exception.ValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -21,6 +23,8 @@ import java.util.Optional;
 @Service
 @Transactional
 public class ProjectDocumentService {
+    private static final Logger LOG = LoggerFactory.getLogger(ProjectDocumentService.class);
+
     @Inject
     private ProjectDocumentDao projectDocumentDao;
     @Inject
@@ -37,6 +41,7 @@ public class ProjectDocumentService {
     public List<ProjectDocument> getDocumentsForProject(Long projectId) {
         Optional<User> currentUser = userService.getCurrentUser();
         if (!currentUser.isPresent()) {
+            LOG.error("Anonymous cannot retrieve documents");
             throw new NoPermissionException("Anonymous cannot retrieve documents");
         }
 
@@ -51,6 +56,7 @@ public class ProjectDocumentService {
     public Optional<ProjectDocument> addDocumentToProject(Long projectId, InputStream inputStream, int maxSize, String filename, String description) throws IOException {
         Optional<User> currentUser = userService.getCurrentUser();
         if (!currentUser.isPresent()) {
+            LOG.error("Anonymous cannot create documents");
             throw new NoPermissionException("Anonymous cannot create documents");
         }
         Optional<Project> project = projectService.getProjectById(currentUser.get(), projectId);
@@ -58,6 +64,8 @@ public class ProjectDocumentService {
             throw new ValidationException("Invalid project ID");
         }
         if (!projectPermissionService.userHasPermission(currentUser.get(), project.get(), ProjectPermission.EDIT_DOCUMENTS)) {
+            LOG.error("User " + currentUser.get().getId() + " does not have the project permission " + ProjectPermission.EDIT_DOCUMENTS +
+                " for project " + project.get().getId());
             throw new NoPermissionException("You do not have permission to create documents");
         }
 
@@ -77,13 +85,16 @@ public class ProjectDocumentService {
     public void deleteProjectDocument(Long projectId, Long documentId) {
         Optional<User> currentUser = userService.getCurrentUser();
         if (!currentUser.isPresent()) {
-            throw new NoPermissionException("Anonymous cannot create documents");
+            LOG.error("Anonymous cannot delete documents");
+            throw new NoPermissionException("Anonymous cannot delete documents");
         }
         Optional<Project> project = projectService.getProjectById(currentUser.get(), projectId);
         if (!project.isPresent()) {
             throw new ValidationException("Invalid project ID");
         }
         if (!projectPermissionService.userHasPermission(currentUser.get(), project.get(), ProjectPermission.EDIT_DOCUMENTS)) {
+            LOG.error("User " + currentUser.get().getId() + " does not have the project permission " + ProjectPermission.EDIT_DOCUMENTS +
+                " for project " + project.get().getId());
             throw new NoPermissionException("You do not have permission to create documents");
         }
         Optional<ProjectDocument> document = projectDocumentDao.findById(documentId);
@@ -91,6 +102,8 @@ public class ProjectDocumentService {
             throw new ValidationException("Invalid document ID");
         }
         if (!document.get().getProject().getId().equals(projectId)) {
+            LOG.error("Document " + document.get().getId() + " does not belong to project " + projectId +
+                ", but rather it actually belongs to project " + document.get().getProject().getId());
             throw new NoPermissionException("The specified document does not belong to the specified project");
         }
 

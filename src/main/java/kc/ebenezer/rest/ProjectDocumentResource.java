@@ -1,16 +1,10 @@
 package kc.ebenezer.rest;
 
 import kc.ebenezer.Application;
-import kc.ebenezer.dto.AlbumDto;
 import kc.ebenezer.dto.ProjectDocumentDto;
-import kc.ebenezer.dto.mapper.AlbumItemMapper;
-import kc.ebenezer.dto.mapper.AlbumMapper;
 import kc.ebenezer.dto.mapper.ProjectDocumentMapper;
-import kc.ebenezer.dto.mapper.UserMapper;
-import kc.ebenezer.model.Album;
-import kc.ebenezer.model.AlbumItem;
+import kc.ebenezer.exception.ValidationException;
 import kc.ebenezer.model.ProjectDocument;
-import kc.ebenezer.service.AlbumService;
 import kc.ebenezer.service.ProjectDocumentService;
 import kc.ebenezer.service.StatsService;
 import org.glassfish.jersey.media.multipart.FormDataContentDisposition;

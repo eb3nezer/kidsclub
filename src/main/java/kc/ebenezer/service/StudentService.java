@@ -4,8 +4,8 @@ import kc.ebenezer.dao.StudentDao;
 import kc.ebenezer.model.*;
 import kc.ebenezer.permissions.ProjectPermission;
 import kc.ebenezer.permissions.SitePermission;
-import kc.ebenezer.rest.NoPermissionException;
-import kc.ebenezer.rest.ValidationException;
+import kc.ebenezer.exception.NoPermissionException;
+import kc.ebenezer.exception.ValidationException;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,7 +86,8 @@ public class StudentService {
             throw new ValidationException("Invalid project");
         }
         if (!projectPermissionService.userHasPermission(currentUser.get(), project.get(), ProjectPermission.EDIT_STUDENTS)) {
-            LOG.error("User " + currentUser.get().getId() + " does not have the permission " + ProjectPermission.EDIT_STUDENTS + " in createStudent()");
+            LOG.error("User " + currentUser.get().getId() + " does not have the project permission " + ProjectPermission.EDIT_STUDENTS +
+                " for project " +project.get().getId() + " in createStudent()");
             throw new NoPermissionException("You do not have permission to create/edit students");
         }
 
@@ -125,6 +126,7 @@ public class StudentService {
     public Optional<Student> deleteStudent(Long studentId) {
         Optional<User> currentUser = userService.getCurrentUser();
         if (!currentUser.isPresent()) {
+            LOG.error("Anonymous cannot delete students");
             throw new NoPermissionException("Anonymous cannot delete students");
         }
         Optional<Student> student = studentDao.findById(studentId);
@@ -136,6 +138,8 @@ public class StudentService {
             throw new ValidationException("Invalid project");
         }
         if (!projectPermissionService.userHasPermission(currentUser.get(), project.get(), ProjectPermission.EDIT_STUDENTS)) {
+            LOG.error("User " + currentUser.get().getId() + " does not have the project permission " + ProjectPermission.EDIT_STUDENTS +
+                " in project " + project.get().getId());
             throw new NoPermissionException("You do not have permission to create/edit students");
         }
 
@@ -152,6 +156,7 @@ public class StudentService {
     public List<Student> bulkCreateStudents(Long projectId, InputStream inputStream) throws IOException {
         Optional<User> currentUser = userService.getCurrentUser();
         if (!currentUser.isPresent()) {
+            LOG.error("Anonymous cannot create students");
             throw new NoPermissionException("Anonymous cannot create students");
         }
         Optional<Project> project = projectService.getProjectById(currentUser.get(), projectId);
@@ -159,6 +164,8 @@ public class StudentService {
             throw new ValidationException("Invalid project");
         }
         if (!projectPermissionService.userHasPermission(currentUser.get(), project.get(), ProjectPermission.EDIT_STUDENTS)) {
+            LOG.error("User " + currentUser.get().getId() + " does not have the project permission " + ProjectPermission.EDIT_STUDENTS +
+                " in project " + project.get().getId());
             throw new NoPermissionException("You do not have permission to create/edit students");
         }
 
@@ -168,6 +175,7 @@ public class StudentService {
     public String exportStudents(Long projectId) throws IOException {
         Optional<User> currentUser = userService.getCurrentUser();
         if (!currentUser.isPresent()) {
+            LOG.error("Anonymous cannot export students");
             throw new NoPermissionException("Anonymous cannot export students");
         }
         Optional<Project> project = projectService.getProjectById(currentUser.get(), projectId);
@@ -175,6 +183,8 @@ public class StudentService {
             throw new ValidationException("Invalid project");
         }
         if (!projectPermissionService.userHasPermission(currentUser.get(), project.get(), ProjectPermission.VIEW_STUDENTS)) {
+            LOG.error("User " + currentUser.get().getId() + " does not have the project permission " + ProjectPermission.VIEW_STUDENTS +
+                " in project " + project.get().getId());
             throw new NoPermissionException("You do not have permission to view students");
         }
 
@@ -187,6 +197,7 @@ public class StudentService {
         Optional<User> currentUser = userService.getCurrentUser();
 
         if (!currentUser.isPresent()) {
+            LOG.error("Anonymous cannot request students");
             throw new NoPermissionException("Anonymous cannot request students");
         }
 
@@ -194,6 +205,8 @@ public class StudentService {
         Optional<Project> project = projectService.getProjectById(currentUser.get(), projectId);
         if (!project.isPresent() && !(SitePermissionService.userHasPermission(currentUser.get(), SitePermission.SYSTEM_ADMIN)
                 && !SitePermissionService.userHasPermission(currentUser.get(), SitePermission.LIST_USERS))) {
+            LOG.error("User " + currentUser.get() + " is not a member of project " + projectId +
+                " and the user does not have either the site permission " + SitePermission.SYSTEM_ADMIN + " or " + SitePermission.LIST_USERS);
             throw new NoPermissionException("You do not have permission to list students for this project");
         }
 
@@ -235,7 +248,8 @@ public class StudentService {
     public Optional<Student> updateStudent(Long studentId, Long teamId, Student valuesToUpdate) {
         Optional<User> currentUser = userService.getCurrentUser();
         if (!currentUser.isPresent()) {
-            throw new NoPermissionException("Anonymous cannot update users");
+            LOG.error("Anonymous cannot update students");
+            throw new NoPermissionException("Anonymous cannot update students");
         }
 
         Optional<Student> existingStudent = getStudentById(studentId);
@@ -244,10 +258,14 @@ public class StudentService {
         }
 
         if (!ProjectPermissionService.userIsProjectMember(currentUser.get(), existingStudent.get().getProject())) {
+            LOG.error("User " + currentUser.get().getId() + " is not a member of project " + existingStudent.get().getProject().getId() +
+                " and so cannot update student " + existingStudent.get().getId() + " in that project");
             throw new NoPermissionException("You cannot update students on a project you are not a member of");
         }
 
         if (!projectPermissionService.userHasPermission(currentUser.get(), existingStudent.get().getProject(), ProjectPermission.EDIT_STUDENTS)) {
+            LOG.error("User " + currentUser.get().getId() + " does not have the project permission " + ProjectPermission.EDIT_STUDENTS +
+                " in project " + existingStudent.get().getProject().getId());
             throw new NoPermissionException("You do not have permission to create/edit students");
         }
 

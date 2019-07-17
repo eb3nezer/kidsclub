@@ -9,8 +9,8 @@ import kc.ebenezer.dto.mapper.UserMapper;
 import kc.ebenezer.model.*;
 import kc.ebenezer.permissions.ProjectPermission;
 import kc.ebenezer.permissions.SitePermission;
-import kc.ebenezer.rest.NoPermissionException;
-import kc.ebenezer.rest.ValidationException;
+import kc.ebenezer.exception.NoPermissionException;
+import kc.ebenezer.exception.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -175,7 +175,7 @@ public class PermissionsService {
             auditService.audit(null, "Overriding access to change user permissions for user id=" + currentUser.getId(),
                     new Date(), AuditLevel.WARN);
         } else if (!SitePermissionService.userHasPermission(currentUser, SitePermission.SYSTEM_ADMIN)) {
-            LOG.error("User " + currentUser.getId() + " does not have permission " + SitePermission.SYSTEM_ADMIN + " in updateSitePermission()");
+            LOG.error("User " + currentUser.getId() + " does not have site permission " + SitePermission.SYSTEM_ADMIN + " in updateSitePermission()");
             throw new NoPermissionException("You do not have permission to update site permissions");
         }
 
@@ -212,8 +212,8 @@ public class PermissionsService {
 
         if (!(SitePermissionService.userHasPermission(currentUser, SitePermission.SYSTEM_ADMIN) ||
             projectPermissionService.userHasPermission(currentUser, project.get(), ProjectPermission.PROJECT_ADMIN))) {
-            LOG.error("User " + currentUser.getId() + " does not have the permission " + SitePermission.SYSTEM_ADMIN +
-                " or " + ProjectPermission.PROJECT_ADMIN + " for project " + project.get().getId());
+            LOG.error("User " + currentUser.getId() + " does not have the site permission " + SitePermission.SYSTEM_ADMIN +
+                " or project permission " + ProjectPermission.PROJECT_ADMIN + " for project " + project.get().getId());
             throw new NoPermissionException("You do not have permission to update project permissions");
         }
 

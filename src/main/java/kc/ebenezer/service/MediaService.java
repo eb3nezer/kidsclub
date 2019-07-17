@@ -2,12 +2,11 @@ package kc.ebenezer.service;
 
 import kc.ebenezer.Application;
 import kc.ebenezer.dao.MediaDao;
-import kc.ebenezer.model.Album;
 import kc.ebenezer.model.Media;
 import kc.ebenezer.model.User;
 import kc.ebenezer.permissions.SitePermission;
-import kc.ebenezer.rest.NoPermissionException;
-import kc.ebenezer.rest.ValidationException;
+import kc.ebenezer.exception.NoPermissionException;
+import kc.ebenezer.exception.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -98,6 +97,8 @@ public class MediaService {
             Media inserted = mediaDao.create(media);
             auditService.audit(null, "Stored " + data.length + " bytes of media of type " + contentType, new Date());
             return Optional.of(inserted);
+        } else {
+            LOG.error("Anonymous cannot upload data");
         }
 
         return Optional.empty();

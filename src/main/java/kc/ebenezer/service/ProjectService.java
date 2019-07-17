@@ -6,8 +6,8 @@ import kc.ebenezer.model.ProjectProperty;
 import kc.ebenezer.model.User;
 import kc.ebenezer.permissions.ProjectPermission;
 import kc.ebenezer.permissions.SitePermission;
-import kc.ebenezer.rest.NoPermissionException;
-import kc.ebenezer.rest.ValidationException;
+import kc.ebenezer.exception.NoPermissionException;
+import kc.ebenezer.exception.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -73,9 +73,11 @@ public class ProjectService  {
     public Optional<Project> createProject(Project project) {
         Optional<User> user = userService.getCurrentUser();
         if (!user.isPresent()) {
+            LOG.error("Anonymous may not create projects");
             throw new NoPermissionException("Anonymous may not create projects");
         }
         if (!SitePermissionService.userHasPermission(user.get(), SitePermission.CREATE_PROJECT)) {
+            LOG.error("User " + user.get().getId() + " does not have the site permission " + SitePermission.CREATE_PROJECT);
             throw new NoPermissionException("You do not have permission to create projects");
         }
 
@@ -118,9 +120,11 @@ public class ProjectService  {
     public Optional<Project> updateProject(Long projectId, Project projectToUpdate) {
         Optional<User> user = userService.getCurrentUser();
         if (!user.isPresent()) {
+            LOG.error("Anonymous may not update projects");
             throw new NoPermissionException("Anonymous may not update projects");
         }
         if (!SitePermissionService.userHasPermission(user.get(), SitePermission.CREATE_PROJECT)) {
+            LOG.error("User " + user.get().getId() + " does not have the site permission " + SitePermission.CREATE_PROJECT);
             throw new NoPermissionException("You do not have permission to edit projects");
         }
         Optional<Project> existingProject = getProjectById(user.get(), projectId);

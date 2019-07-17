@@ -4,8 +4,10 @@ import kc.ebenezer.dao.StudentDao;
 import kc.ebenezer.dao.StudentTeamDao;
 import kc.ebenezer.model.*;
 import kc.ebenezer.permissions.ProjectPermission;
-import kc.ebenezer.rest.NoPermissionException;
-import kc.ebenezer.rest.ValidationException;
+import kc.ebenezer.exception.NoPermissionException;
+import kc.ebenezer.exception.ValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
@@ -16,6 +18,8 @@ import java.util.stream.Collectors;
 @Component
 @Transactional
 public class StudentTeamService {
+    private static final Logger LOG = LoggerFactory.getLogger(StudentTeamService.class);
+
     @Inject
     private StudentDao studentDao;
     @Inject
@@ -36,6 +40,7 @@ public class StudentTeamService {
     public List<StudentTeam> getStudentTeams(Long projectId, Boolean myTeams) {
         Optional<User> currentUser = userService.getCurrentUser();
         if (!currentUser.isPresent()) {
+            LOG.error("Anonymous cannot view teams");
             throw new NoPermissionException("Anonymous cannot view teams");
         }
         Optional<Project> project = projectService.getProjectById(currentUser.get(), projectId);
@@ -82,6 +87,7 @@ public class StudentTeamService {
     public Optional<StudentTeam> getStudentTeam(Long teamId) {
         Optional<User> currentUser = userService.getCurrentUser();
         if (!currentUser.isPresent()) {
+            LOG.error("Anonymous cannot assign students to projects");
             throw new NoPermissionException("Anonymous cannot assign students to projects");
         }
         Optional<StudentTeam> team = studentTeamDao.findById(teamId);
@@ -89,6 +95,8 @@ public class StudentTeamService {
             // Check permission
             Optional<Project> tempProject = projectService.getProjectById(currentUser.get(), team.get().getProject().getId());
             if (!tempProject.isPresent()) {
+                LOG.error("User " + currentUser.get().getId() + " is not a member of project " + team.get().getProject().getId() +
+                    " and so cannot view team " + team.get().getId());
                 throw new NoPermissionException("You do not have permission to view this team");
             }
 
@@ -113,6 +121,7 @@ public class StudentTeamService {
     public Optional<StudentTeam> createStudentTeam(Long projectId, StudentTeam studentTeam) {
         Optional<User> currentUser = userService.getCurrentUser();
         if (!currentUser.isPresent()) {
+            LOG.error("Anonymous cannot create student teams");
             throw new NoPermissionException("Anonymous cannot create student teams");
         }
         Optional<Project> project = projectService.getProjectById(currentUser.get(), projectId);
@@ -120,6 +129,8 @@ public class StudentTeamService {
             throw new ValidationException("Invalid project");
         }
         if (!projectPermissionService.userHasPermission(currentUser.get(), project.get(), ProjectPermission.CREATE_TEAM)) {
+            LOG.error("User " + currentUser.get().getId() + " does not have the project permission " + ProjectPermission.CREATE_TEAM +
+                " in project " + project.get().getId());
             throw new NoPermissionException("You do not have permission to create teams");
         }
 
@@ -158,13 +169,16 @@ public class StudentTeamService {
     public Optional<StudentTeam> updateStudentTeam(Long teamId, StudentTeam valuesToUpdate) {
         Optional<User> currentUser = userService.getCurrentUser();
         if (!currentUser.isPresent()) {
-            throw new NoPermissionException("Anonymous cannot create student teams");
+            LOG.error("Anonymous cannot update student teams");
+            throw new NoPermissionException("Anonymous cannot update student teams");
         }
         Optional<Project> project = projectService.getProjectById(currentUser.get(), valuesToUpdate.getProject().getId());
         if (!project.isPresent()) {
             throw new ValidationException("Invalid project");
         }
         if (!projectPermissionService.userHasPermission(currentUser.get(), project.get(), ProjectPermission.CREATE_TEAM)) {
+            LOG.error("User " + currentUser.get().getId() + " does not have the project permission " + ProjectPermission.CREATE_TEAM +
+                " for project " + project.get().getId());
             throw new NoPermissionException("You do not have permission to update teams");
         }
 
@@ -266,13 +280,16 @@ public class StudentTeamService {
     public Optional<StudentTeam> adjustPoints(Long teamId, Integer adjustment) {
         Optional<User> currentUser = userService.getCurrentUser();
         if (!currentUser.isPresent()) {
-            throw new NoPermissionException("Anonymous cannot assign students to projects");
+            LOG.error("Anonymous cannot adjust points");
+            throw new NoPermissionException("Anonymous cannot adjust points");
         }
         Optional<StudentTeam> team = studentTeamDao.findById(teamId);
         if (!team.isPresent()) {
             throw new ValidationException("Team not found");
         }
         if (!ProjectPermissionService.userIsProjectMember(currentUser.get(), team.get().getProject())) {
+            LOG.error("User " + currentUser.get() + " is not a member of project " + team.get().getProject() +
+                " and so cannot adjust points for team " + teamId);
             throw new NoPermissionException("You cannot adjust points for teams in other projects");
         }
         team.get().setScore(team.get().getScore() + adjustment);
@@ -280,16 +297,19 @@ public class StudentTeamService {
         return team;
     }
 
-    public List<StudentTeam> resetPoints(Long projectid) {
+    public List<StudentTeam> resetPoints(Long projectId) {
         Optional<User> currentUser = userService.getCurrentUser();
         if (!currentUser.isPresent()) {
+            LOG.error("Anonymous cannot reset points");
             throw new NoPermissionException("Anonymous cannot reset points");
         }
-        Optional<Project> project = projectService.getProjectById(currentUser.get(), projectid);
+        Optional<Project> project = projectService.getProjectById(currentUser.get(), projectId);
         if (!project.isPresent()) {
+            LOG.error("Either project " + projectId + " does not exist, or else user " + currentUser.get().getId() +
+                " is not a member of that project.");
             throw new ValidationException("Project not found");
         }
-        List<StudentTeam> teams = studentTeamDao.getStudentTeamsForProject(projectid);
+        List<StudentTeam> teams = studentTeamDao.getStudentTeamsForProject(projectId);
         for (StudentTeam team : teams) {
             team.setScore(0);
             auditService.audit(project.get(), "Reset points for team " + team.getId(), new Date());

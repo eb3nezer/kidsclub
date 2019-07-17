@@ -13,9 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-
 @SpringBootApplication
 @Controller
 @EnableTransactionManagement

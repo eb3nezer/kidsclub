@@ -6,14 +6,13 @@ import kc.ebenezer.model.AuditRecord;
 import kc.ebenezer.model.Project;
 import kc.ebenezer.model.User;
 import kc.ebenezer.permissions.SitePermission;
-import kc.ebenezer.rest.NoPermissionException;
+import kc.ebenezer.exception.NoPermissionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.persistence.*;
-import javax.transaction.Transaction;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;

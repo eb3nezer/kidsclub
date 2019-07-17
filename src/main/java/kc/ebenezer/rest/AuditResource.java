@@ -1,15 +1,10 @@
 package kc.ebenezer.rest;
 
-import kc.ebenezer.dto.ProjectDto;
 import kc.ebenezer.dto.mapper.AuditRecordMapper;
-import kc.ebenezer.dto.mapper.ProjectMapper;
+import kc.ebenezer.exception.ValidationException;
 import kc.ebenezer.model.AuditRecord;
-import kc.ebenezer.model.Project;
-import kc.ebenezer.model.User;
 import kc.ebenezer.service.AuditService;
-import kc.ebenezer.service.ProjectService;
 import kc.ebenezer.service.StatsService;
-import kc.ebenezer.service.UserService;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;

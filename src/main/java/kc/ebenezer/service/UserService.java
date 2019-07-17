@@ -10,8 +10,8 @@ import kc.ebenezer.model.User;
 import kc.ebenezer.model.UserProjectPermissionContext;
 import kc.ebenezer.permissions.ProjectPermission;
 import kc.ebenezer.permissions.SitePermission;
-import kc.ebenezer.rest.NoPermissionException;
-import kc.ebenezer.rest.ValidationException;
+import kc.ebenezer.exception.NoPermissionException;
+import kc.ebenezer.exception.ValidationException;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,7 +105,13 @@ public class UserService implements UserDetailsService {
      */
     public List<User> getAllUsers(Optional<String> nameMatch) {
         Optional<User> currentUser = getCurrentUser();
-        if (!currentUser.isPresent() || !SitePermissionService.userHasPermission(currentUser.get(), SitePermission.LIST_USERS)) {
+        if (!currentUser.isPresent()) {
+            LOG.error("Anonymous may not list users");
+            throw new NoPermissionException("Anonymous may not list users");
+        }
+
+        if (!SitePermissionService.userHasPermission(currentUser.get(), SitePermission.LIST_USERS)) {
+            LOG.error("User " + currentUser.get().getId() + " does not have the site permission " + SitePermission.LIST_USERS);
             throw new NoPermissionException("You do not have permission to list users");
         }
 
@@ -125,23 +131,22 @@ public class UserService implements UserDetailsService {
     public List<User> getUsersForProject(long projectId, Optional<String> nameMatch) {
         Optional<User> currentUser = getCurrentUser();
         if (!currentUser.isPresent()) {
+            LOG.error("Anonymous cannot list users");
             throw new NoPermissionException("Anonymous cannot list users");
         }
         // Check if this user is on this project
         Optional<Project> project = projectService.getProjectById(currentUser.get(), projectId);
         if (!project.isPresent() && !(SitePermissionService.userHasPermission(currentUser.get(), SitePermission.SYSTEM_ADMIN)
                 || SitePermissionService.userHasPermission(currentUser.get(), SitePermission.LIST_USERS))) {
+            LOG.error("User " + currentUser.get().getId() + " is not a member of project " + projectId + " and does not have either " +
+                "the site permission " + SitePermission.SYSTEM_ADMIN + " or " + SitePermission.LIST_USERS);
             throw new NoPermissionException("You do not have permission to list users for this project");
         }
 
         if (nameMatch.isPresent()) {
             return userDao.findForProjectMatchingName(projectId, nameMatch.get(), 10);
         } else {
-            List<User> users = userDao.findForProject(projectId);
-            for (User user : users) {
-                imageScalingService.repairOrCreateImageCollection(user, user.getMediaDescriptor());
-            }
-            return users;
+            return userDao.findForProject(projectId);
         }
     }
 
@@ -160,6 +165,7 @@ public class UserService implements UserDetailsService {
     public Optional<User> updateUser(User valuesToUpdate) {
         Optional<User> currentUser = getCurrentUser();
         if (!currentUser.isPresent() || !currentUser.get().getId().equals(valuesToUpdate.getId())) {
+            LOG.error("User " + currentUser.get().getId() + " tried to update user " + valuesToUpdate.getId());
             throw new NoPermissionException("You may not update a user other than yourself");
         }
 
@@ -238,6 +244,7 @@ public class UserService implements UserDetailsService {
 
     private void inviteUserPermissionChecks(Optional<User> currentUser, Optional<Project> project) {
         if (!currentUser.isPresent()) {
+            LOG.error("Anonymous may not invite users");
             throw new NoPermissionException("Anonymous may not invite users");
         }
         if (!project.isPresent()) {
@@ -246,6 +253,8 @@ public class UserService implements UserDetailsService {
 
         if (!(SitePermissionService.userHasPermission(currentUser.get(), SitePermission.INVITE_USERS) ||
                 SitePermissionService.userHasPermission(currentUser.get(), SitePermission.SYSTEM_ADMIN))) {
+            LOG.error("User " + currentUser.get().getId() + " does not have either the site permission " +
+                SitePermission.INVITE_USERS + " or " + SitePermission.SYSTEM_ADMIN);
             throw new NoPermissionException("You do not have permission to invite users");
         }
     }
@@ -343,14 +352,18 @@ public class UserService implements UserDetailsService {
     public boolean unInviteUser(Long userId, Long projectId) {
         Optional<User> currentUser = getCurrentUser();
         if (!currentUser.isPresent()) {
+            LOG.error("Anonymous may not uninvite users");
             throw new NoPermissionException("Anonymous may not uninvite users");
         }
         Optional<Project> project = projectService.getProjectById(currentUser.get(), projectId);
         if (!project.isPresent()) {
+            LOG.error("User " + currentUser.get().getId() + " is not a member of project " + projectId + " and so may not uninvite users");
             throw new NoPermissionException("You are not a member of this project");
         }
         if (!(SitePermissionService.userHasPermission(currentUser.get(), SitePermission.INVITE_USERS) ||
                 SitePermissionService.userHasPermission(currentUser.get(), SitePermission.SYSTEM_ADMIN))) {
+            LOG.error("User " + currentUser.get().getId() + " does not have either the site permission " + SitePermission.INVITE_USERS +
+                " or " + SitePermission.SYSTEM_ADMIN);
             throw new NoPermissionException("You do not have permission to invite/uninvite users");
         }
 

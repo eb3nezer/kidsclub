@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  db:
+    container_name: kc-postgres-prod
+    image: postgres:12
+    volumes:
+      - kc-postgres-prod:/var/lib/postgresql/data
+    restart: unless-stopped
+    environment:
+      - TZ=Australia/Sydney
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+
+  kc-app:
+    depends_on:
+      - db
+    container_name: kc-app
+    image: kc.ebenezer/kidsclub:latest
+    volumes:
+      - ./logs:/logs
+    ports:
+      - 8081:8080
+    restart: unless-stopped
+    environment:
+      - TZ=Australia/Sydney
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_URL=${DB_URL}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+
+volumes:
+  kc-postgres-prod:

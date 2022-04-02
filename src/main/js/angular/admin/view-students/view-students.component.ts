@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {MatDialog} from '@angular/material';
 import {ActivatedRoute} from "@angular/router";
-import {MatSnackBar} from "@angular/material";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {MatDialog} from "@angular/material/dialog";
 
 import { AppTitleService } from "../../shared/services/app-title.service";
 import { ProjectService } from "../../shared/services/project.service";

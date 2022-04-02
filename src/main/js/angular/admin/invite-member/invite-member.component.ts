@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import { Location } from '@angular/common';
-import {MatSnackBar} from "@angular/material";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 import { AppTitleService } from "../../shared/services/app-title.service";
 import {ProjectService} from "../../shared/services/project.service";

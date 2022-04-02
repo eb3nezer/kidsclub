@@ -7,7 +7,7 @@ import {StudentService} from "../../shared/services/student.service";
 import {TeamService} from "../../shared/services/team.service";
 import {Student} from "../../shared/model/student";
 import {StudentTeam} from "../../shared/model/studentTeam";
-import {MatSnackBar} from "@angular/material";
+import {MatSnackBar} from "@angular/material/snack-bar";
 import { UserProfileService } from "../../shared/services/user-profile.service";
 
 @Component({

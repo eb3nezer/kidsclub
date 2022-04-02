@@ -12,7 +12,7 @@ import { StudentTeam } from "../../shared/model/studentTeam";
 import { User } from "../../shared/model/user";
 import { Student } from "../../shared/model/student";
 import {Location} from "@angular/common";
-import {MatSnackBar} from "@angular/material";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-view-team',

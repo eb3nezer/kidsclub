@@ -49,19 +49,19 @@ kidsclub:
     resource:
       userInfoUri: https://www.googleapis.com/userinfo/v2/me
       preferTokenInfo: false
-  facebook:
-      client:
-          clientId: ${FACEBOOK_CLIENT_ID}
-          clientSecret: ${FACEBOOK_CLIENT_SECRET}
-          accessTokenUri: https://graph.facebook.com/oauth/access_token
-          userAuthorizationUri: https://www.facebook.com/dialog/oauth
-          tokenName: oauth_token
-          authenticationScheme: query
-          clientAuthenticationScheme: form
-          scope: profile email
-      resource:
-          userInfoUri: https://graph.facebook.com/me
-          preferTokenInfo: false
+#  facebook:
+#      client:
+#          clientId: ${FACEBOOK_CLIENT_ID}
+#          clientSecret: ${FACEBOOK_CLIENT_SECRET}
+#          accessTokenUri: https://graph.facebook.com/oauth/access_token
+#          userAuthorizationUri: https://www.facebook.com/dialog/oauth
+#          tokenName: oauth_token
+#          authenticationScheme: query
+#          clientAuthenticationScheme: form
+#          scope: profile email
+#      resource:
+#          userInfoUri: https://graph.facebook.com/me
+#          preferTokenInfo: false
 
 ---
 spring:
@@ -122,19 +122,19 @@ kidsclub:
         resource:
             userInfoUri: https://www.googleapis.com/userinfo/v2/me
             preferTokenInfo: false
-    facebook:
-        client:
-            clientId: ${FACEBOOK_CLIENT_ID}
-            clientSecret: ${FACEBOOK_CLIENT_SECRET}
-            accessTokenUri: https://graph.facebook.com/oauth/access_token
-            userAuthorizationUri: https://www.facebook.com/dialog/oauth
-            tokenName: oauth_token
-            authenticationScheme: query
-            clientAuthenticationScheme: form
-            scope: email
-        resource:
-            userInfoUri: https://graph.facebook.com/me?fields=id,email,name,picture,first_name,last_name
-            preferTokenInfo: false
+#    facebook:
+#        client:
+#            clientId: ${FACEBOOK_CLIENT_ID}
+#            clientSecret: ${FACEBOOK_CLIENT_SECRET}
+#            accessTokenUri: https://graph.facebook.com/oauth/access_token
+#            userAuthorizationUri: https://www.facebook.com/dialog/oauth
+#            tokenName: oauth_token
+#            authenticationScheme: query
+#            clientAuthenticationScheme: form
+#            scope: email
+#        resource:
+#            userInfoUri: https://graph.facebook.com/me?fields=id,email,name,picture,first_name,last_name
+#            preferTokenInfo: false
 
 ---
 spring:
@@ -188,19 +188,19 @@ kidsclub:
     resource:
       userInfoUri: https://www.googleapis.com/userinfo/v2/me
       preferTokenInfo: false
-  facebook:
-    client:
-      clientId: ${FACEBOOK_CLIENT_ID}
-      clientSecret: ${FACEBOOK_CLIENT_SECRET}
-      accessTokenUri: https://graph.facebook.com/oauth/access_token
-      userAuthorizationUri: https://www.facebook.com/dialog/oauth
-      tokenName: oauth_token
-      authenticationScheme: query
-      clientAuthenticationScheme: form
-      scope: email
-    resource:
-      userInfoUri: https://graph.facebook.com/me?fields=id,email,name,picture,first_name,last_name
-      preferTokenInfo: false
+#  facebook:
+#    client:
+#      clientId: ${FACEBOOK_CLIENT_ID}
+#      clientSecret: ${FACEBOOK_CLIENT_SECRET}
+#      accessTokenUri: https://graph.facebook.com/oauth/access_token
+#      userAuthorizationUri: https://www.facebook.com/dialog/oauth
+#      tokenName: oauth_token
+#      authenticationScheme: query
+#      clientAuthenticationScheme: form
+#      scope: email
+#    resource:
+#      userInfoUri: https://graph.facebook.com/me?fields=id,email,name,picture,first_name,last_name
+#      preferTokenInfo: false
 
 ---
 spring:
@@ -261,18 +261,18 @@ kidsclub:
         resource:
             userInfoUri: https://www.googleapis.com/userinfo/v2/me
             preferTokenInfo: false
-    facebook:
-        client:
-            clientId: ${FACEBOOK_CLIENT_ID}
-            clientSecret: ${FACEBOOK_CLIENT_SECRET}
-            accessTokenUri: https://graph.facebook.com/oauth/access_token
-            userAuthorizationUri: https://www.facebook.com/dialog/oauth
-            tokenName: oauth_token
-            authenticationScheme: query
-            clientAuthenticationScheme: form
-            scope: email
-        resource:
-            userInfoUri: https://graph.facebook.com/me?fields=id,email,name,picture,first_name,last_name
-            preferTokenInfo: false
+#    facebook:
+#        client:
+#            clientId: ${FACEBOOK_CLIENT_ID}
+#            clientSecret: ${FACEBOOK_CLIENT_SECRET}
+#            accessTokenUri: https://graph.facebook.com/oauth/access_token
+#            userAuthorizationUri: https://www.facebook.com/dialog/oauth
+#            tokenName: oauth_token
+#            authenticationScheme: query
+#            clientAuthenticationScheme: form
+#            scope: email
+#        resource:
+#            userInfoUri: https://graph.facebook.com/me?fields=id,email,name,picture,first_name,last_name
+#            preferTokenInfo: false
 
 ---

@@ -180,6 +180,10 @@ public class StudentResource {
                 mediaDescriptor = media.get().getDescriptor();
             }
         }
+        // Odd way that file upload handles nulls
+        if (mediaDescriptor != null && mediaDescriptor.equals("null")) {
+            mediaDescriptor = null;
+        }
 
         Integer ageInt = null;
         if (age != null && !age.isEmpty()) {
@@ -302,6 +306,10 @@ public class StudentResource {
             if (media.isPresent()) {
                 mediaDescriptor = media.get().getDescriptor();
             }
+        }
+        // Odd way that file upload handles nulls
+        if (mediaDescriptor != null && mediaDescriptor.equals("null")) {
+            mediaDescriptor = null;
         }
 
         ProjectDto project = new ProjectDto(Long.valueOf(projectId), null, null, null, false);

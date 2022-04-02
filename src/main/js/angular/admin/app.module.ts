@@ -3,19 +3,20 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
-import {
-    MatButtonModule,
-    MatCheckboxModule,
-    MatIconModule,
-    MatMenuModule,
-    MatToolbarModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatListModule,
-    MatGridListModule,
-    MatTableModule,
-    MatAutocompleteModule, MatSelectModule, MatDialogModule, MatSnackBarModule
-} from "@angular/material";
+import {MatButtonModule} from "@angular/material/button";
+import {MatCheckboxModule} from "@angular/material/checkbox";
+import {MatIconModule} from "@angular/material/icon";
+import {MatMenuModule} from "@angular/material/menu";
+import {MatToolbarModule} from "@angular/material/toolbar";
+import {MatInputModule} from "@angular/material/input";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatListModule} from "@angular/material/list";
+import {MatGridListModule} from "@angular/material/grid-list";
+import {MatTableModule} from "@angular/material/table";
+import {MatAutocompleteModule} from "@angular/material/autocomplete";
+import {MatSelectModule} from "@angular/material/select";
+import {MatDialogModule} from "@angular/material/dialog";
+import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import { AppRoutingModule } from './app-routing.module';
 import { AdminHomeComponent } from './admin-home/admin-home.component';

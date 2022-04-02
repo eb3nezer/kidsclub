@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {Location} from "@angular/common";
-import {MatSnackBar} from "@angular/material";
-import {MatDialog} from '@angular/material';
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {MatDialog} from "@angular/material/dialog";
 
 import {KCDocument} from "../../shared/model/kcDocument";
 import {ProjectService} from "../../shared/services/project.service";

@@ -7,8 +7,8 @@ import {Location} from "@angular/common";
 import {StudentTeam} from "../../shared/model/studentTeam";
 import {TeamService} from "../../shared/services/team.service";
 import {ConfirmDialogComponent} from "../../shared/confirm-dialog/confirm-dialog.component";
-import {MatSnackBar} from "@angular/material";
-import {MatDialog} from '@angular/material';
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {MatDialog} from "@angular/material/dialog";
 import {UserProfileService} from "../../shared/services/user-profile.service";
 
 @Component({

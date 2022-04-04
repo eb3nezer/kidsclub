@@ -4,7 +4,7 @@ import { ProjectService } from '../../shared/services/project.service';
 import { Project } from '../../shared/model/project';
 import {ActivatedRoute} from '@angular/router';
 import {Location} from '@angular/common';
-import {MatSnackBar} from '@angular/material';
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @Component({
   selector: 'app-edit-project',

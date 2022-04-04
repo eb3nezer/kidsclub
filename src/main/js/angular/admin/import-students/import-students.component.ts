@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
+import {ActivatedRoute} from "@angular/router";
+import { Location } from '@angular/common';
+import {Router} from "@angular/router";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {MatDialog} from "@angular/material/dialog";
+
 import { AppTitleService } from "../../shared/services/app-title.service";
 import { ProjectService } from "../../shared/services/project.service";
 import { StudentService } from "../../shared/services/student.service";
 import { Project } from "../../shared/model/project";
-import {ActivatedRoute} from "@angular/router";
-import { Location } from '@angular/common';
-import {MatSnackBar} from "@angular/material";
-import {Router} from "@angular/router";
-import {MatDialog} from "@angular/material";
 import {ConfirmDialogComponent} from '../../shared/confirm-dialog/confirm-dialog.component';
 
 @Component({

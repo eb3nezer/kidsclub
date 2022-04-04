@@ -3,7 +3,7 @@ import {ProjectService} from "../../shared/services/project.service";
 import {ActivatedRoute} from "@angular/router";
 import {AppTitleService} from "../../shared/services/app-title.service";
 import {Location} from "@angular/common";
-import {MatSnackBar} from "@angular/material";
+import {MatSnackBar} from "@angular/material/snack-bar";
 import {Router} from "@angular/router";
 
 @Component({

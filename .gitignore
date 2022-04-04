@@ -41,6 +41,9 @@ keystore.*
 !.vscode/launch.json
 !.vscode/extensions.json
 
+# Angular
+/.angular
+
 # misc
 /.sass-cache
 /connect.lock

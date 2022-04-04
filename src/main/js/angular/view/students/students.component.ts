@@ -5,7 +5,8 @@ import { Project } from "../../shared/model/project";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Student} from "../../shared/model/student";
 import {StudentService} from "../../shared/services/student.service";
-import {MatButtonToggleChange, MatButtonToggleGroup} from "@angular/material";
+import {MatButtonToggleChange} from "@angular/material/button-toggle";
+import {MatButtonToggleGroup} from "@angular/material/button-toggle";
 
 @Component({
   selector: 'view-students',

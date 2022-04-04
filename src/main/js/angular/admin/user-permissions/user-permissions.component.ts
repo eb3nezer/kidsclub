@@ -5,7 +5,8 @@ import { StudentService } from "../../shared/services/student.service";
 import { Project } from "../../shared/model/project";
 import {ActivatedRoute} from "@angular/router";
 import { Location } from '@angular/common';
-import {MatCheckboxChange, MatSnackBar} from "@angular/material";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {MatCheckboxChange} from "@angular/material/checkbox";
 import {UserProfileService} from "../../shared/services/user-profile.service";
 import {UserPermissions} from "../../shared/model/userPermissions";
 

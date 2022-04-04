@@ -1,10 +1,10 @@
 import {Component, OnInit, ViewChildren} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import { Location } from '@angular/common';
-import {MatSnackBar} from "@angular/material";
+import {MatSnackBar} from "@angular/material/snack-bar";
 import {Observable} from "rxjs/index";
 import {FormControl} from "@angular/forms";
-import {MatDialog} from "@angular/material";
+import {MatDialog} from "@angular/material/dialog";
 
 import { AppTitleService } from "../../shared/services/app-title.service";
 import {ProjectService} from "../../shared/services/project.service";

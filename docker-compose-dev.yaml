@@ -1,0 +1,17 @@
+version: '3'
+services:
+  kc-postgres:
+    container_name: kc-postgres
+    image: postgres:12
+    volumes:
+      - postgresdata:/var/lib/postgresql/data
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    environment:
+      - TZ=Australia/Sydney
+      - POSTGRES_USER=kc
+      - POSTGRES_PASSWORD=s3cret
+      - POSTGRES_DB=kc
+volumes:
+  postgresdata:

@@ -58,9 +58,9 @@ kidsclub:
           tokenName: oauth_token
           authenticationScheme: query
           clientAuthenticationScheme: form
-          scope: profile email
+          scope: email public_profile
       resource:
-          userInfoUri: https://graph.facebook.com/me
+          userInfoUri: https://graph.facebook.com/me?fields=id,email,name,picture,first_name,last_name
           preferTokenInfo: false
 
 ---
@@ -82,8 +82,8 @@ spring:
         hibernate:
             ddl-auto: update
             naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
-security:
-    require-ssl: true
+#security:
+#    require-ssl: true
 server:
     port: 8444
     error:
@@ -131,7 +131,7 @@ kidsclub:
             tokenName: oauth_token
             authenticationScheme: query
             clientAuthenticationScheme: form
-            scope: email
+            scope: email public_profile
         resource:
             userInfoUri: https://graph.facebook.com/me?fields=id,email,name,picture,first_name,last_name
             preferTokenInfo: false
@@ -197,7 +197,7 @@ kidsclub:
       tokenName: oauth_token
       authenticationScheme: query
       clientAuthenticationScheme: form
-      scope: email
+      scope: email public_profile
     resource:
       userInfoUri: https://graph.facebook.com/me?fields=id,email,name,picture,first_name,last_name
       preferTokenInfo: false
@@ -221,8 +221,8 @@ spring:
         hibernate:
             ddl-auto: update
             naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
-security:
-    require-ssl: true
+#security:
+#    require-ssl: true
 server:
     port: 8443
     error:
@@ -270,7 +270,7 @@ kidsclub:
             tokenName: oauth_token
             authenticationScheme: query
             clientAuthenticationScheme: form
-            scope: email
+            scope: email public_profile
         resource:
             userInfoUri: https://graph.facebook.com/me?fields=id,email,name,picture,first_name,last_name
             preferTokenInfo: false

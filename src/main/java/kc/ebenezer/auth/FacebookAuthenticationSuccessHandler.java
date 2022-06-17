@@ -28,11 +28,19 @@ public class FacebookAuthenticationSuccessHandler extends CustomAuthenticationSu
 
     @Override
     String getFirstName(Map<String, Object> details) {
-        return details.get("first_name").toString();
+        if (details.get("first_name") != null) {
+            return "" + details.get("first_name");
+        }
+
+        return null;
     }
 
     @Override
     String getLastName(Map<String, Object> details) {
-        return details.get("last_name").toString();
+        if (details.get("last_name") != null) {
+            return "" + details.get("last_name");
+        }
+
+        return null;
     }
 }

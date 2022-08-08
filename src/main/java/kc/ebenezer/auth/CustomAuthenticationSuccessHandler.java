@@ -95,9 +95,21 @@ public abstract class CustomAuthenticationSuccessHandler extends SavedRequestAwa
 
                 if (user == null || !user.getLoggedIn()) {
                     String displayName = details.get("name").toString();
+                    if (displayName.length() > 255) {
+                        displayName = displayName.substring(0, 254);
+                    }
                     String firstName = getFirstName(details);
+                    if (firstName.length() > 255) {
+                        firstName = firstName.substring(0, 254);
+                    }
                     String lastName = getLastName(details);
+                    if (lastName.length() > 255) {
+                        lastName = lastName.substring(0, 254);
+                    }
                     String avatarUrl = getPictureUrl(details);
+                    if (avatarUrl.length() > 254) {
+                        avatarUrl = null;
+                    }
                     if (user == null) {
                         user = new User(
                                 null,

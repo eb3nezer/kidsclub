@@ -122,6 +122,9 @@ public class UserResource {
         if (familyName != null && (familyName.equals("null") || familyName.trim().isEmpty())) {
             familyName = null;
         }
+        if (avatarUrl != null && (avatarUrl.equals("null") || avatarUrl.trim().isEmpty())) {
+            avatarUrl = null;
+        }
         if (mediaDescriptor != null && (mediaDescriptor.equals("null") || mediaDescriptor.trim().isEmpty())) {
             mediaDescriptor = null;
         }
